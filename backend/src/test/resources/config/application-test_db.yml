@@ -1,9 +1,9 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${Z9_DB_URL}
-    username: ${Z9_DB_USERNAME}
-    password: ${Z9_DB_PASSWORD}
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test;MODE=MYSQL;DATABASE_TO_LOWER=TRUE
+    username: sa
+    password:
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -12,7 +12,7 @@ spring:
     properties:
       hibernate:
         default_batch_fetch_size: 100
-        dialect: org.hibernate.dialect.MySQLDialect
+        dialect: org.hibernate.dialect.H2Dialect
         highlight_sql: true
         format_sql: true
         show_sql: true

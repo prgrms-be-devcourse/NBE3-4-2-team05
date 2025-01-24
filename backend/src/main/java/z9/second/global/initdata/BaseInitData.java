@@ -35,7 +35,7 @@ public class BaseInitData {
         for(int i=1; i<=count; i++) {
             String firstName = "김";
             String secondName = String.format("%s%d", "아무개", i);
-            SampleEntity sample = SampleEntity.builder().firstName(firstName).secondName(secondName).build();
+            SampleEntity sample = SampleEntity.builder().firstName(firstName).secondName(secondName).age(i).build();
             savedDataList.add(sampleRepository.save(sample));
         }
 

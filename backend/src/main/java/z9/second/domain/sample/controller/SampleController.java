@@ -37,7 +37,7 @@ public class SampleController {
         }
     */
     @GetMapping("/{sampleId}")
-    @Operation(summary = "회원가입")
+    @Operation(summary = "특정 Sample 정보 조회")
     public BaseResponse<SampleResponse.SampleDataInfo> getSampleData(
             @PathVariable("sampleId") Long sampleId
     ) {
@@ -65,6 +65,7 @@ public class SampleController {
         }
     */
     @GetMapping
+    @Operation(summary = "Sample 목록 조회")
     public BaseResponse<List<SampleResponse.SampleDataList>> getSampleDataList() {
         List<SampleResponse.SampleDataList> findList = sampleService.findAllSampleData();
         return BaseResponse.ok(SuccessCode.FIND_SAMPLE_DATA_LIST_SUCCESS, findList);
@@ -90,6 +91,7 @@ public class SampleController {
          }
     */
     @PostMapping
+    @Operation(summary = "Sample 등록")
     public BaseResponse<SampleResponse.SavedSampleData> registerNewSample(
             @RequestBody(required = true) SampleRequest.NewSampleData newSampleData
     ) {
