@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -28,7 +29,7 @@ public class User extends BaseEntity {
 
     @Id
     @Column(name = "user_id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "login_id", nullable = false, unique = true)
@@ -48,7 +49,7 @@ public class User extends BaseEntity {
     @Column(name = "role", nullable = false)
     private UserRole role;
 
-    private static User createNewUser(String loginId, String password, String nickname) {
+    public static User createNewUser(String loginId, String password, String nickname) {
         return User
                 .builder()
                 .loginId(loginId)
