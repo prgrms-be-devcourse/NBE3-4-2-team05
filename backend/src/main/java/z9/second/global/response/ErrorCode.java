@@ -14,7 +14,7 @@ public enum ErrorCode {
 
     //1000 ~ 1999
     // 오류 종류 : 인증/인가 에러 ex) token expired
-    // rkdtjd
+    LOGIN_FAIL(HttpStatus.BAD_REQUEST, Boolean.FALSE, 1000, "잘못된 이메일 혹은 패스워드 입니다."),
 
     //2000 ~ 2999
     // 오류 종류 : 회원 도메인 에러
