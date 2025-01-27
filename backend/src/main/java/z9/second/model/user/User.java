@@ -59,4 +59,12 @@ public class User extends BaseEntity {
                 .role(UserRole.ROLE_USER)
                 .build();
     }
+
+    public static User createSecurityContextUser(Long userId, UserRole userRole) {
+        return User
+                .builder()
+                .id(userId)
+                .role(userRole)
+                .build();
+    }
 }

@@ -1,9 +1,11 @@
 package z9.second.global.config;
 
+import static org.springframework.http.HttpMethod.GET;
 import static z9.second.global.security.constant.HeaderConstant.CONTENT_TYPE;
 import static z9.second.global.security.constant.JWTConstant.ACCESS_TOKEN_HEADER;
 
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,12 +17,21 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import z9.second.global.security.entrypoint.CustomAccessDeniedEntryPoint;
+import z9.second.global.security.entrypoint.CustomAuthenticationEntryPoint;
+import z9.second.global.security.filter.AuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final AuthenticationFilter authenticationFilter;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedEntryPoint customAccessDeniedEntryPoint;
 
     @Bean
     protected PasswordEncoder passwordEncoder() {
@@ -63,7 +74,15 @@ public class SecurityConfig {
                 cors.configurationSource(corsConfigurationSource()));
 
         http.authorizeHttpRequests((auth) -> auth
+                .requestMatchers(GET, "/api/v1/sample/only-user").authenticated()
+                .requestMatchers(GET, "/api/v1/sample/only-admin").hasRole("ADMIN")
                 .anyRequest().permitAll());
+
+        http.exceptionHandling((exception) -> exception
+                .authenticationEntryPoint(customAuthenticationEntryPoint)
+                .accessDeniedHandler(customAccessDeniedEntryPoint));
+
+        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
