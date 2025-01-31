@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -15,7 +18,7 @@ public class ClassEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "class_id", nullable = false)
-    private Long classId;
+    private Long id;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -28,4 +31,10 @@ public class ClassEntity {
 
     @Column(name = "master_id", nullable = false)
     private Long masterId;
+
+    @OneToMany(mappedBy = "classes")
+    private List<ClassUserEntity> users = new ArrayList<>();
+
+    @OneToMany(mappedBy = "classes")
+    private List<ClassBlackListEntity> blackLists = new ArrayList<>();
 }

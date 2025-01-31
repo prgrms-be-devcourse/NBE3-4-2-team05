@@ -15,11 +15,11 @@ public class ClassBlackListEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cbl_id", nullable = false)
-    private Long cblId;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "class_id", nullable = false)
-    private ClassEntity classId;
+    @JoinColumn(name = "class_id", nullable = false)
+    private ClassEntity classes;
 
     @Column(name = "user_id", nullable = false)
     private Long userId;

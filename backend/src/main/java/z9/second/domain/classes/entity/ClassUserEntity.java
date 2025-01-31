@@ -15,10 +15,11 @@ public class ClassUserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cu_id", nullable = false)
-    private Long cuId;
+    private Long id;
 
-    @Column(name = "class_id", nullable = false)
-    private Long classId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "class_id", nullable = false)
+    private ClassEntity classes;
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
