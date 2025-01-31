@@ -1,5 +1,5 @@
-#jwt:
-#  secret: ${JWT_SECRET}
-#  token:
-#    access-expiration: ${JWT_ACCESS_EXPIRATION}
-#    refresh-expiration: ${JWT_REFRESH_EXPIRATION}
+jwt:
+  secret: ${JWT_SECRET}
+  token:
+    access-expiration: ${JWT_ACCESS_EXPIRATION}
+    refresh-expiration: ${JWT_REFRESH_EXPIRATION}
