@@ -14,6 +14,7 @@ public enum SuccessCode {
     SAVE_SAMPLE_DATA_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "샘플 데이터 저장 성공!"),
 
     // Authentication / Authorization
+    LOGIN_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "로그인 성공"),
 
     // User
 
