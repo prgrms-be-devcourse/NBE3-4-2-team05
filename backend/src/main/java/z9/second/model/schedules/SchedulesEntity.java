@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import z9.second.domain.classes.entity.ClassEntity;
 import z9.second.model.BaseEntity;
-import z9.second.model.classes.ClassesEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class SchedulesEntity extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "class_id")
-    private ClassesEntity classes;
+    private ClassEntity classes;
 
     @Column(name = "meeting_time", nullable = false)
     private String meetingTime;
