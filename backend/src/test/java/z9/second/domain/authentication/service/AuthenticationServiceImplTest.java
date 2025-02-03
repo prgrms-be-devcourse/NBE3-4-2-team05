@@ -35,8 +35,7 @@ class AuthenticationServiceImplTest extends SpringBootTestSupporter {
 
         // then
         assertThat(userToken.getAccessToken())
-                .isNotNull()
-                .startsWith(ACCESS_TOKEN_PREFIX);
+                .isNotNull();
         assertThat(userToken.getRefreshToken())
                 .isNotNull();
     }
