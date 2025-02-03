@@ -11,17 +11,19 @@ public class ClassResponse {
     @Builder
     @AllArgsConstructor
     public static class ResponseData {
+        private final Long id;
         private final String name;
         private final String favorite;
         private final String description;
 
         public static ResponseData from(ClassEntity classes) {
             return ResponseData
-                           .builder()
-                           .name(classes.getName())
-                           .favorite(classes.getFavorite())
-                           .description(classes.getDescription())
-                           .build();
+                    .builder()
+                    .id(classes.getId())
+                    .name(classes.getName())
+                    .favorite(classes.getFavorite())
+                    .description(classes.getDescription())
+                    .build();
         }
     }
 }
