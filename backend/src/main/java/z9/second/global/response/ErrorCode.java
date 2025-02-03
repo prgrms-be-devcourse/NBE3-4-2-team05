@@ -34,6 +34,7 @@ public enum ErrorCode {
     //4000 ~ 4999
     // 오류 종류 : 일정
     SCHEDULE_CREATE_FAILED(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4001, "일정 생성에 실패했습니다."),
+    SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, Boolean.FALSE, 4002, "해당 일정을 찾을 수 없습니다."),
 
     //9000 ~ 9999
     //오류 종류 : 공통 에러
