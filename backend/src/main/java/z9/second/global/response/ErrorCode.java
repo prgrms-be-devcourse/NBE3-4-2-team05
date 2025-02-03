@@ -19,6 +19,8 @@ public enum ErrorCode {
     NEED_LOGIN(HttpStatus.UNAUTHORIZED, Boolean.FALSE, 1002, "로그인이 필요합니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, Boolean.FALSE, 1003, "접근 권한이 부족합니다."),
     ACCESS_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, Boolean.FALSE, 1004, "Access Token 이 만료되었습니다."),
+    OAUTH_USER_LOGIN_FAIL(HttpStatus.BAD_REQUEST, Boolean.FALSE, 1005, "소셜 로그인 회원 입니다. 소셜 로그인으로 진행 해 주세요."),
+    INVALID_OAUTH_PROVIDER(HttpStatus.BAD_REQUEST, Boolean.FALSE, 1006, "지원하지 않는 로그인 방식 입니다."),
 
     //2000 ~ 2999
     // 오류 종류 : 회원 도메인 에러

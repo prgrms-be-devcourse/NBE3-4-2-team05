@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import z9.second.model.user.User;
+import z9.second.model.user.UserType;
 
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
@@ -27,5 +28,9 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public String getUsername() {
         return user.getId().toString();
+    }
+
+    public Boolean isOAuthUser() {
+        return user.getType().equals(UserType.OAUTH);
     }
 }

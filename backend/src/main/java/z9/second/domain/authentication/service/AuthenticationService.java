@@ -6,4 +6,6 @@ import z9.second.domain.authentication.dto.AuthenticationResponse;
 public interface AuthenticationService {
 
     AuthenticationResponse.UserToken login(AuthenticationRequest.Login dto);
+
+    AuthenticationResponse.UserToken oauthLogin(String provider, String authCode);
 }

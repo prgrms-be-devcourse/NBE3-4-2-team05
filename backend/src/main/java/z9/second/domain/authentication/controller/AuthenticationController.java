@@ -9,9 +9,12 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import z9.second.domain.authentication.dto.AuthenticationRequest;
 import z9.second.domain.authentication.dto.AuthenticationResponse;
@@ -22,7 +25,7 @@ import z9.second.global.security.jwt.JwtProperties;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1")
 @Tag(name = "Authentication Controller", description = "회원 인증 컨트롤러")
 public class AuthenticationController {
 
@@ -36,6 +39,18 @@ public class AuthenticationController {
             HttpServletResponse response
     ) {
         AuthenticationResponse.UserToken token = authenticationService.login(dto);
+        addTokenToResponse(token, response);
+        return BaseResponse.ok(SuccessCode.LOGIN_SUCCESS);
+    }
+
+    @GetMapping("/login/{provider}")
+    @Operation(summary = "소셜 로그인 리타이렉트 주소")
+    public BaseResponse<Void> kakaoLogin(
+            @PathVariable(value = "provider") String provider,
+            @RequestParam(value = "code") String code,
+            HttpServletResponse response) {
+        AuthenticationResponse.UserToken token =
+                authenticationService.oauthLogin(provider, code);
         addTokenToResponse(token, response);
         return BaseResponse.ok(SuccessCode.LOGIN_SUCCESS);
     }

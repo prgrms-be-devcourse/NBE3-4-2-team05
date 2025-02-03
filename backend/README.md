@@ -22,10 +22,15 @@ Z9_DB_PASSWORD = "1234"
 JWT_SECRET = 'sdlkfnxcoisdfiojvclkmnflkni219o3uj908uxfjn1298i03ujiodusfj10928ijjsklfnwe0ijf1io2j3oi1kklasdf'
 JWT_ACCESS_EXPIRATION = 300000
 JWT_REFRESH_EXPIRATION = 30000000
+OAUTH_KAKAO_CLIENT_ID = "YOUR_API_KEY"
+OAUTH_KAKAO_REDIRECT-URI = "REDIRECT_URI"
+OAUTH_KAKAO_CLIENT_SECRET = "YOUR_KAKAO_CLIENT_SECRET"
+OAUTH_KAKAO_CONENT_TYPE = "application/x-www-form-urlencoded;charset=utf-8"
 ```
 - 이때, `JWT_SECRET` 값은, 최소 32바이트 이상 설정되어야 합니다. 즉, 최소 32개 문자 이상 들어가야 합니다!
 - `JWT_ACCESS_EXPIRATION`, `JWT_REFRESH_EXPIRATION` 은, 각각의 token 의 유효 시간을 나타냅니다. 단위는 ms 입니다.
   - 즉, 3000 = 3초 
+- oauth login 이 추가되면서, 환경변수가 추가되었습니다.
 
 ### 3. 프로젝트 사전 구성
 - 기본적으로, MySQL 8.0v 이상이 설치되어 있어야 합니다.
