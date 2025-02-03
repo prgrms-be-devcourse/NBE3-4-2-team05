@@ -32,14 +32,18 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "login_id", nullable = false, unique = true)
+    @Column(name = "login_id", unique = true)
     private String loginId;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     private String password;
 
     @Column(name = "nickname", nullable = false, unique = true, length = 10)
     private String nickname;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = false)
+    private UserType type;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -55,6 +59,17 @@ public class User extends BaseEntity {
                 .loginId(loginId)
                 .password(password)
                 .nickname(nickname)
+                .type(UserType.NORMAL)
+                .status(UserStatus.ACTIVE)
+                .role(UserRole.ROLE_USER)
+                .build();
+    }
+
+    public static User createNewOAuthUser(String nickname, String hashCode) {
+        return User
+                .builder()
+                .nickname(nickname + hashCode)
+                .type(UserType.OAUTH)
                 .status(UserStatus.ACTIVE)
                 .role(UserRole.ROLE_USER)
                 .build();
