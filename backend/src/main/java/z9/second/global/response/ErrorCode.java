@@ -27,6 +27,7 @@ public enum ErrorCode {
 
     //3000 ~ 3999
     // 오류 종류 : 모임
+    CLASS_CREATE_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, Boolean.FALSE, 3000, "더 이상 모임을 생성하실 수 없습니다."),
 
     //9000 ~ 9999
     //오류 종류 : 공통 에러
