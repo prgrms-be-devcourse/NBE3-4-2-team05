@@ -1,4 +1,4 @@
-### `npm start`
+### `npm dev`
 
 Open [http://localhost:3000]
 프로젝트를 로컬에서 실행 시 명령어 입니다.
@@ -32,10 +32,17 @@ IDE가 프로젝트의 루트와 파일 구조 설정 파일
 
 ### `babel`
 
-Open [bable.config.json 파일](./bable.config.json)
+Open [bable.config.json 파일](./babel.config.json)
 최신 자바스크립트 문법이 호환되도록 변환
 
 ### `env`
 
+.env
 프로젝트의 환경 변수를 정의하는 파일
 notion 참고
+
+
+### `webpack`
+
+Open [webpack.config.json 파일](./webpack.config.js)
+JavaScript 파일 번들링

@@ -9,21 +9,25 @@
     "react-dom": "^18.3.1",
     "react-kakao-maps-sdk": "^1.1.27",
     "react-router-dom": "^7.0.2",
-    "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1",
+    "react-cookie": "^7.2.2"
   },
   "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,json,css,scss,md}'",
   "scripts": {
-    "start": "react-scripts start",
+    "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "postinstall": "husky install"
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
     ]
+  },
+  "prettier": {
+    "trailingComma": "all"
   },
   "lint-staged": {
     "src/**/*.{js,jsx}": [

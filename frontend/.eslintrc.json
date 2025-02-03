@@ -19,12 +19,6 @@
       { "extensions": [".js", ".jsx"] }
     ],
     "comma-dangle": ["error", "always-multiline"],
-    "prettier/prettier": [
-      "error",
-      {
-        "trailingComma": "es5"
-      }
-    ],
     "no-console": "warn",
     "react/prop-types": "off"
   }
