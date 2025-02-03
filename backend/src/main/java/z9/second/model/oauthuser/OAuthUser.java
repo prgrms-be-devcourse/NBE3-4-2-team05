@@ -39,7 +39,7 @@ public class OAuthUser extends BaseEntity {
     @Column(name = "provider")
     private OAuthProvider provider;
 
-    @Column(name = "uid")
+    @Column(name = "uid", unique = true)
     private String uid;
 
     @ManyToOne
