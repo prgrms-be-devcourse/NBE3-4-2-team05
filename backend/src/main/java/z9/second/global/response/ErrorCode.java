@@ -28,6 +28,12 @@ public enum ErrorCode {
     //3000 ~ 3999
     // 오류 종류 : 모임
     CLASS_CREATE_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, Boolean.FALSE, 3000, "더 이상 모임을 생성하실 수 없습니다."),
+    CLASS_NOT_FOUND(HttpStatus.NOT_FOUND, Boolean.FALSE, 3001, "해당하는 모임을 찾을 수 없습니다."),
+    CLASS_ACCESS_DENIED(HttpStatus.FORBIDDEN, Boolean.FALSE, 3002, "해당 모임에 대한 권한이 없습니다."),
+
+    //4000 ~ 4999
+    // 오류 종류 : 일정
+    SCHEDULE_CREATE_FAILED(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4001, "일정 생성에 실패했습니다."),
 
     //9000 ~ 9999
     //오류 종류 : 공통 에러

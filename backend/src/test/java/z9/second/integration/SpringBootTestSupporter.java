@@ -11,6 +11,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import z9.second.domain.authentication.service.AuthenticationService;
 import z9.second.global.redis.RedisRepository;
+import z9.second.domain.favorite.repository.FavoriteRepository;
 import z9.second.model.user.UserRepository;
 
 @SpringBootTest
@@ -29,6 +30,8 @@ public abstract class SpringBootTestSupporter {
      */
     @Autowired
     protected UserRepository userRepository;
+    @Autowired
+    protected FavoriteRepository favoriteRepository;
 
 
     /**
