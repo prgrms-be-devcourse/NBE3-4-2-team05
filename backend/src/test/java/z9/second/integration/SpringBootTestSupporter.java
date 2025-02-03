@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import z9.second.domain.authentication.service.AuthenticationService;
+import z9.second.domain.favorite.repository.FavoriteRepository;
 import z9.second.model.user.UserRepository;
 
 @SpringBootTest
@@ -27,6 +28,8 @@ public abstract class SpringBootTestSupporter {
      */
     @Autowired
     protected UserRepository userRepository;
+    @Autowired
+    protected FavoriteRepository favoriteRepository;
 
 
     /**
