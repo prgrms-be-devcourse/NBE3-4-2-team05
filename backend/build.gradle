@@ -30,7 +30,6 @@ dependencies {
 
     // Web
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
     // MySQL
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -61,8 +60,11 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 
-    //feign client
+    // feign client
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 dependencyManagement {
