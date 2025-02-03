@@ -1,5 +1,6 @@
 package z9.second.domain.schedules.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import z9.second.domain.classes.entity.ClassEntity;
@@ -18,6 +19,7 @@ public class SchedulesService {
     private final ClassRepository classesRepository;
 
     //생성
+    @Transactional
     public void create(SchedulesRequestDto.RequestData requestData, Long userId) {
         // 1. 요청된 classId로 실제 클래스가 있는지 확인
         ClassEntity classes = classesRepository.findById(requestData.getClassId())
