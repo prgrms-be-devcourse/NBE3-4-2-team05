@@ -23,6 +23,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import z9.second.global.security.entrypoint.CustomAccessDeniedEntryPoint;
 import z9.second.global.security.entrypoint.CustomAuthenticationEntryPoint;
 import z9.second.global.security.filter.AuthenticationFilter;
+import z9.second.global.security.filter.ReissueFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -30,6 +31,7 @@ import z9.second.global.security.filter.AuthenticationFilter;
 public class SecurityConfig {
 
     private final AuthenticationFilter authenticationFilter;
+    private final ReissueFilter reissueFilter;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedEntryPoint customAccessDeniedEntryPoint;
 
@@ -58,8 +60,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    protected SecurityFilterChain filterChain(
-            HttpSecurity http, AuthenticationConfiguration authenticationConfiguration)
+    protected SecurityFilterChain filterChain(HttpSecurity http)
             throws Exception {
 
         http
@@ -83,6 +84,7 @@ public class SecurityConfig {
                 .accessDeniedHandler(customAccessDeniedEntryPoint));
 
         http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(reissueFilter, AuthenticationFilter.class);
 
         return http.build();
     }

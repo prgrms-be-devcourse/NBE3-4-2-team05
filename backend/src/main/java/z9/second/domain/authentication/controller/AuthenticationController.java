@@ -1,11 +1,11 @@
 package z9.second.domain.authentication.controller;
 
 import static z9.second.global.security.constant.JWTConstant.ACCESS_TOKEN_HEADER;
+import static z9.second.global.security.constant.JWTConstant.ACCESS_TOKEN_PREFIX;
 import static z9.second.global.security.constant.JWTConstant.REFRESH_TOKEN_HEADER;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +22,7 @@ import z9.second.domain.authentication.service.AuthenticationService;
 import z9.second.global.response.BaseResponse;
 import z9.second.global.response.SuccessCode;
 import z9.second.global.security.jwt.JwtProperties;
+import z9.second.global.utils.ControllerUtils;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,7 +40,7 @@ public class AuthenticationController {
             HttpServletResponse response
     ) {
         AuthenticationResponse.UserToken token = authenticationService.login(dto);
-        addTokenToResponse(token, response);
+        addJwtTokenResponse(response, token);
         return BaseResponse.ok(SuccessCode.LOGIN_SUCCESS);
     }
 
@@ -51,23 +52,19 @@ public class AuthenticationController {
             HttpServletResponse response) {
         AuthenticationResponse.UserToken token =
                 authenticationService.oauthLogin(provider, code);
-        addTokenToResponse(token, response);
+        addJwtTokenResponse(response, token);
         return BaseResponse.ok(SuccessCode.LOGIN_SUCCESS);
     }
 
-    private void addTokenToResponse(
-            AuthenticationResponse.UserToken token, HttpServletResponse response) {
-        response.setHeader(ACCESS_TOKEN_HEADER, token.getAccessToken());
-
-        Cookie cookie = new Cookie(REFRESH_TOKEN_HEADER, token.getRefreshToken());
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(parseMsToSec(jwtProperties.getRefreshExpiration()));
-        response.addCookie(cookie);
-    }
-
-    private int parseMsToSec(Long ms) {
-        return (int) (ms / 1000);
+    private void addJwtTokenResponse(HttpServletResponse response, AuthenticationResponse.UserToken token) {
+        ControllerUtils.addHeaderResponse(
+                ACCESS_TOKEN_HEADER,
+                String.format("%s %s", ACCESS_TOKEN_PREFIX, token.getAccessToken()),
+                response);
+        ControllerUtils.addCookieResponse(
+                REFRESH_TOKEN_HEADER,
+                token.getRefreshToken(),
+                ControllerUtils.parseMsToSec(jwtProperties.getRefreshExpiration()),
+                response);
     }
 }

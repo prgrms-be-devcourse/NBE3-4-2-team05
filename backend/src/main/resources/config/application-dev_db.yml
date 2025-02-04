@@ -22,3 +22,8 @@ spring:
 #  level:
 #    org.hibernate.sql: debug
 #    org.hibernate.type: trace
+
+redis:
+  host : ${Z9_REDIS_DB_HOST}
+  port : ${Z9_REDIS_DB_PORT}
+  password: ${Z9_REDIS_DB_PASSWORD}

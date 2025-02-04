@@ -17,6 +17,7 @@ import z9.second.domain.authentication.dto.AuthenticationResponse;
 import z9.second.domain.kakao.KakaoAuthFeignClient;
 import z9.second.domain.kakao.KakaoResourceFeignClient;
 import z9.second.global.exception.CustomException;
+import z9.second.global.redis.RedisRepository;
 import z9.second.global.response.ErrorCode;
 import z9.second.global.security.constant.OAuthConstant;
 import z9.second.global.security.jwt.JWTUtil;
@@ -46,6 +47,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final OAuthUserRepository oAuthUserRepository;
     private final UserRepository userRepository;
+    private final RedisRepository redisRepository;
 
     @Transactional(readOnly = true)
     @Override
@@ -137,6 +139,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String refresh = jwtUtil.createJwt(REFRESH_TOKEN_CATEGORY, userId, role,
                 jwtProperties.getRefreshExpiration());
 
+        saveRefreshToken(userId, refresh, jwtProperties.getRefreshExpiration());
+
         return AuthenticationResponse.UserToken.of(access, refresh);
+    }
+
+    private void saveRefreshToken(String userId, String refreshToken, Long expirationMs) {
+        redisRepository.saveRefreshToken(userId, refreshToken, expirationMs);
     }
 }

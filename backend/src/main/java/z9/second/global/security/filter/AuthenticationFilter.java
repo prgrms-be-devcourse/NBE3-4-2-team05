@@ -2,10 +2,8 @@ package z9.second.global.security.filter;
 
 import static z9.second.global.security.constant.JWTConstant.ACCESS_TOKEN_CATEGORY;
 import static z9.second.global.security.constant.JWTConstant.ACCESS_TOKEN_HEADER;
-import static z9.second.global.security.constant.JWTConstant.ACCESS_TOKEN_PREFIX;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,8 +16,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import z9.second.global.response.BaseResponse;
-import z9.second.global.response.ErrorCode;
 import z9.second.global.security.jwt.JWTUtil;
 import z9.second.global.security.user.CustomUserDetails;
 import z9.second.model.user.User;
@@ -36,47 +32,49 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
-        String accessToken = extractAccessToken(request);
+        // 1. AccessToken 추출
+        String accessToken = FilterUtil.extractAccessToken(request);
 
+        // 2. AccessToken 유무 확인
         if (accessToken == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
+        // 2-2. 만약 response 에 header 값이 있다면 token 이 재발급 된 것.
+        // 해당 token 으로 인증 진행할 것
+        String newAccessToken = response.getHeader(ACCESS_TOKEN_HEADER);
+        if (newAccessToken != null) {
+            accessToken = newAccessToken;
+        }
+
+        // 3. AccessToken 검증2
         try {
             validateAccessToken(accessToken);
         } catch (JwtException e) {
-            handleJwtException(response, e);
+            FilterUtil.handleJwtException(response, e, objectMapper);
             return;
         }
 
+        // 4. 토큰으로 회원 인증 진행.
         setAuthentication(accessToken);
 
         filterChain.doFilter(request, response);
     }
 
-    private String extractAccessToken(HttpServletRequest request) {
-        String accessToken = request.getHeader(ACCESS_TOKEN_HEADER);
-        if (accessToken != null && accessToken.startsWith(ACCESS_TOKEN_PREFIX)) {
-            return accessToken.substring(7);
-        }
-        return null;
-    }
-
+    /**
+     * 토큰 유효성 검증
+     * @param accessToken
+     * @throws JwtException
+     */
     private void validateAccessToken(String accessToken) throws JwtException {
+        // 1. expired 확인
         jwtUtil.isExpired(accessToken);
 
+        // 2. category 확인
         String category = jwtUtil.getCategory(accessToken);
         if (!ACCESS_TOKEN_CATEGORY.equals(category)) {
             throw new JwtException("Invalid access token category");
-        }
-    }
-
-    private void handleJwtException(HttpServletResponse response, JwtException e) throws IOException {
-        if (e instanceof ExpiredJwtException) {
-            writeErrorResponse(response, ErrorCode.ACCESS_TOKEN_EXPIRED);
-        } else {
-            writeErrorResponse(response, ErrorCode.INVALID_ACCESS_TOKEN);
         }
     }
 
@@ -90,13 +88,5 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                 customUserDetails, null, customUserDetails.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(authToken);
-    }
-
-    private void writeErrorResponse(HttpServletResponse response, ErrorCode errorCode) throws IOException {
-        BaseResponse<Void> errorResponse = BaseResponse.fail(errorCode);
-        response.setContentType("application/json");
-        response.setStatus(errorCode.getHttpStatus().value());
-        response.setCharacterEncoding("utf-8");
-        response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }
 }
