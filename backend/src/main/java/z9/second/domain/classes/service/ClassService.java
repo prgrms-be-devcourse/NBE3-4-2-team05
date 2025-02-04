@@ -35,6 +35,8 @@ public class ClassService {
                 .masterId(userId)
                 .build();
 
+        newClass.addMember(userId);
+
         ClassEntity classEntity = classRepository.save(newClass);
 
         return ClassResponse.ClassResponseData.from(classEntity);
