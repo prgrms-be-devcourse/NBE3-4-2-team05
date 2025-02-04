@@ -2,6 +2,7 @@ package z9.second.domain.authentication.controller;
 
 
 import static org.hamcrest.Matchers.startsWith;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
@@ -12,6 +13,7 @@ import static z9.second.global.security.constant.JWTConstant.ACCESS_TOKEN_HEADER
 import static z9.second.global.security.constant.JWTConstant.ACCESS_TOKEN_PREFIX;
 import static z9.second.global.security.constant.JWTConstant.REFRESH_TOKEN_HEADER;
 
+import jakarta.servlet.http.Cookie;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,7 @@ import z9.second.domain.authentication.dto.AuthenticationRequest;
 import z9.second.domain.favorite.entity.FavoriteEntity;
 import z9.second.global.response.SuccessCode;
 import z9.second.integration.SpringBootTestSupporter;
+import z9.second.integration.security.WithCustomUser;
 import z9.second.model.user.User;
 
 @Transactional
@@ -85,5 +88,35 @@ class AuthenticationControllerTest extends SpringBootTestSupporter {
                 .andExpect(jsonPath("$.message").value(SuccessCode.SIGNUP_SUCCESS.getMessage()))
                 .andExpect(jsonPath("$.code").value(SuccessCode.SIGNUP_SUCCESS.getCode()))
                 .andExpect(jsonPath("$.data").doesNotExist());
+    }
+
+    @WithCustomUser
+    @DisplayName("로그아웃을 진행합니다. 등록된 Refresh Cookie 를 삭제 합니다.")
+    @Test
+    void logout() throws Exception {
+        // given
+        String refreshToken = "임시RefreshToken";
+        Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN_HEADER, refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(1000);
+
+        // when
+        ResultActions result = mockMvc.perform(post("/api/v1/logout")
+                .cookie(refreshTokenCookie));
+
+        // then
+        result.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(SuccessCode.LOGOUT_SUCCESS.getIsSuccess()))
+                .andExpect(jsonPath("$.message").value(SuccessCode.LOGOUT_SUCCESS.getMessage()))
+                .andExpect(jsonPath("$.code").value(SuccessCode.LOGOUT_SUCCESS.getCode()))
+                .andExpect(jsonPath("$.data").doesNotExist())
+                .andExpect(result1 -> {
+                    List<String> setCookieHeaders = result1.getResponse().getHeaders("Set-Cookie");
+                    assertTrue(setCookieHeaders.stream().anyMatch(cookie -> cookie.contains("RefreshToken=;")));
+                    assertTrue(setCookieHeaders.stream().anyMatch(cookie -> cookie.contains("Max-Age=0")));
+                });
     }
 }
