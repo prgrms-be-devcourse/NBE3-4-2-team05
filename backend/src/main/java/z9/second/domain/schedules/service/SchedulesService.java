@@ -71,7 +71,9 @@ public class SchedulesService {
         ClassEntity classes = classesRepository.findById(classId)
                 .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
 
-        if (!classes.getMasterId().equals(userId)) {
+        if (!classes.getMasterId().equals(userId) &&
+                classes.getUsers().stream()
+                        .noneMatch(user -> user.getUserId().equals(userId))) {
             throw new CustomException(ErrorCode.CLASS_ACCESS_DENIED);
         }
 
@@ -86,7 +88,9 @@ public class SchedulesService {
         ClassEntity classes = classesRepository.findById(classId)
                 .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
 
-        if (!classes.getMasterId().equals(userId)) {
+        if (!classes.getMasterId().equals(userId) &&
+                classes.getUsers().stream()
+                        .noneMatch(user -> user.getUserId().equals(userId))) {
             throw new CustomException(ErrorCode.CLASS_ACCESS_DENIED);
         }
 

@@ -10,6 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import z9.second.domain.authentication.service.AuthenticationService;
 import z9.second.domain.classes.repository.ClassRepository;
+import z9.second.domain.classes.repository.ClassUserRepository;
 import z9.second.domain.schedules.service.SchedulesService;
 import z9.second.model.schedules.SchedulesRepository;
 import z9.second.model.user.UserRepository;
@@ -52,6 +53,9 @@ public abstract class SpringBootTestSupporter {
 
     @Autowired
     protected ClassRepository classRepository;
+
+    @Autowired
+    protected ClassUserRepository classUserRepository;
 
     @Autowired
     protected SchedulesRepository schedulesRepository;
