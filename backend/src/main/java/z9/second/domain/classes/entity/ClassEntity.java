@@ -32,9 +32,20 @@ public class ClassEntity {
     @Column(name = "master_id", nullable = false)
     private Long masterId;
 
-    @OneToMany(mappedBy = "classes")
+    @OneToMany(mappedBy = "classes", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<ClassUserEntity> users = new ArrayList<>();
 
-    @OneToMany(mappedBy = "classes")
+    @OneToMany(mappedBy = "classes", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<ClassBlackListEntity> blackLists = new ArrayList<>();
+
+    public ClassUserEntity addMember(Long userId) {
+        ClassUserEntity user = ClassUserEntity.builder()
+                .classes(this)
+                .userId(userId)
+                .build();
+
+        users.add(user);
+
+        return user;
+    }
 }
