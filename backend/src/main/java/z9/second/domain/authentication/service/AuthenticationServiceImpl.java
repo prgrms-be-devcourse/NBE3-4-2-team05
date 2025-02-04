@@ -1,7 +1,6 @@
 package z9.second.domain.authentication.service;
 
 import static z9.second.global.security.constant.JWTConstant.ACCESS_TOKEN_CATEGORY;
-import static z9.second.global.security.constant.JWTConstant.ACCESS_TOKEN_PREFIX;
 import static z9.second.global.security.constant.JWTConstant.REFRESH_TOKEN_CATEGORY;
 
 import java.util.Map;
