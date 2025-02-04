@@ -12,6 +12,6 @@
     "skipLibCheck": true,
     "declaration": true
   },
-  "include": ["src/**/*.js", "src/**/*.jsx"],
+  "include": ["src/**/*.js", "src/**/*.jsx", "src/hooks/useFetch.ts"],
   "exclude": ["node_modules", "build"]
 }

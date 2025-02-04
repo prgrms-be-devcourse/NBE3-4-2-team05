@@ -1,34 +1,28 @@
 // @ts-nocheck
 import { Project } from "src/constants/project";
 import useFetch from "src/hooks/useFetch";
-
 // 회원가입
 const SignUp = async (body) => {
 	try {
 		const response = await useFetch("/user/signup", "POST", body);
-
 		if (response?.value) {
 			return response.value;
-		} else {
-			return {};
 		}
 	} catch (error) {
 		throw new Error("회원가입 중 오류가 발생했습니다.");
 	}
 };
-
 // 로그인
 const Login = async (body) => {
 	try {
-		const response = await useFetch("POST", "login", body, {});
-		if (response?.accessToken && response?.refreshToken) {
-			Project.setJwt(response.accessToken, response.refreshToken);
-			return response;
-		} else {
-			return {};
+		const response = await useFetch("POST", "login", body);
+		if (!response.ok) {
+			throw new Error(`HTTP error! Status: ${response.status}`);
 		}
+		return await response.json();
 	} catch (error) {
-		throw new Error("로그인 중 오류가 발생했습니다.");
+		console.error("Request failed:", error);
+		return null;
 	}
 };
 // 로그아웃
@@ -39,7 +33,6 @@ const LogOut = async () => {
 			"POST",
 			`/user/logout?accessToken=${TOKEN}`,
 		);
-
 		if (response) {
 			Project.removeCookie("accessToken", {
 				path: "/",

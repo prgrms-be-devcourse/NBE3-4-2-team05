@@ -1,5 +1,4 @@
-import useFetch from "@/hooks/useFetch";
-
+import useFetch from "src/hooks/useFetch";
 // 모임 리스트 가져오기
 const getClassLists = () => useFetch("GET", "classes/");
 
@@ -13,10 +12,10 @@ const putClassLists = () => useFetch("PUT", "schedules/");
 const deleteClassLists = () => useFetch("DELETE", "schedules/");
 
 const ClassService = {
-  getClassLists,
-  postClassLists,
-  putClassLists,
-  deleteClassLists,
+	getClassLists,
+	postClassLists,
+	putClassLists,
+	deleteClassLists,
 };
 
 export { ClassService };

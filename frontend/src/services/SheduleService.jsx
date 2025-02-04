@@ -1,5 +1,4 @@
-import useFetch from "@/hooks/useFetch";
-
+import useFetch from "src/hooks/useFetch";
 // 일정 가져오기
 const getSchedulesLists = () => useFetch("GET", "schedules/");
 
@@ -13,10 +12,10 @@ const putSchedulesLists = () => useFetch("PUT", "schedules/");
 const deleteSchedulesLists = () => useFetch("DELETE", "schedules/");
 
 const ScheduleService = {
-  getSchedulesLists,
-  postSchedulesLists,
-  putSchedulesLists,
-  deleteSchedulesLists,
+	getSchedulesLists,
+	postSchedulesLists,
+	putSchedulesLists,
+	deleteSchedulesLists,
 };
 
 export { ScheduleService };

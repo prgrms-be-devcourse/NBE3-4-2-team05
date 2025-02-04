@@ -13,6 +13,19 @@ const USER_SESSION = `ID_${PROJECT_ID}_SES`;
 
 const getJwt = () => cookies.get(TOKEN);
 
+const JWT_CONSTANTS = {
+	ACCESS_TOKEN_HEADER: "Authorization",
+	REFRESH_TOKEN_HEADER: "RefreshToken",
+	ACCESS_TOKEN_PREFIX: "Bearer",
+
+	CLAIM_KEY_USER_ID: "userId",
+	CLAIM_KEY_USER_CATEGORY: "category",
+	CLAIM_KEY_USER_ROLE: "role",
+
+	ACCESS_TOKEN_CATEGORY: "accessToken",
+	REFRESH_TOKEN_CATEGORY: "refreshToken",
+};
+
 const setJwt = (accessToken = "", refreshToken = "") => {
 	cookies.set(TOKEN, accessToken, {
 		path: "/",
@@ -80,6 +93,7 @@ const Project = {
 	PROJECT_ID,
 	USER_SESSION,
 	REFRESH_TOKEN,
+	JWT_CONSTANTS,
 };
 
 export { Project };

@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 import Form from "src/components/form/Form";
 import Title from "src/components/title/Title";
@@ -9,7 +9,7 @@ import { Element } from "src/constants/element";
 import { UserService } from "src/services/UserService";
 
 const Login = () => {
-	const router = useNavigate();
+	// const router = useNavigate();
 	const [body, setBody] = useState({ loginId: "", password: "" });
 
 	const [isLoading, setIsLoading] = useState(false);
@@ -33,10 +33,11 @@ const Login = () => {
 	};
 
 	const result = () => {
-		router("/");
-		setTimeout(() => {
-			window.location.reload();
-		}, 100);
+		setIsLoading(false);
+		// router("/");
+		// setTimeout(() => {
+		// 	window.location.reload();
+		// }, 100);
 	};
 
 	const onClickLogin = async (e) => {
