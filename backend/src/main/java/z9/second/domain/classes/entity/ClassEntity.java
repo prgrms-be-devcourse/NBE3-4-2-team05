@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import z9.second.global.exception.CustomException;
-import z9.second.global.response.ErrorCode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,11 +39,6 @@ public class ClassEntity {
     private List<ClassBlackListEntity> blackLists = new ArrayList<>();
 
     public ClassUserEntity addMember(Long userId) {
-        // 이미 가입되어 있는지 체크
-        if (users.stream().anyMatch((user) -> user.getUserId().equals(userId))) {
-            throw new CustomException(ErrorCode.CLASS_EXISTS_MEMBER);
-        }
-
         ClassUserEntity user = ClassUserEntity.builder()
                 .classes(this)
                 .userId(userId)

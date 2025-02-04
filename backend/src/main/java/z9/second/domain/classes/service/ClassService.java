@@ -44,7 +44,7 @@ public class ClassService {
         ClassEntity classEntity = classRepository.findById(classId)
                 .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
 
-        // 이미 가입된 회원인지 검증 (DB)
+        // 이미 가입된 회원인지 검증
         if (classUserRepository.existsByClasses_IdAndUserId(classId, userId)) {
             throw new CustomException(ErrorCode.CLASS_EXISTS_MEMBER);
         }
