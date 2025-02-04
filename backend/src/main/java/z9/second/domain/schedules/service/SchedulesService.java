@@ -12,6 +12,9 @@ import z9.second.global.response.ErrorCode;
 import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.schedules.SchedulesRepository;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,11 +36,22 @@ public class SchedulesService {
         }
 
         try {
+            // 날짜 형식 검증 및 미래 날짜 검증
+            LocalDateTime meetingDateTime = LocalDateTime.parse(
+                    requestData.getMeetingTime(),
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+            );
+
+            // 현재 시간과 비교하여 과거인지 확인
+            if (meetingDateTime.isBefore(LocalDateTime.now())) {
+                throw new CustomException(ErrorCode.INVALID_MEETING_TIME);
+            }
+
             // 새로운 일정 엔티티 생성
             SchedulesEntity schedules = SchedulesEntity.builder()
-                    .classes(classes)                          // 찾은 클래스 정보
-                    .meetingTime(requestData.getMeetingTime()) // 모임 시간
-                    .meetingTitle(requestData.getMeetingTitle()) // 모임 제목
+                    .classes(classes)
+                    .meetingTime(requestData.getMeetingTime())
+                    .meetingTitle(requestData.getMeetingTitle())
                     .build();
 
             // DB에 저장
@@ -45,10 +59,11 @@ public class SchedulesService {
 
             // 저장된 결과를 ResponseDto로 변환해서 반환
             return SchedulesResponseDto.ResponseData.from(savedSchedule);
+        } catch (DateTimeParseException e) {
+            throw new CustomException(ErrorCode.INVALID_MEETING_TIME_FORMAT);
         } catch (Exception e) {
             throw new CustomException(ErrorCode.SCHEDULE_CREATE_FAILED);
         }
-
     }
 
     @Transactional(readOnly = true)
