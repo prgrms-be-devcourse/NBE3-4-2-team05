@@ -1,28 +1,25 @@
 package z9.second.domain.schedules.dto;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import z9.second.model.schedules.SchedulesEntity;
 
-@Getter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class SchedulesResponseDto {
-    @NotNull(message = "Class ID must not be null")
-    private Long classId;
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class ResponseData {
+        private final Long scheduleId;      // 생성된 일정의 ID
+        private final String meetingTime;   // 모임 시간
+        private final String meetingTitle;  // 모임 제목
 
-    @NotNull(message = "meeting_time must not be null")
-    private String meetingTime;
-
-    @NotNull(message = "meeting_title must not be null")
-    private String meetingTitle;
-
-    public static SchedulesResponseDto of(SchedulesEntity schedules) {
-        return  SchedulesResponseDto.builder()
-                .classId(schedules.getId())
-                .meetingTime(schedules.getMeetingTime())
-                .meetingTitle(schedules.getMeetingTitle())
-                .build();
+        public static ResponseData from(SchedulesEntity schedulesEntity) {
+            return ResponseData.builder()
+                    .scheduleId(schedulesEntity.getId())
+                    .meetingTime(schedulesEntity.getMeetingTime())
+                    .meetingTitle(schedulesEntity.getMeetingTitle())
+                    .build();
+        }
     }
 }

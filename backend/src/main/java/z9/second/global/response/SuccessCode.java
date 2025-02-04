@@ -14,8 +14,15 @@ public enum SuccessCode {
     SAVE_SAMPLE_DATA_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "샘플 데이터 저장 성공!"),
 
     // Authentication / Authorization
+    LOGIN_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "로그인 성공"),
 
     // User
+
+    // Class
+    CLASS_CREATE_SUCCESS(HttpStatus.CREATED, Boolean.TRUE, 201, "모임이 생성되었습니다."),
+
+    //Schedules
+    SCHEDULE_CREATE_SUCCESS(HttpStatus.CREATED, Boolean.TRUE, 201, "모임 일정 생성되었습니다!"),
 
     // Common
     SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "요청 응답 성공"),
