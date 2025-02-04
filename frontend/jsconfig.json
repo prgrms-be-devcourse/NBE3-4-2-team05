@@ -5,9 +5,6 @@
     "strict": true,
     "jsx": "react",
     "baseUrl": "./",
-    "paths": {
-      "@/*": ["src/*"]
-    },
     "allowJs": true,
     "checkJs": true,
     "noImplicitAny": true,

@@ -7,7 +7,10 @@
   --color-brand-white: #ffffff;
   --color-brand-black: #01242d;
   --color-brand-gray: #e8e8ed;
+  --color-brand-brown: #5c3923;
+  --color-brand-beige: #bfa98a;
   --color-brand-blue: #2d62ff;
+  --color-brand-green: #a5d25a;
   --color-brand-yellow: #f2b900;
   --color-brand-red: #9a1218;
 
@@ -28,11 +31,12 @@
   --text-warning: var(--color-brand-yellow);
   --text-error: var(--color-brand-red);
 
-  --link-primary: var(--color-brand-neutral);
-  --link-secondary: var(--color-brand-neutral-darkest);
+  --link-primary: var(--color-brand-green);
+  --link-secondary: var(--color-brand-brown);
 
-  --border-primary: var(--color-brand-neutral-light);
-  --border-secondary: var(--color-brand-gray);
+  --border-primary: var(--color-brand-gray);
+  --border-secondary: var(--color-brand-neutral-light);
+  --border-alternate: var(--color-brand-neutral-darker);
 
   --spacing: 2rem;
   --font-size: 1.5rem;
@@ -68,11 +72,9 @@ body {
   text-rendering: optimizeLegibility;
   font-size: var(--font-size);
   line-height: var(--line-height);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   font-smooth: antialiased;
   color: var(--color-brand-black);
 }
@@ -127,4 +129,53 @@ hr {
   border-bottom: 1px solid var(--border-secondary);
   width: 100%;
   margin: 0;
+}
+
+.input {
+  width: 100%;
+  max-width: 100%;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.2rem 0;
+  background-color: #e8e8e8;
+  text-indent: 1rem;
+  outline: none;
+}
+
+.input:focus {
+  border: 2px solid var(--text-success);
+  box-shadow: 0 0 8px var(--background-primary);
+}
+
+.input.warn:focus {
+  border: 1px solid var(--text-error);
+  box-shadow: 0 0 5px rgba(154, 18, 24, 0.6);
+}
+.input.warn {
+  border: 1px solid var(--text-error);
+  box-shadow: 0 0 5px rgba(154, 18, 24, 0.6);
+}
+
+.button {
+  width: 100%;
+  font-size: calc(var(--font-size) - 0.2rem);
+  color: var(--background-primary);
+  font-weight: bold;
+  border: none;
+  background-color: var(--text-primary);
+  border-radius: 10px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  margin: 1rem 0;
+}
+
+.button:hover {
+  transform: translateY(-5px);
+}
+
+.label {
+  display: block;
+  font-weight: bold;
 }

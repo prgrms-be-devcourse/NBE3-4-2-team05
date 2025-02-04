@@ -35,14 +35,12 @@ IDE가 프로젝트의 루트와 파일 구조 설정 파일
 Open [bable.config.json 파일](./babel.config.json)
 최신 자바스크립트 문법이 호환되도록 변환
 
-### `env`
-
-.env
-프로젝트의 환경 변수를 정의하는 파일
-notion 참고
-
-
 ### `webpack`
 
 Open [webpack.config.json 파일](./webpack.config.js)
 JavaScript 파일 번들링
+
+### `env`
+
+프로젝트의 환경 변수를 정의하는 파일
+notion 참고
