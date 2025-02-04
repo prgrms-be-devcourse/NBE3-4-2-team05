@@ -1,6 +1,7 @@
 package z9.second.domain.authentication.controller;
 
 import static z9.second.global.security.constant.JWTConstant.ACCESS_TOKEN_HEADER;
+import static z9.second.global.security.constant.JWTConstant.ACCESS_TOKEN_PREFIX;
 import static z9.second.global.security.constant.JWTConstant.REFRESH_TOKEN_HEADER;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,7 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,6 +56,15 @@ public class AuthenticationController {
                 authenticationService.oauthLogin(provider, code);
         addJwtTokenResponse(response, token);
         return BaseResponse.ok(SuccessCode.LOGIN_SUCCESS);
+    }
+
+    @PostMapping("/signup")
+    @Operation(summary = "일반 회원 가입")
+    public BaseResponse<Void> signup(
+            @Valid @RequestBody AuthenticationRequest.Signup signupDto
+    ) {
+        authenticationService.signup(signupDto);
+        return BaseResponse.ok(SuccessCode.SIGNUP_SUCCESS);
     }
 
     @PostMapping("/logout")

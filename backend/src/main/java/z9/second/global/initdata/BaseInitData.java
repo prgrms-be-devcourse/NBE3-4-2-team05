@@ -16,6 +16,8 @@ import z9.second.model.user.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import z9.second.model.userfavorite.UserFavorite;
+import z9.second.model.userfavorite.UserFavoriteRepository;
 
 @Profile("dev")
 @Component
@@ -26,6 +28,7 @@ public class BaseInitData {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final FavoriteRepository favoriteRepository;
+    private final UserFavoriteRepository userFavoriteRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     @Transactional
@@ -33,6 +36,23 @@ public class BaseInitData {
         List<SampleEntity> sampleData = createSampleData(10);
         List<User> savedUserData = createUserData(10);
         List<FavoriteEntity> saveFavoriteData = createFavoriteData();
+        List<UserFavorite> savedUserFavoriteData = createUserFavoriteData(savedUserData, saveFavoriteData);
+    }
+
+    private List<UserFavorite> createUserFavoriteData(
+            List<User> savedUserData,
+            List<FavoriteEntity> saveFavoriteData) {
+        List<UserFavorite> savedUserFavoriteData = new ArrayList<>();
+
+        for (User savedUser : savedUserData) {
+            for (FavoriteEntity savedFavorite : saveFavoriteData) {
+                UserFavorite newUserFavorite = UserFavorite.createNewUserFavorite(savedUser, savedFavorite);
+                UserFavorite save = userFavoriteRepository.save(newUserFavorite);
+                savedUserFavoriteData.add(save);
+            }
+        }
+
+        return savedUserFavoriteData;
     }
 
     private List<SampleEntity> createSampleData(final int count) {
