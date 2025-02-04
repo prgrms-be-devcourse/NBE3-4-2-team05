@@ -48,4 +48,14 @@ public class ClassController {
 
         return BaseResponse.ok(SuccessCode.CLASS_JOIN_SUCCESS, responseData);
     }
+
+    @GetMapping("/{classId}")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "모임방 입장")
+    public BaseResponse<ClassResponse.EntryResponseData> entry(
+            @PathVariable("classId") Long classId
+    ){
+        ClassResponse.EntryResponseData responseData = classService.getClassInfo(classId);
+        return BaseResponse.ok(SuccessCode.SUCCESS, responseData);
+    }
 }
