@@ -56,6 +56,15 @@ public class AuthenticationController {
         return BaseResponse.ok(SuccessCode.LOGIN_SUCCESS);
     }
 
+    @PostMapping("/signup")
+    @Operation(summary = "일반 회원 가입")
+    public BaseResponse<Void> signup(
+            @Valid @RequestBody AuthenticationRequest.Signup signupDto
+    ) {
+        authenticationService.signup(signupDto);
+        return BaseResponse.ok(SuccessCode.SIGNUP_SUCCESS);
+    }
+
     private void addJwtTokenResponse(HttpServletResponse response, AuthenticationResponse.UserToken token) {
         ControllerUtils.addHeaderResponse(
                 ACCESS_TOKEN_HEADER,
