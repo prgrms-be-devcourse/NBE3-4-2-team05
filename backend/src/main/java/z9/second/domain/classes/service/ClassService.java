@@ -81,6 +81,10 @@ public class ClassService {
         ClassUserEntity user = classUserRepository.findByClassesIdAndUserId(classId, userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_EXISTS_MEMBER));
 
+        if (userId.equals(classEntity.getMasterId())) {
+            throw new CustomException(ErrorCode.CLASS_MASTER_TRANSFER_REQUIRED);
+        }
+
         classEntity.removeMember(user);
     }
 }
