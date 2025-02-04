@@ -1,8 +1,11 @@
 package z9.second.domain.classes.service;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
 import z9.second.domain.classes.dto.ClassRequest;
 import z9.second.domain.classes.dto.ClassResponse;
 import z9.second.domain.classes.entity.ClassEntity;
@@ -11,12 +14,11 @@ import z9.second.domain.classes.repository.ClassUserRepository;
 import z9.second.global.exception.CustomException;
 import z9.second.global.response.ErrorCode;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class ClassService {
     private final ClassRepository classRepository;
+    private final ClassUserRepository classUserRepository;
 
     @Transactional
     public ClassResponse.ClassResponseData save(ClassRequest.ClassRequestData requestData, Long userId) {
@@ -39,6 +41,19 @@ public class ClassService {
     }
 
     @Transactional
+    public ClassResponse.EntryResponseData getClassInfo(Long classId, Long userId) {
+        // 1. 모임 존재 여부 확인
+        ClassEntity classEntity = classRepository.findById(classId)
+              .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+
+        // 2. 유저가 모임 멤버인지 확인
+        if(!classUserRepository.existsByUserIdAndClassesId(userId, classId)) {
+            throw new CustomException(ErrorCode.CLASS_ACCESS_DENIED);
+        }
+        return ClassResponse.EntryResponseData.from(classEntity);
+    }
+
+    @Transactional
     public ClassResponse.JoinResponseData joinMembership(Long classId, Long userId) {
         // 해당 모임이 존재하는지 확인
         ClassEntity classEntity = classRepository.findById(classId)
@@ -53,6 +68,4 @@ public class ClassService {
 
         return ClassResponse.JoinResponseData.from(classEntity);
     }
-
-    private final ClassUserRepository classUserRepository;
 }
