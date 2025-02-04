@@ -15,6 +15,7 @@ public enum SuccessCode {
 
     // Authentication / Authorization
     LOGIN_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "로그인 성공"),
+    LOGOUT_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "로그아웃 성공"),
 
     // User
 

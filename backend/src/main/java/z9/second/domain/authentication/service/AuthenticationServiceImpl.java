@@ -27,6 +27,7 @@ import z9.second.global.security.oauth.OAuthToken;
 import z9.second.global.security.oauth.user.KakaoUserInfo;
 import z9.second.global.security.oauth.user.OAuth2UserInfo;
 import z9.second.global.security.user.CustomUserDetails;
+import z9.second.global.utils.ControllerUtils;
 import z9.second.model.oauthuser.OAuthUser;
 import z9.second.model.oauthuser.OAuthUserRepository;
 import z9.second.model.user.User;
@@ -76,6 +77,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 user.getId().toString());
     }
 
+    @Transactional
+    @Override
+    public void logout(String userId) {
+        redisRepository.deleteRefreshToken(userId);
+        //todo : 추후, 여유 생기면 accessToken 또한 블랙리스트 추가하여 추가보안 설정.
+    }
+
     private User getUserByOAuth(OAuth2UserInfo oauth2UserInfo) {
         Optional<OAuthUser> findOptionalUser = oAuthUserRepository.findByProviderAndUid(
                 oauth2UserInfo.getProvider(), oauth2UserInfo.getProviderId());
@@ -83,7 +91,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (findOptionalUser.isEmpty()) {
             return createNewUserAndOAuthUser(oauth2UserInfo);
         }
-        return findUserByOAuthUser(findOptionalUser);
+        return findOptionalUser.get().getUser();
     }
 
     private OAuth2UserInfo getOauth2UserInfo(String provider, String authCode) {
@@ -99,7 +107,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                         oAuthProperties.getContentType());
 
                 Map<String, Object> userInfoMap = kakaoResourceFeignClient.getUserInfo(
-                        String.format("%s %s", ACCESS_TOKEN_PREFIX, oAuthToken.getAccessToken()),
+                        ControllerUtils.makeBearerToken(oAuthToken.getAccessToken()),
                         oAuthProperties.getContentType());
 
                 oauth2UserInfo = new KakaoUserInfo(userInfoMap);
@@ -109,10 +117,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             }
         }
         return oauth2UserInfo;
-    }
-
-    private static User findUserByOAuthUser(Optional<OAuthUser> findOptionalUser) {
-        return findOptionalUser.get().getUser();
     }
 
     private User createNewUserAndOAuthUser(OAuth2UserInfo oauth2UserInfo) {

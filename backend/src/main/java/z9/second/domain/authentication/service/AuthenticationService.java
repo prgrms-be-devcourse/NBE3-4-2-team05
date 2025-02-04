@@ -8,4 +8,6 @@ public interface AuthenticationService {
     AuthenticationResponse.UserToken login(AuthenticationRequest.Login dto);
 
     AuthenticationResponse.UserToken oauthLogin(String provider, String authCode);
+
+    void logout(String userId);
 }
