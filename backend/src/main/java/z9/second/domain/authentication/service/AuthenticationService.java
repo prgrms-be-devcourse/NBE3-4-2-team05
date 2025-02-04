@@ -10,4 +10,6 @@ public interface AuthenticationService {
     AuthenticationResponse.UserToken oauthLogin(String provider, String authCode);
 
     void signup(AuthenticationRequest.Signup signupDto);
+
+    void logout(String userId);
 }
