@@ -2,6 +2,7 @@ package z9.second.global.security.filter;
 
 import static z9.second.global.security.constant.JWTConstant.ACCESS_TOKEN_CATEGORY;
 import static z9.second.global.security.constant.JWTConstant.ACCESS_TOKEN_HEADER;
+import static z9.second.global.security.constant.JWTConstant.ACCESS_TOKEN_PREFIX;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.JwtException;
@@ -44,8 +45,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         // 2-2. 만약 response 에 header 값이 있다면 token 이 재발급 된 것.
         // 해당 token 으로 인증 진행할 것
         String newAccessToken = response.getHeader(ACCESS_TOKEN_HEADER);
-        if (newAccessToken != null) {
-            accessToken = newAccessToken;
+        if (newAccessToken != null && newAccessToken.startsWith(ACCESS_TOKEN_PREFIX)) {
+            accessToken = newAccessToken.substring(7);
         }
 
         // 3. AccessToken 검증2
