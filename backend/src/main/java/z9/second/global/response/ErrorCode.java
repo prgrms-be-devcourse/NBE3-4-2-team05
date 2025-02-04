@@ -21,6 +21,9 @@ public enum ErrorCode {
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, Boolean.FALSE, 1004, "토큰이 만료되었습니다. 재로그인 진행해 주세요."),
     OAUTH_USER_LOGIN_FAIL(HttpStatus.BAD_REQUEST, Boolean.FALSE, 1005, "소셜 로그인 회원 입니다. 소셜 로그인으로 진행 해 주세요."),
     INVALID_OAUTH_PROVIDER(HttpStatus.BAD_REQUEST, Boolean.FALSE, 1006, "지원하지 않는 로그인 방식 입니다."),
+    NOT_EXIST_FAVORITE(HttpStatus.BAD_REQUEST, Boolean.FALSE, 1007, "등록되지 않은 관심사 입니다."),
+    DUPLICATED_LOGIN_ID(HttpStatus.BAD_REQUEST, Boolean.FALSE, 1008, "중복된 로그인 아이디 입니다."),
+    DUPLICATED_NICKNAME(HttpStatus.BAD_REQUEST, Boolean.FALSE, 1009, "중복된 닉네임 입니다."),
 
     //2000 ~ 2999
     // 오류 종류 : 회원 도메인 에러
