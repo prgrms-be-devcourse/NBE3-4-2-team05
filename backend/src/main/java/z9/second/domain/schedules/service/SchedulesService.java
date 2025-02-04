@@ -15,8 +15,8 @@ import z9.second.model.schedules.SchedulesRepository;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -75,15 +75,10 @@ public class SchedulesService {
             throw new CustomException(ErrorCode.CLASS_ACCESS_DENIED);
         }
 
-        // 해당 클래스의 모든 일정 조회
-        List<SchedulesEntity> schedules = schedulesRepository.findSchedulesByClassesId(classId);
-
         // ResponseDto로 변환하여 반환
-        List<SchedulesResponseDto.ResponseData> result = new ArrayList<>();
-        for (SchedulesEntity schedule : schedules) {
-            result.add(SchedulesResponseDto.ResponseData.from(schedule));
-        }
-        return result;
+        return schedulesRepository.findSchedulesByClassesId(classId).stream()
+                .map(SchedulesResponseDto.ResponseData::from)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

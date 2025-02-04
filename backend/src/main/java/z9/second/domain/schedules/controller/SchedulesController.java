@@ -19,38 +19,37 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/schedules")
 @Tag(name = "Schedules Controller", description = "모임 일정 컨트롤러")
+@SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 public class SchedulesController {
     private final SchedulesService schedulesService;
 
     @PostMapping("/classes")
-    @SecurityRequirement(name = "bearerAuth")
-    @Operation(summary = "모임 일정 생성")
+    @Operation(
+            summary = "모임 일정 생성",
+            description = "새로운 모임 일정을 생성합니다. 모임장만 생성 가능합니다."
+    )
     public BaseResponse<SchedulesResponseDto.ResponseData> create(
             @RequestBody @Valid SchedulesRequestDto.RequestData requestData,
             Principal principal
     ) {
-        Long userId = Long.parseLong(principal.getName());
         // 모임장 권한 체크를 Service에서 처리하도록 userId 전달
-        SchedulesResponseDto.ResponseData response = schedulesService.create(requestData, userId);
+        SchedulesResponseDto.ResponseData response = schedulesService.create(requestData, extractUserId(principal));
         return BaseResponse.ok(SuccessCode.SCHEDULE_CREATE_SUCCESS, response);
     }
 
     @GetMapping("/classes/{classId}")
-    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "모임 전체 일정 조회")
     public BaseResponse<List<SchedulesResponseDto.ResponseData>> getSchedulesList(
             @Parameter(description = "모임 ID", required = true)
             @PathVariable Long classId,
             Principal principal
     ) {
-        Long userId = Long.parseLong(principal.getName());
-        List<SchedulesResponseDto.ResponseData> schedules = schedulesService.getSchedulesList(classId, userId);
+        List<SchedulesResponseDto.ResponseData> schedules = schedulesService.getSchedulesList(classId, extractUserId(principal));
         return BaseResponse.ok(SuccessCode.SCHEDULE_READ_SUCCESS, schedules);
     }
 
     @GetMapping("/{scheduleId}/classes/{classId}")
-    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "모임 일제 상세 조회")
     public BaseResponse<SchedulesResponseDto.ResponseData> getScheduleDetail(
             @Parameter(description = "일정 ID", required = true)
@@ -59,8 +58,12 @@ public class SchedulesController {
             @PathVariable Long classId,
             Principal principal
     ) {
-        Long userId = Long.parseLong(principal.getName());
-        SchedulesResponseDto.ResponseData schedule = schedulesService.getScheduleDetail(scheduleId,classId,userId);
+        SchedulesResponseDto.ResponseData schedule = schedulesService.getScheduleDetail(scheduleId,classId, extractUserId(principal));
         return BaseResponse.ok(SuccessCode.SCHEDULE_READ_SUCCESS, schedule);
+    }
+
+    // userId 추출 공통 메소드
+    private Long extractUserId(Principal principal) {
+        return Long.parseLong(principal.getName());
     }
 }
