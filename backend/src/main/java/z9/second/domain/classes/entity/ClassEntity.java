@@ -48,4 +48,8 @@ public class ClassEntity {
 
         return user;
     }
+
+    public void removeMember(ClassUserEntity user) {
+        users.remove(user);
+    }
 }

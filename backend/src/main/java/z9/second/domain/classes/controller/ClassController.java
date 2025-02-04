@@ -49,6 +49,20 @@ public class ClassController {
         return BaseResponse.ok(SuccessCode.CLASS_JOIN_SUCCESS, responseData);
     }
 
+    @DeleteMapping("/{classId}/membership")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "모임 탈퇴")
+    public BaseResponse<Void> deleteMembership(
+            @PathVariable Long classId,
+            Principal principal
+    ) {
+        Long userId = Long.parseLong(principal.getName());
+
+        classService.deleteMembership(classId, userId);
+
+        return BaseResponse.ok(SuccessCode.CLASS_RESIGN_SUCCESS);
+    }
+
     @GetMapping("/{classId}")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "모임방 입장")
