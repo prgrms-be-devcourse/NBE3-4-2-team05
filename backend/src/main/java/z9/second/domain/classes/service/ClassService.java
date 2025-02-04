@@ -41,10 +41,15 @@ public class ClassService {
     }
 
     @Transactional
-    public ClassResponse.EntryResponseData getClassInfo(Long classId) {
+    public ClassResponse.EntryResponseData getClassInfo(Long classId, Long userId) {
+        // 1. 모임 존재 여부 확인
         ClassEntity classEntity = classRepository.findById(classId)
               .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
 
+        // 2. 유저가 모임 멤버인지 확인
+        if(!classUserRepository.existsByUserIdAndClassesId(userId, classId)) {
+            throw new CustomException(ErrorCode.CLASS_ACCESS_DENIED);
+        }
         return ClassResponse.EntryResponseData.from(classEntity);
     }
 

@@ -53,9 +53,12 @@ public class ClassController {
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "모임방 입장")
     public BaseResponse<ClassResponse.EntryResponseData> entry(
-            @PathVariable("classId") Long classId
+            @PathVariable("classId") Long classId,
+            Principal principal
     ){
-        ClassResponse.EntryResponseData responseData = classService.getClassInfo(classId);
+        Long userId = Long.parseLong(principal.getName());
+
+        ClassResponse.EntryResponseData responseData = classService.getClassInfo(classId, userId);
         return BaseResponse.ok(SuccessCode.SUCCESS, responseData);
     }
 }
