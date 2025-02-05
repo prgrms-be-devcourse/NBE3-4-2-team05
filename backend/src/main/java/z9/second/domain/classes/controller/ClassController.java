@@ -109,4 +109,19 @@ public class ClassController {
         classService.deleteClass(classId, userId);
         return BaseResponse.ok(SuccessCode.CLASS_DELETE_SUCCESS);
     }
+
+    @PatchMapping("/{classId}/users/{userId}/role")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "모임장 권한 위임")
+    public BaseResponse<Void> transferMaster(
+            @PathVariable Long classId,
+            @PathVariable Long userId,
+            Principal principal
+    ) {
+        Long currentUserId = Long.parseLong(principal.getName());
+
+        classService.transferMaster(classId, userId, currentUserId);
+
+        return BaseResponse.ok(SuccessCode.CLASS_MASTER_TRANSFER_SUCCESS);
+    }
 }

@@ -135,10 +135,29 @@ public class ClassService {
         // 3. 모임장을 제외한 회원 존재 여부 확인
         long memberCount = classUserRepository.countByClassesIdAndUserIdNot(classId, userId);
         if (memberCount > 0) {
-            throw new CustomException(ErrorCode.CLASS_DELETE_DENIED_WITH_MEMEBRS);
+            throw new CustomException(ErrorCode.CLASS_DELETE_DENIED_WITH_MEMBERS);
         }
 
         // 4. 모임 삭제
         classRepository.delete(classEntity);
+    }
+
+    @Transactional
+    public void transferMaster(Long classId, Long userId, Long currentUserId) {
+        // 모임 존재 여부 확인
+        ClassEntity classEntity = classRepository.findById(classId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+
+        // 현재 회원이 모임장인지 체크
+        if (!classEntity.getMasterId().equals(currentUserId)) {
+            throw new CustomException(ErrorCode.CLASS_MASTER_TRANSFER_DENIED);
+        }
+
+        // 해당 회원이 모임에 속해있는지 체크
+        if (!classUserRepository.existsByClasses_IdAndUserId(classId, userId)) {
+            throw new CustomException(ErrorCode.CLASS_NOT_EXISTS_MEMBER);
+        }
+
+        classEntity.setMasterId(userId);
     }
 }

@@ -68,11 +68,13 @@ public class ClassResponse {
     @AllArgsConstructor
     public static class ClassUserListData {
         private final Long classId;
+        private final Long masterId;
         private final List<ClassUserInfo> userList;
 
         public static ClassUserListData from(ClassEntity classes, List<User> users) {
             return ClassUserListData.builder()
                     .classId(classes.getId())
+                    .masterId(classes.getMasterId())
                     .userList(users.stream()
                             .map(ClassUserInfo::from)
                             .toList())

@@ -63,4 +63,8 @@ public class ClassEntity {
             this.description = description;
         }
     }
+
+    public void setMasterId(Long userId) {
+        masterId = userId;
+    }
 }
