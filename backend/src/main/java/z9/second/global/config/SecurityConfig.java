@@ -81,6 +81,9 @@ public class SecurityConfig {
                 .requestMatchers(GET, "/api/v1/sample/only-admin").hasRole("ADMIN")
                 .requestMatchers(POST, "/api/v1/logout").authenticated()
                 .requestMatchers(PATCH, "/api/v1/resign").authenticated()
+                //user Domain
+                .requestMatchers(GET, "/api/v1/users").authenticated()
+                .requestMatchers(PATCH, "/api/v1/users/profile").authenticated()
                 .anyRequest().permitAll());
 
         http.exceptionHandling((exception) -> exception
