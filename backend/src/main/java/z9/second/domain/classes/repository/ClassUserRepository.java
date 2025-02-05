@@ -3,6 +3,7 @@ package z9.second.domain.classes.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import z9.second.domain.classes.entity.ClassUserEntity;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ClassUserRepository extends JpaRepository<ClassUserEntity, Long> {
@@ -11,4 +12,6 @@ public interface ClassUserRepository extends JpaRepository<ClassUserEntity, Long
     Optional<ClassUserEntity> findByClassesIdAndUserId(Long classId, Long userId);
 
     void deleteByUserId(Long userId);
+
+    List<ClassUserEntity> findByClassesId(Long classId);
 }

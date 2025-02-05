@@ -89,4 +89,12 @@ public class ClassController {
         classService.modifyClassInfo(classId, userId, requestData);
         return BaseResponse.ok(SuccessCode.CLASS_MODIFY_SUCCESS);
     }
+
+    @GetMapping("/{classId}/memberList")
+    @Operation(summary = "모임에 가입한 회원 목록 조회")
+    public BaseResponse<ClassResponse.ClassUserListData> getMemberList(@PathVariable Long classId) {
+        ClassResponse.ClassUserListData classUserListData = classService.getUserListByClassId(classId);
+
+        return BaseResponse.ok(SuccessCode.SUCCESS, classUserListData);
+    }
 }
