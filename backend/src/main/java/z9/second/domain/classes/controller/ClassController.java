@@ -75,4 +75,26 @@ public class ClassController {
         ClassResponse.EntryResponseData responseData = classService.getClassInfo(classId, userId);
         return BaseResponse.ok(SuccessCode.SUCCESS, responseData);
     }
+
+    @PatchMapping("/{classId}")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "모임 수정")
+    public BaseResponse<Void> modifyClassInfo(
+            @PathVariable("classId") Long classId,
+            @RequestBody @Valid ClassRequest.ModifyRequestData requestData,
+            Principal principal
+    ){
+        Long userId = Long.parseLong(principal.getName());
+
+        classService.modifyClassInfo(classId, userId, requestData);
+        return BaseResponse.ok(SuccessCode.CLASS_MODIFY_SUCCESS);
+    }
+
+    @GetMapping("/{classId}/memberList")
+    @Operation(summary = "모임에 가입한 회원 목록 조회")
+    public BaseResponse<ClassResponse.ClassUserListData> getMemberList(@PathVariable Long classId) {
+        ClassResponse.ClassUserListData classUserListData = classService.getUserListByClassId(classId);
+
+        return BaseResponse.ok(SuccessCode.SUCCESS, classUserListData);
+    }
 }

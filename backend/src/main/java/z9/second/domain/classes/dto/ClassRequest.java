@@ -32,4 +32,16 @@ public class ClassRequest {
                            .build();
         }
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ModifyRequestData {
+        @Size(min = 3, message = "제목은 3글자 이상이어야 합니다.")
+        private String name;
+
+        @Size(min = 10, message = "내용은 10글자 이상이어야 합니다.")
+        private String description;
+    }
 }

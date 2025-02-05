@@ -42,7 +42,7 @@ class SchedulesControllerTest extends SchedulesBaseTest {
         classEntity = createTestClass(masterUser.getId());
 
         // 기본 스케줄과 요청 데이터 생성
-        scheduleEntity = createTestSchedule(classEntity, TEST_MEETING_TITLE);
+        scheduleEntity = createTestSchedule(classEntity);
         scheduleRequest = createScheduleRequest(classEntity.getId());
     }
 

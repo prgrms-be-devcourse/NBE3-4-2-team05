@@ -9,14 +9,22 @@ import z9.second.integration.SpringBootTestSupporter;
 import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.user.User;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 @Transactional
 public abstract class SchedulesBaseTest extends SpringBootTestSupporter {
     // 공통으로 사용되는 상수
     protected static final String TEST_PASSWORD = "!test1234";
-    protected static final String TEST_MEETING_TIME = "2025-02-05 14:00:00";
     protected static final String TEST_MEETING_TITLE = "테스트 일정";
+
+    // 고정된 시간 대신 현재 시간 기준 미래 시간 생성
+    protected String getTestMeetingTime() {
+        // 현재 시간으로부터 7일 후로 설정
+        LocalDateTime futureTime = LocalDateTime.now().plusDays(7);
+        return futureTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
 
     protected User createTestUser(String email, String nickname) {
         return userRepository.save(User.createNewUser(
@@ -35,11 +43,11 @@ public abstract class SchedulesBaseTest extends SpringBootTestSupporter {
                 .build());
     }
 
-    protected SchedulesEntity createTestSchedule(ClassEntity classEntity, String meetingTitle) {
+    protected SchedulesEntity createTestSchedule(ClassEntity classEntity) {
         return schedulesRepository.save(SchedulesEntity.builder()
                 .classes(classEntity)
-                .meetingTime("2025-02-05 14:00:00")
-                .meetingTitle(meetingTitle)
+                .meetingTime(getTestMeetingTime())
+                .meetingTitle(SchedulesBaseTest.TEST_MEETING_TITLE)
                 .build());
     }
 
@@ -57,7 +65,7 @@ public abstract class SchedulesBaseTest extends SpringBootTestSupporter {
     protected SchedulesRequestDto.RequestData createScheduleRequest(Long classId) {
         return SchedulesRequestDto.RequestData.builder()
                 .classId(classId)
-                .meetingTime(TEST_MEETING_TIME)
+                .meetingTime(getTestMeetingTime())
                 .meetingTitle(TEST_MEETING_TITLE)
                 .build();
     }

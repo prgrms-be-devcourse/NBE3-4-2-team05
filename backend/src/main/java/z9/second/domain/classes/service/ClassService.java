@@ -11,6 +11,8 @@ import z9.second.domain.classes.repository.ClassRepository;
 import z9.second.domain.classes.repository.ClassUserRepository;
 import z9.second.global.exception.CustomException;
 import z9.second.global.response.ErrorCode;
+import z9.second.model.user.User;
+import z9.second.model.user.UserRepository;
 
 import java.util.List;
 
@@ -19,6 +21,7 @@ import java.util.List;
 public class ClassService {
     private final ClassRepository classRepository;
     private final ClassUserRepository classUserRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public ClassResponse.ClassResponseData save(ClassRequest.ClassRequestData requestData, Long userId) {
@@ -86,5 +89,35 @@ public class ClassService {
         }
 
         classEntity.removeMember(user);
+    }
+
+    @Transactional
+    public void modifyClassInfo(Long classId, Long userId, ClassRequest.ModifyRequestData requestData){
+        // 1. 모임 존재 여부 확인
+        ClassEntity classEntity = classRepository.findById(classId)
+              .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+
+        // 2. 모임장 권한 확인
+        if (!classEntity.getMasterId().equals(userId)) {
+            throw new CustomException(ErrorCode.CLASS_MODIFY_DENIED);
+        }
+
+        // 3. 모임 정보 수정
+        classEntity.updateClassInfo(requestData.getName(), requestData.getDescription());
+    }
+
+    @Transactional
+    public ClassResponse.ClassUserListData getUserListByClassId(Long classId) {
+        // 해당 모임이 존재하는지 확인
+        ClassEntity classEntity = classRepository.findById(classId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+
+        List<ClassUserEntity> classUserList = classUserRepository.findByClassesId(classId);
+
+        List<Long> userIds = classUserList.stream().map(ClassUserEntity::getUserId).toList();
+
+        List<User> users = userRepository.findAllById(userIds);
+
+        return ClassResponse.ClassUserListData.from(classEntity, users);
     }
 }
