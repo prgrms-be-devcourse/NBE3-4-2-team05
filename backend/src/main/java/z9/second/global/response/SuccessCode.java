@@ -26,6 +26,7 @@ public enum SuccessCode {
     CLASS_JOIN_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "모임에 가입되었습니다."),
     CLASS_RESIGN_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "모임에서 탈퇴되었습니다."),
     CLASS_MODIFY_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "수정 성공했습니다!"),
+    CLASS_DELETE_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "모임이 삭제되었습니다."),
 
     //Schedules
     SCHEDULE_CREATE_SUCCESS(HttpStatus.CREATED, Boolean.TRUE, 201, "모임 일정 생성되었습니다!"),

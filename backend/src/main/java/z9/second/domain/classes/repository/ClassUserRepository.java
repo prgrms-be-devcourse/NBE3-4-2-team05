@@ -14,4 +14,7 @@ public interface ClassUserRepository extends JpaRepository<ClassUserEntity, Long
     void deleteByUserId(Long userId);
 
     List<ClassUserEntity> findByClassesId(Long classId);
+
+    // 특정 모임에서 특정 유저(모임장)를 제외한 회원 수 조회
+    long countByClassesIdAndUserIdNot(Long classId, Long userId);
 }

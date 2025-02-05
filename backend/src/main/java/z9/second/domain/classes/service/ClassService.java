@@ -120,4 +120,25 @@ public class ClassService {
 
         return ClassResponse.ClassUserListData.from(classEntity, users);
     }
+
+    @Transactional
+    public void deleteClass (Long classId, Long userId) {
+        // 1. 모임 존재 여부 확인
+        ClassEntity classEntity = classRepository.findById(classId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+
+        // 2. 모임장 권한 확인
+        if (!classEntity.getMasterId().equals(userId)) {
+            throw new CustomException(ErrorCode.CLASS_DELETE_DENIED);
+        }
+
+        // 3. 모임장을 제외한 회원 존재 여부 확인
+        long memberCount = classUserRepository.countByClassesIdAndUserIdNot(classId, userId);
+        if (memberCount > 0) {
+            throw new CustomException(ErrorCode.CLASS_DELETE_DENIED_WITH_MEMEBRS);
+        }
+
+        // 4. 모임 삭제
+        classRepository.delete(classEntity);
+    }
 }
