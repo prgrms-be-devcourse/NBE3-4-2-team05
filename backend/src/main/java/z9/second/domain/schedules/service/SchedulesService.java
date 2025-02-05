@@ -9,6 +9,7 @@ import z9.second.domain.schedules.dto.SchedulesRequestDto;
 import z9.second.domain.schedules.dto.SchedulesResponseDto;
 import z9.second.global.exception.CustomException;
 import z9.second.global.response.ErrorCode;
+import z9.second.model.schedules.SchedulesCheckInEntity;
 import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.schedules.SchedulesRepository;
 
@@ -53,6 +54,16 @@ public class SchedulesService {
                     .meetingTime(requestData.getMeetingTime())
                     .meetingTitle(requestData.getMeetingTitle())
                     .build();
+
+            // 모든 모임 멤버(모임장 포함)의 체크인 생성
+            classes.getUsers().forEach(user -> {
+                SchedulesCheckInEntity memberCheckIn = SchedulesCheckInEntity.builder()
+                        .schedules(schedules)
+                        .userId(user.getUserId())
+                        .checkIn(false)
+                        .build();
+                schedules.getCheckins().add(memberCheckIn);
+            });
 
             // DB에 저장
             SchedulesEntity savedSchedule = schedulesRepository.save(schedules);
