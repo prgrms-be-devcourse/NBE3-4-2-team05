@@ -82,6 +82,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         User user = getUserByOAuth(oauth2UserInfo);
 
+        if(user.getStatus().equals(UserStatus.DELETE)) {
+            throw new CustomException(ErrorCode.LOGIN_RESIGN_USER);
+        }
+
         return generateUserTokens(
                 user.getRole().name(),
                 user.getId().toString());
