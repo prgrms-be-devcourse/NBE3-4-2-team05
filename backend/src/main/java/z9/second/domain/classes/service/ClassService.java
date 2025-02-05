@@ -1,18 +1,18 @@
 package z9.second.domain.classes.service;
 
-import java.util.List;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import lombok.RequiredArgsConstructor;
 import z9.second.domain.classes.dto.ClassRequest;
 import z9.second.domain.classes.dto.ClassResponse;
 import z9.second.domain.classes.entity.ClassEntity;
+import z9.second.domain.classes.entity.ClassUserEntity;
 import z9.second.domain.classes.repository.ClassRepository;
 import z9.second.domain.classes.repository.ClassUserRepository;
 import z9.second.global.exception.CustomException;
 import z9.second.global.response.ErrorCode;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +34,8 @@ public class ClassService {
                 .description(requestData.getDescription())
                 .masterId(userId)
                 .build();
+
+        newClass.addMember(userId);
 
         ClassEntity classEntity = classRepository.save(newClass);
 
@@ -67,5 +69,22 @@ public class ClassService {
         classEntity.addMember(userId);
 
         return ClassResponse.JoinResponseData.from(classEntity);
+    }
+
+    @Transactional
+    public void deleteMembership(Long classId, Long userId) {
+        // 해당 모임이 존재하는지 확인
+        ClassEntity classEntity = classRepository.findById(classId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+
+        // 가입된 회원인지 검증
+        ClassUserEntity user = classUserRepository.findByClassesIdAndUserId(classId, userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_EXISTS_MEMBER));
+
+        if (userId.equals(classEntity.getMasterId())) {
+            throw new CustomException(ErrorCode.CLASS_MASTER_TRANSFER_REQUIRED);
+        }
+
+        classEntity.removeMember(user);
     }
 }

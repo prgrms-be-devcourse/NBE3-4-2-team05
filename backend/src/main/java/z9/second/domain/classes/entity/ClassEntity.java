@@ -33,9 +33,11 @@ public class ClassEntity {
     private Long masterId;
 
     @OneToMany(mappedBy = "classes", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @Builder.Default
     private List<ClassUserEntity> users = new ArrayList<>();
 
     @OneToMany(mappedBy = "classes", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @Builder.Default
     private List<ClassBlackListEntity> blackLists = new ArrayList<>();
 
     public ClassUserEntity addMember(Long userId) {
@@ -47,5 +49,9 @@ public class ClassEntity {
         users.add(user);
 
         return user;
+    }
+
+    public void removeMember(ClassUserEntity user) {
+        users.remove(user);
     }
 }
