@@ -20,6 +20,7 @@ public enum SuccessCode {
     RESIGN_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "회원탈퇴 성공"),
 
     // User
+    FIND_USER_INFO_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "회원정보 조회 성공"),
 
     // Class
     CLASS_CREATE_SUCCESS(HttpStatus.CREATED, Boolean.TRUE, 201, "모임이 생성되었습니다."),
