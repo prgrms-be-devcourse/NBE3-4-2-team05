@@ -87,4 +87,19 @@ public class ClassService {
 
         classEntity.removeMember(user);
     }
+
+    @Transactional
+    public void modifyClassInfo(Long classId, Long userId, ClassRequest.ModifyRequestData requestData){
+        // 1. 모임 존재 여부 확인
+        ClassEntity classEntity = classRepository.findById(classId)
+              .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+
+        // 2. 모임장 권한 확인
+        if (!classEntity.getMasterId().equals(userId)) {
+            throw new CustomException(ErrorCode.CLASS_MODIFY_DENIED);
+        }
+
+        // 3. 모임 정보 수정
+        classEntity.updateClassInfo(requestData.getName(), requestData.getDescription());
+    }
 }
