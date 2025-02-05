@@ -1,16 +1,46 @@
-import useFetch from "src/hooks/useFetch";
-// 일정 가져오기
-const getSchedulesLists = () => useFetch("GET", "schedules/");
+// @ts-nocheck
+import axiosInstance from "src/constants/axiosInstance";
+import { Project } from "src/constants/project";
 
-// 일정 생성
-const postSchedulesLists = (body = {}) => useFetch("POST", "schedules/", body);
+// 모임 리스트 가져오기
+const getSchedulesLists = async () => {
+	const response = await axiosInstance.get(`${Project.API_URL}/login`, {
+		withCredentials: true,
+	});
+	return response;
+};
 
-// 일정 수정
-const putSchedulesLists = () => useFetch("PUT", "schedules/");
+// 모임 생성
+const postSchedulesLists = async (body) => {
+	const response = await axiosInstance.post(
+		`${Project.API_URL}/login`,
+		body,
+		{
+			withCredentials: true,
+		},
+	);
+	return response;
+};
 
-// 일정 삭제
-const deleteSchedulesLists = () => useFetch("DELETE", "schedules/");
+// 모임 수정
+const putSchedulesLists = async (body) => {
+	const response = await axiosInstance.put(`${Project.API_URL}/login`, body, {
+		withCredentials: true,
+	});
+	return response;
+};
 
+// 모임 삭제
+const deleteSchedulesLists = async (body) => {
+	const response = await axiosInstance.delete(
+		`${Project.API_URL}/login`,
+		body,
+		{
+			withCredentials: true,
+		},
+	);
+	return response;
+};
 const ScheduleService = {
 	getSchedulesLists,
 	postSchedulesLists,

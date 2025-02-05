@@ -6,37 +6,16 @@ const cookies = new Cookies();
 const DOMAIN = process.env.REACT_APP_DEFAULT_URL;
 const API_URL = process.env.REACT_APP_API_URL;
 const PROJECT_ID = process.env.REACT_APP_PROJECT_ID;
-
 const TOKEN = process.env.REACT_APP_ACCESS_TOKEN;
 const REFRESH_TOKEN = process.env.REACT_APP_REFRESH_TOKEN;
 const USER_SESSION = `ID_${PROJECT_ID}_SES`;
 
 const getJwt = () => cookies.get(TOKEN);
+const getRefershJwt = () => cookies.get(REFRESH_TOKEN);
 
-const JWT_CONSTANTS = {
-	ACCESS_TOKEN_HEADER: "Authorization",
-	REFRESH_TOKEN_HEADER: "RefreshToken",
-	ACCESS_TOKEN_PREFIX: "Bearer",
-
-	CLAIM_KEY_USER_ID: "userId",
-	CLAIM_KEY_USER_CATEGORY: "category",
-	CLAIM_KEY_USER_ROLE: "role",
-
-	ACCESS_TOKEN_CATEGORY: "accessToken",
-	REFRESH_TOKEN_CATEGORY: "refreshToken",
-};
-
-const setJwt = (accessToken = "", refreshToken = "") => {
+const setJwt = (accessToken) => {
 	cookies.set(TOKEN, accessToken, {
 		path: "/",
-		domain: DOMAIN,
-		secure: true,
-		sameSite: "Strict",
-	});
-
-	cookies.set(REFRESH_TOKEN, refreshToken, {
-		path: "/",
-		domain: DOMAIN,
 		secure: true,
 		sameSite: "Strict",
 	});
@@ -81,6 +60,7 @@ const userLogout = () => {
 const Project = {
 	setJwt,
 	getJwt,
+	getRefershJwt,
 	getUserId,
 	setUserId,
 	loginCheck,
@@ -93,7 +73,6 @@ const Project = {
 	PROJECT_ID,
 	USER_SESSION,
 	REFRESH_TOKEN,
-	JWT_CONSTANTS,
 };
 
 export { Project };
