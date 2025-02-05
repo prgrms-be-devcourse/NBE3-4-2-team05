@@ -35,7 +35,7 @@ class SchedulesServiceTest extends SchedulesBaseTest {
         classEntity = createTestClass(masterUser.getId());
 
         // 테스트 스케줄 생성
-        scheduleEntity = createTestSchedule(classEntity, TEST_MEETING_TITLE);
+        scheduleEntity = createTestSchedule(classEntity);
 
         // 요청 데이터 생성
         scheduleRequest = createScheduleRequest(classEntity.getId());
