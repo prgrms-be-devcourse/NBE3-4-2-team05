@@ -97,4 +97,16 @@ public class ClassController {
 
         return BaseResponse.ok(SuccessCode.SUCCESS, classUserListData);
     }
+
+    @DeleteMapping("/{classId}")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "모임 삭제")
+    public BaseResponse<Void> deleteClass (
+            @PathVariable Long classId,
+            Principal principal
+    ){
+        Long userId = Long.parseLong(principal.getName());
+        classService.deleteClass(classId, userId);
+        return BaseResponse.ok(SuccessCode.CLASS_DELETE_SUCCESS);
+    }
 }
