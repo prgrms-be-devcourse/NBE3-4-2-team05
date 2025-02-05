@@ -15,11 +15,15 @@ public enum SuccessCode {
 
     // Authentication / Authorization
     LOGIN_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "로그인 성공"),
+    LOGOUT_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "로그아웃 성공"),
+    SIGNUP_SUCCESS(HttpStatus.CREATED, Boolean.TRUE, 201, "회원가입 성공"),
 
     // User
 
     // Class
     CLASS_CREATE_SUCCESS(HttpStatus.CREATED, Boolean.TRUE, 201, "모임이 생성되었습니다."),
+    CLASS_JOIN_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "모임에 가입되었습니다."),
+    CLASS_RESIGN_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "모임에서 탈퇴되었습니다."),
 
     //Schedules
     SCHEDULE_CREATE_SUCCESS(HttpStatus.CREATED, Boolean.TRUE, 201, "모임 일정 생성되었습니다!"),

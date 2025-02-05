@@ -11,12 +11,16 @@ import z9.second.domain.classes.entity.ClassEntity;
 import z9.second.domain.classes.entity.ClassUserEntity;
 import z9.second.domain.classes.repository.ClassRepository;
 import z9.second.domain.classes.repository.ClassUserRepository;
+import z9.second.domain.favorite.entity.FavoriteEntity;
+import z9.second.domain.favorite.repository.FavoriteRepository;
 import z9.second.model.sample.SampleEntity;
 import z9.second.model.sample.SampleRepository;
 import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.schedules.SchedulesRepository;
 import z9.second.model.user.User;
 import z9.second.model.user.UserRepository;
+import z9.second.model.userfavorite.UserFavorite;
+import z9.second.model.userfavorite.UserFavoriteRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +33,8 @@ public class BaseInitData {
     private final SampleRepository sampleRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final FavoriteRepository favoriteRepository;
+    private final UserFavoriteRepository userFavoriteRepository;
     private final ClassRepository classRepository;
     private final ClassUserRepository classUserRepository;
     private final SchedulesRepository schedulesRepository;
@@ -40,6 +46,24 @@ public class BaseInitData {
         List<User> savedUserData = createUserData(10);
         List<ClassEntity> savedClassData = createClassData(10, savedUserData);
         createScheduleData(savedClassData);
+        List<FavoriteEntity> saveFavoriteData = createFavoriteData();
+        List<UserFavorite> savedUserFavoriteData = createUserFavoriteData(savedUserData, saveFavoriteData);
+    }
+
+    private List<UserFavorite> createUserFavoriteData(
+            List<User> savedUserData,
+            List<FavoriteEntity> saveFavoriteData) {
+        List<UserFavorite> savedUserFavoriteData = new ArrayList<>();
+
+        for (User savedUser : savedUserData) {
+            for (FavoriteEntity savedFavorite : saveFavoriteData) {
+                UserFavorite newUserFavorite = UserFavorite.createNewUserFavorite(savedUser, savedFavorite);
+                UserFavorite save = userFavoriteRepository.save(newUserFavorite);
+                savedUserFavoriteData.add(save);
+            }
+        }
+
+        return savedUserFavoriteData;
     }
 
     private List<SampleEntity> createSampleData(final int count) {
@@ -81,6 +105,25 @@ public class BaseInitData {
         }
 
         return savedUserList;
+    }
+
+    private List<FavoriteEntity> createFavoriteData() {
+        if (favoriteRepository.count() != 0) {
+            return favoriteRepository.findAll();
+        }
+
+        List<FavoriteEntity> savedFavoriteList = new ArrayList<>();
+
+        FavoriteEntity favorite1 = favoriteRepository.save(FavoriteEntity.createNewFavorite("축구"));
+        FavoriteEntity favorite2 = favoriteRepository.save(FavoriteEntity.createNewFavorite("영화"));
+        FavoriteEntity favorite3 = favoriteRepository.save(FavoriteEntity.createNewFavorite("독서"));
+        FavoriteEntity favorite4 = favoriteRepository.save(FavoriteEntity.createNewFavorite("그림"));
+        FavoriteEntity favorite5 = favoriteRepository.save(FavoriteEntity.createNewFavorite("코딩"));
+        FavoriteEntity favorite6 = favoriteRepository.save(FavoriteEntity.createNewFavorite("음악"));
+
+        savedFavoriteList.addAll(List.of(favorite1, favorite2, favorite3, favorite4, favorite5, favorite6));
+
+        return savedFavoriteList;
     }
 
     private List<ClassEntity> createClassData(final int count, final List<User> users) {
