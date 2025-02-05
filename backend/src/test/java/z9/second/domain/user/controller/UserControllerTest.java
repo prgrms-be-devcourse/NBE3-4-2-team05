@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -26,7 +27,10 @@ import z9.second.model.userfavorite.UserFavorite;
 @Transactional
 class UserControllerTest extends SpringBootTestSupporter {
 
-
+    @BeforeEach
+    void setUp() {
+        em.createNativeQuery("ALTER TABLE users ALTER COLUMN user_id RESTART WITH 1").executeUpdate();
+    }
 
     @WithCustomUser
     @DisplayName("로그인 정보로 회원 정보를 반환합니다.")
@@ -70,9 +74,6 @@ class UserControllerTest extends SpringBootTestSupporter {
     @DisplayName("회원의 정보를 수정 합니다. 관심사와 닉네임을 수정할 수 있습니다.")
     @Test
     void modifyUserInfo() throws Exception {
-        //test
-        List<User> all = userRepository.findAll();
-
         // given
         String loginId = "test1@email.com";
         String password = "!test1234";
