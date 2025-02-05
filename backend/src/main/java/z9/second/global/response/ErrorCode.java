@@ -40,9 +40,8 @@ public enum ErrorCode {
     CLASS_NOT_EXISTS_MEMBER(HttpStatus.NOT_FOUND, Boolean.FALSE, 3003, "모임에 가입된 회원이 아닙니다."),
     CLASS_MASTER_TRANSFER_REQUIRED(HttpStatus.FORBIDDEN, Boolean.FALSE, 3004, "마스터는 권한을 위임해야만 탈퇴할 수 있습니다."),
     CLASS_MODIFY_DENIED(HttpStatus.FORBIDDEN, Boolean.FALSE, 3005, "모임방의 정보는 모임장만 수정 가능합니다."),
-    CLASS_DELETE_DENIED(HttpStatus.FORBIDDEN, Boolean.FALSE, 3006, "권한이 없습니다."),
+    CLASS_USER_FORBIDDEN(HttpStatus.FORBIDDEN, Boolean.FALSE, 3006, "권한이 없습니다."),
     CLASS_DELETE_DENIED_WITH_MEMBERS(HttpStatus.BAD_REQUEST, Boolean.FALSE, 3007, "회원이 존재하는 모임은 삭제할 수 없습니다. 권한을 위임하고 탈퇴해주세요."),
-    CLASS_MASTER_TRANSFER_DENIED(HttpStatus.FORBIDDEN, Boolean.FALSE, 3008, "모임장만 가능한 기능입니다."),
 
     //4000 ~ 4999
     // 오류 종류 : 일정

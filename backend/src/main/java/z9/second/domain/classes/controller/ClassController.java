@@ -124,4 +124,19 @@ public class ClassController {
 
         return BaseResponse.ok(SuccessCode.CLASS_MASTER_TRANSFER_SUCCESS);
     }
+
+    @PostMapping("/{classId}/users/{userId}")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "회원 강퇴")
+    public BaseResponse<Void> addBlackList(
+            @PathVariable Long classId,
+            @PathVariable Long userId,
+            Principal principal
+    ) {
+        Long currentUserId = Long.parseLong(principal.getName());
+
+        classService.addBlackList(classId, userId, currentUserId);
+
+        return BaseResponse.ok(SuccessCode.CLASS_ADD_BLACKLIST_SUCCESS);
+    }
 }

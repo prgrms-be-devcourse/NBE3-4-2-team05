@@ -67,4 +67,13 @@ public class ClassEntity {
     public void setMasterId(Long userId) {
         masterId = userId;
     }
+
+    public void addBlackList(Long userId) {
+        ClassBlackListEntity blackUser = ClassBlackListEntity.builder()
+                .classes(this)
+                .userId(userId)
+                .build();
+
+        blackLists.add(blackUser);
+    }
 }
