@@ -95,4 +95,17 @@ public class User extends BaseEntity {
                 .role(user.getRole())
                 .build();
     }
+
+    public static User patchUserInfo(User user, String nickname) {
+        return User
+                .builder()
+                .id(user.getId())
+                .loginId(user.getLoginId())
+                .password(user.getPassword())
+                .nickname(nickname)
+                .type(user.getType())
+                .status(user.getStatus())
+                .role(user.getRole())
+                .build();
+    }
 }
