@@ -37,6 +37,8 @@ public enum ErrorCode {
     CLASS_NOT_FOUND(HttpStatus.NOT_FOUND, Boolean.FALSE, 3001, "해당하는 모임을 찾을 수 없습니다."),
     CLASS_ACCESS_DENIED(HttpStatus.FORBIDDEN, Boolean.FALSE, 3002, "해당 모임에 대한 권한이 없습니다."),
     CLASS_EXISTS_MEMBER(HttpStatus.BAD_REQUEST, Boolean.FALSE, 3003, "이미 가입된 회원입니다."),
+    CLASS_NOT_EXISTS_MEMBER(HttpStatus.NOT_FOUND, Boolean.FALSE, 3003, "모임에 가입된 회원이 아닙니다."),
+    CLASS_MASTER_TRANSFER_REQUIRED(HttpStatus.FORBIDDEN, Boolean.FALSE, 3004, "마스터는 권한을 위임해야만 탈퇴할 수 있습니다."),
 
     //4000 ~ 4999
     // 오류 종류 : 일정

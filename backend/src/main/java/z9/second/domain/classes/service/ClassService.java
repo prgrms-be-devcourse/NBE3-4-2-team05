@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import z9.second.domain.classes.dto.ClassRequest;
 import z9.second.domain.classes.dto.ClassResponse;
 import z9.second.domain.classes.entity.ClassEntity;
+import z9.second.domain.classes.entity.ClassUserEntity;
 import z9.second.domain.classes.repository.ClassRepository;
 import z9.second.domain.classes.repository.ClassUserRepository;
 import z9.second.global.exception.CustomException;
@@ -17,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClassService {
     private final ClassRepository classRepository;
+    private final ClassUserRepository classUserRepository;
 
     @Transactional
     public ClassResponse.ClassResponseData save(ClassRequest.ClassRequestData requestData, Long userId) {
@@ -33,9 +35,24 @@ public class ClassService {
                 .masterId(userId)
                 .build();
 
+        newClass.addMember(userId);
+
         ClassEntity classEntity = classRepository.save(newClass);
 
         return ClassResponse.ClassResponseData.from(classEntity);
+    }
+
+    @Transactional
+    public ClassResponse.EntryResponseData getClassInfo(Long classId, Long userId) {
+        // 1. 모임 존재 여부 확인
+        ClassEntity classEntity = classRepository.findById(classId)
+              .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+
+        // 2. 유저가 모임 멤버인지 확인
+        if(!classUserRepository.existsByUserIdAndClassesId(userId, classId)) {
+            throw new CustomException(ErrorCode.CLASS_ACCESS_DENIED);
+        }
+        return ClassResponse.EntryResponseData.from(classEntity);
     }
 
     @Transactional
@@ -54,5 +71,20 @@ public class ClassService {
         return ClassResponse.JoinResponseData.from(classEntity);
     }
 
-    private final ClassUserRepository classUserRepository;
+    @Transactional
+    public void deleteMembership(Long classId, Long userId) {
+        // 해당 모임이 존재하는지 확인
+        ClassEntity classEntity = classRepository.findById(classId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+
+        // 가입된 회원인지 검증
+        ClassUserEntity user = classUserRepository.findByClassesIdAndUserId(classId, userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_EXISTS_MEMBER));
+
+        if (userId.equals(classEntity.getMasterId())) {
+            throw new CustomException(ErrorCode.CLASS_MASTER_TRANSFER_REQUIRED);
+        }
+
+        classEntity.removeMember(user);
+    }
 }

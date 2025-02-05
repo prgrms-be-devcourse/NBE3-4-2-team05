@@ -30,6 +30,23 @@ public class ClassResponse {
     @Getter
     @Builder
     @AllArgsConstructor
+    public static class EntryResponseData {
+        private final String name;
+        private final String favorite;
+        private final String description;
+
+        public static EntryResponseData from(ClassEntity classes) {
+            return EntryResponseData.builder()
+                   .name(classes.getName())
+                   .favorite(classes.getFavorite())
+                   .description(classes.getDescription())
+                   .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
     public static class JoinResponseData {
         private final Long id;
         private final String name;
