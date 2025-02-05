@@ -1,6 +1,5 @@
 package z9.second.domain.schedules.dto;
 
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -23,7 +22,6 @@ public class SchedulesRequestDto {
                 regexp = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$",
                 message = "날짜 형식은 yyyy-MM-dd HH:mm:ss이어야 합니다."
         )
-        @FutureOrPresent(message = "과거 날짜는 설정할 수 없습니다")
         private String meetingTime;
 
         @NotNull(message = "meeting_title must not be null")

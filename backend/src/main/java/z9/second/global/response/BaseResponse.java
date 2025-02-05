@@ -51,4 +51,15 @@ public record BaseResponse<T>(
                 null
         );
     }
+
+    // 실패 응답 생성 팩토리 메서드
+    public static BaseResponse<Void> fail(ErrorCode code, String message) {
+        return new BaseResponse<>(
+                code.getHttpStatus(),
+                code.getIsSuccess(),
+                message,
+                code.getCode(),
+                null
+        );
+    }
 }

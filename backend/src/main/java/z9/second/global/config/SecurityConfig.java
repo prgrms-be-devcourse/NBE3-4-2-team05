@@ -1,6 +1,8 @@
 package z9.second.global.config;
 
 import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.PATCH;
+import static org.springframework.http.HttpMethod.POST;
 import static z9.second.global.security.constant.HeaderConstant.CONTENT_TYPE;
 import static z9.second.global.security.constant.JWTConstant.ACCESS_TOKEN_HEADER;
 
@@ -23,6 +25,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import z9.second.global.security.entrypoint.CustomAccessDeniedEntryPoint;
 import z9.second.global.security.entrypoint.CustomAuthenticationEntryPoint;
 import z9.second.global.security.filter.AuthenticationFilter;
+import z9.second.global.security.filter.ReissueFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -30,6 +33,7 @@ import z9.second.global.security.filter.AuthenticationFilter;
 public class SecurityConfig {
 
     private final AuthenticationFilter authenticationFilter;
+    private final ReissueFilter reissueFilter;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedEntryPoint customAccessDeniedEntryPoint;
 
@@ -48,7 +52,7 @@ public class SecurityConfig {
     protected CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
         configuration.setAllowedMethods(List.of("*"));
         configuration.setAllowedHeaders(List.of(ACCESS_TOKEN_HEADER, CONTENT_TYPE));
         configuration.setExposedHeaders(List.of(ACCESS_TOKEN_HEADER));
@@ -58,8 +62,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    protected SecurityFilterChain filterChain(
-            HttpSecurity http, AuthenticationConfiguration authenticationConfiguration)
+    protected SecurityFilterChain filterChain(HttpSecurity http)
             throws Exception {
 
         http
@@ -76,6 +79,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers(GET, "/api/v1/sample/only-user").authenticated()
                 .requestMatchers(GET, "/api/v1/sample/only-admin").hasRole("ADMIN")
+                .requestMatchers(POST, "/api/v1/logout").authenticated()
+                .requestMatchers(PATCH, "/api/v1/resign").authenticated()
                 .anyRequest().permitAll());
 
         http.exceptionHandling((exception) -> exception
@@ -83,6 +88,7 @@ public class SecurityConfig {
                 .accessDeniedHandler(customAccessDeniedEntryPoint));
 
         http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(reissueFilter, AuthenticationFilter.class);
 
         return http.build();
     }

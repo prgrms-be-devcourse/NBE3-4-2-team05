@@ -4,6 +4,10 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
+ext {
+    springCloudVersion = "2024.0.0"
+}
+
 group = 'z9'
 version = '0.0.1'
 
@@ -55,6 +59,18 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
     implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+
+    // feign client
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
+    }
 }
 
 tasks.named('test') {

@@ -3,3 +3,10 @@ jwt:
   token:
     access-expiration: 3000
     refresh-expiration: 3000000
+
+oauth:
+  kakao:
+    client-id : 'test-client-id'
+    redirect-uri : 'test-redirect-uri'
+    client-secret : 'test-client-secret'
+    content-type : 'test-content-type'
