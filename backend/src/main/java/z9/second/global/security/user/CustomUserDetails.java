@@ -2,12 +2,14 @@ package z9.second.global.security.user;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import z9.second.model.user.User;
 import z9.second.model.user.UserType;
 
+@Getter
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
 

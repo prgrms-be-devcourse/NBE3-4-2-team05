@@ -29,6 +29,7 @@ public enum ErrorCode {
     // 오류 종류 : 회원 도메인 에러
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST, Boolean.FALSE, 2000, "로그인 된 회원 정보 조회 실패. 재로그인 해주세요."),
     ALREADY_DELETE_USER(HttpStatus.BAD_REQUEST, Boolean.FALSE, 2001, "이미 탈퇴된 회원입니다."),
+    LOGIN_RESIGN_USER(HttpStatus.BAD_REQUEST, Boolean.FALSE, 2002, "탈퇴된 회원 입니다."),
 
     //3000 ~ 3999
     // 오류 종류 : 모임

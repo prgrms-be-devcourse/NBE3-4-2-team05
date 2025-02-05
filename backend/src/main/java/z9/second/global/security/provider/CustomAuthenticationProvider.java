@@ -11,6 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import z9.second.global.exception.CustomException;
 import z9.second.global.response.ErrorCode;
+import z9.second.global.security.user.CustomUserDetails;
+import z9.second.model.user.UserStatus;
 
 @Component
 @RequiredArgsConstructor
@@ -33,6 +35,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         if(!passwordEncoder.matches(password, userDetails.getPassword())) {
             throw new CustomException(ErrorCode.LOGIN_FAIL);
+        }
+
+        CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
+        if (customUserDetails.getUser().getStatus().equals(UserStatus.DELETE)) {
+            throw new CustomException(ErrorCode.LOGIN_RESIGN_USER);
         }
 
         return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
