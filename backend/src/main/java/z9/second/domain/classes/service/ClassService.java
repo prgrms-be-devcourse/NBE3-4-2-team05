@@ -129,7 +129,7 @@ public class ClassService {
 
         // 2. 모임장 권한 확인
         if (!classEntity.getMasterId().equals(userId)) {
-            throw new CustomException(ErrorCode.CLASS_DELETE_DENIED);
+            throw new CustomException(ErrorCode.CLASS_USER_FORBIDDEN);
         }
 
         // 3. 모임장을 제외한 회원 존재 여부 확인
@@ -150,7 +150,7 @@ public class ClassService {
 
         // 현재 회원이 모임장인지 체크
         if (!classEntity.getMasterId().equals(currentUserId)) {
-            throw new CustomException(ErrorCode.CLASS_MASTER_TRANSFER_DENIED);
+            throw new CustomException(ErrorCode.CLASS_USER_FORBIDDEN);
         }
 
         // 해당 회원이 모임에 속해있는지 체크
@@ -159,5 +159,25 @@ public class ClassService {
         }
 
         classEntity.setMasterId(userId);
+    }
+
+    @Transactional
+    public void addBlackList(Long classId, Long userId, Long currentUserId) {
+        // 모임 존재 여부 확인
+        ClassEntity classEntity = classRepository.findById(classId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+
+        // 현재 회원이 모임장인지 체크
+        if (!classEntity.getMasterId().equals(currentUserId)) {
+            throw new CustomException(ErrorCode.CLASS_USER_FORBIDDEN);
+        }
+
+        // 해당 회원이 모임에 속해있는지 체크
+        ClassUserEntity user = classUserRepository.findByClassesIdAndUserId(classId, userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_EXISTS_MEMBER));
+
+        classEntity.removeMember(user);
+
+        classEntity.addBlackList(userId);
     }
 }
