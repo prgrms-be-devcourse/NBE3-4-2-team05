@@ -9,4 +9,6 @@ public interface ClassUserRepository extends JpaRepository<ClassUserEntity, Long
     boolean existsByUserIdAndClassesId(Long userId, Long classId);
     boolean existsByClasses_IdAndUserId(Long classId, Long userId);
     Optional<ClassUserEntity> findByClassesIdAndUserId(Long classId, Long userId);
+
+    void deleteByUserId(Long userId);
 }
