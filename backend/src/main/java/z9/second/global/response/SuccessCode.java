@@ -27,10 +27,11 @@ public enum SuccessCode {
     CLASS_RESIGN_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "모임에서 탈퇴되었습니다."),
     CLASS_MODIFY_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "수정 성공했습니다!"),
     CLASS_DELETE_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "모임이 삭제되었습니다."),
+    CLASS_MASTER_TRANSFER_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "권한을 위임했습니다."),
 
     //Schedules
     SCHEDULE_CREATE_SUCCESS(HttpStatus.CREATED, Boolean.TRUE, 201, "모임 일정 생성되었습니다!"),
-    SCHEDULE_READ_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "모임 전체 일정 조회되었습니다!"),
+    SCHEDULE_READ_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "%d번 모임 전체 일정 조회되었습니다!".formatted()),
 
     // Common
     SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "요청 응답 성공"),
