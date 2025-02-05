@@ -54,4 +54,13 @@ public class ClassEntity {
     public void removeMember(ClassUserEntity user) {
         users.remove(user);
     }
+
+    public void updateClassInfo(String name, String description) {
+        if (name != null) {
+            this.name = name;
+        }
+        if (description != null) {
+            this.description = description;
+        }
+    }
 }
