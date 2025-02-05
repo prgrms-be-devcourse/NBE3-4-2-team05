@@ -36,6 +36,7 @@ import z9.second.model.oauthuser.OAuthUser;
 import z9.second.model.oauthuser.OAuthUserRepository;
 import z9.second.model.user.User;
 import z9.second.model.user.UserRepository;
+import z9.second.model.user.UserStatus;
 import z9.second.model.userfavorite.UserFavorite;
 import z9.second.model.userfavorite.UserFavoriteRepository;
 
@@ -130,6 +131,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public void logout(String userId) {
         redisRepository.deleteRefreshToken(userId);
         //todo : 추후, 여유 생기면 accessToken 또한 블랙리스트 추가하여 추가보안 설정.
+    }
+
+    @Transactional
+    @Override
+    public void resign(String userId) {
+        //1. 회원 정보 검색
+        User findUser = userRepository.findById(Long.parseLong(userId))
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        //2. 이미 탈퇴된 회원인지 확인
+        if(findUser.getStatus().equals(UserStatus.DELETE)) {
+            throw new CustomException(ErrorCode.ALREADY_DELETE_USER);
+        }
+
+        //3. 회원 상태 탈퇴 상태로 변경
+        User updateUser = User.resign(findUser);
+        userRepository.save(updateUser);
     }
 
     private User getUserByOAuth(OAuth2UserInfo oauth2UserInfo) {

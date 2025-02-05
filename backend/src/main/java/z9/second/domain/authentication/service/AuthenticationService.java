@@ -12,4 +12,6 @@ public interface AuthenticationService {
     void signup(AuthenticationRequest.Signup signupDto);
 
     void logout(String userId);
+
+    void resign(String userId);
 }
