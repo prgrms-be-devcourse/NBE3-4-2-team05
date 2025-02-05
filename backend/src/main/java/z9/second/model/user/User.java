@@ -82,4 +82,17 @@ public class User extends BaseEntity {
                 .role(userRole)
                 .build();
     }
+
+    public static User resign(User user) {
+        return User
+                .builder()
+                .id(user.getId())
+                .loginId(user.getLoginId())
+                .password(user.getPassword())
+                .nickname(user.getNickname())
+                .type(user.getType())
+                .status(UserStatus.DELETE)
+                .role(user.getRole())
+                .build();
+    }
 }
