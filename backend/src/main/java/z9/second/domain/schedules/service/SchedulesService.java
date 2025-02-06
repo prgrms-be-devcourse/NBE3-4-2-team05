@@ -90,16 +90,16 @@ public class SchedulesService {
     //수정
     @Transactional
     public SchedulesResponseDto.ResponseData modify(Long scheduleId, Long classId, SchedulesRequestDto.RequestData requestData, Long userId) {
+        // 일정 조회 및 모임 Id 조회
+        SchedulesEntity schedule = schedulesRepository.findScheduleByIdAndClassesId(scheduleId, classId)
+                .orElseThrow(() -> new CustomException(ErrorCode.SCHEDULE_NOT_FOUND));
+
+        // 모임장 권한 체크
+        if (!schedule.getClasses().getMasterId().equals(userId)) {
+            throw new CustomException(ErrorCode.CLASS_ACCESS_DENIED);
+        }
+
         try {
-            // 일정 조회
-            SchedulesEntity schedule = schedulesRepository.findScheduleByIdAndClassesId(scheduleId, classId)
-                    .orElseThrow(() -> new CustomException(ErrorCode.SCHEDULE_NOT_FOUND));
-
-            // 모임장 권한 체크
-            if (!schedule.getClasses().getMasterId().equals(userId)) {
-                throw new CustomException(ErrorCode.CLASS_ACCESS_DENIED);
-            }
-
             // 날짜 형식 검증
             LocalDateTime meetingDateTime = LocalDateTime.parse(
                     requestData.getMeetingTime(),
