@@ -153,4 +153,18 @@ public class ClassController {
 
         return BaseResponse.ok(SuccessCode.SUCCESS, checkMember);
     }
+
+    @GetMapping("/{classId}/checkBlackList")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "강퇴된 회원 재가입 확인")
+    public BaseResponse<ClassResponse.CheckBlackListData> checkBlackList(
+            @PathVariable Long classId,
+            Principal principal
+    ) {
+        Long currentUserId = Long.parseLong(principal.getName());
+
+        ClassResponse.CheckBlackListData checkBlackListData = classService.checkBlackList(classId, currentUserId);
+
+        return BaseResponse.ok(SuccessCode.SUCCESS, checkBlackListData);
+    }
 }
