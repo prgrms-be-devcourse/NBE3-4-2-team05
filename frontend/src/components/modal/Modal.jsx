@@ -3,7 +3,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./Modal.css";
 
-const Modal = ({ isOpen, title, contents, onClose, external, type }) => {
+const Modal = ({ isOpen, title, contents, onClose, external, type,children }) => {
   if (!isOpen) return null;
 
   const handleOverlayClick = () => {
@@ -22,7 +22,7 @@ const Modal = ({ isOpen, title, contents, onClose, external, type }) => {
           </button>
         </div>
         <div className='modal-container'>
-          <p>{contents}</p>
+			{children}
         </div>
       </div>
     </div>,
