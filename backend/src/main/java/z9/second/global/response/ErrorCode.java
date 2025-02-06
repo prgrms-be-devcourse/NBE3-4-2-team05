@@ -50,6 +50,9 @@ public enum ErrorCode {
     INVALID_MEETING_TIME(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4003, "과거 날짜는 설정할 수 없습니다."),
     INVALID_MEETING_TIME_FORMAT(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4004, "날짜 형식이 올바르지 않습니다."),
 
+    //5000 ~ 5999
+    // 오류 종류 : 체크인
+
     //9000 ~ 9999
     //오류 종류 : 공통 에러
     VALIDATION_FAIL_ERROR(HttpStatus.BAD_REQUEST, Boolean.FALSE, 9000, "(exception error 메세지에 따름)"),

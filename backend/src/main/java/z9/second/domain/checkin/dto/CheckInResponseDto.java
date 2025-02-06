@@ -1,4 +1,4 @@
-package z9.second.domain.schedules.dto;
+package z9.second.domain.checkin.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
