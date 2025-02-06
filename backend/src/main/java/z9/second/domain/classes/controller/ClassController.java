@@ -75,4 +75,68 @@ public class ClassController {
         ClassResponse.EntryResponseData responseData = classService.getClassInfo(classId, userId);
         return BaseResponse.ok(SuccessCode.SUCCESS, responseData);
     }
+
+    @PatchMapping("/{classId}")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "모임 수정")
+    public BaseResponse<Void> modifyClassInfo(
+            @PathVariable("classId") Long classId,
+            @RequestBody @Valid ClassRequest.ModifyRequestData requestData,
+            Principal principal
+    ){
+        Long userId = Long.parseLong(principal.getName());
+
+        classService.modifyClassInfo(classId, userId, requestData);
+        return BaseResponse.ok(SuccessCode.CLASS_MODIFY_SUCCESS);
+    }
+
+    @GetMapping("/{classId}/memberList")
+    @Operation(summary = "모임에 가입한 회원 목록 조회")
+    public BaseResponse<ClassResponse.ClassUserListData> getMemberList(@PathVariable Long classId) {
+        ClassResponse.ClassUserListData classUserListData = classService.getUserListByClassId(classId);
+
+        return BaseResponse.ok(SuccessCode.SUCCESS, classUserListData);
+    }
+
+    @DeleteMapping("/{classId}")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "모임 삭제")
+    public BaseResponse<Void> deleteClass (
+            @PathVariable Long classId,
+            Principal principal
+    ){
+        Long userId = Long.parseLong(principal.getName());
+        classService.deleteClass(classId, userId);
+        return BaseResponse.ok(SuccessCode.CLASS_DELETE_SUCCESS);
+    }
+
+    @PatchMapping("/{classId}/users/{userId}/role")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "모임장 권한 위임")
+    public BaseResponse<Void> transferMaster(
+            @PathVariable Long classId,
+            @PathVariable Long userId,
+            Principal principal
+    ) {
+        Long currentUserId = Long.parseLong(principal.getName());
+
+        classService.transferMaster(classId, userId, currentUserId);
+
+        return BaseResponse.ok(SuccessCode.CLASS_MASTER_TRANSFER_SUCCESS);
+    }
+
+    @PostMapping("/{classId}/users/{userId}")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "회원 강퇴")
+    public BaseResponse<Void> addBlackList(
+            @PathVariable Long classId,
+            @PathVariable Long userId,
+            Principal principal
+    ) {
+        Long currentUserId = Long.parseLong(principal.getName());
+
+        classService.addBlackList(classId, userId, currentUserId);
+
+        return BaseResponse.ok(SuccessCode.CLASS_ADD_BLACKLIST_SUCCESS);
+    }
 }

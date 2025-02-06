@@ -27,6 +27,9 @@ public enum ErrorCode {
 
     //2000 ~ 2999
     // 오류 종류 : 회원 도메인 에러
+    USER_NOT_FOUND(HttpStatus.BAD_REQUEST, Boolean.FALSE, 2000, "로그인 된 회원 정보 조회 실패. 재로그인 해주세요."),
+    ALREADY_DELETE_USER(HttpStatus.BAD_REQUEST, Boolean.FALSE, 2001, "이미 탈퇴된 회원입니다."),
+    LOGIN_RESIGN_USER(HttpStatus.BAD_REQUEST, Boolean.FALSE, 2002, "탈퇴된 회원 입니다."),
 
     //3000 ~ 3999
     // 오류 종류 : 모임
@@ -36,6 +39,9 @@ public enum ErrorCode {
     CLASS_EXISTS_MEMBER(HttpStatus.BAD_REQUEST, Boolean.FALSE, 3003, "이미 가입된 회원입니다."),
     CLASS_NOT_EXISTS_MEMBER(HttpStatus.NOT_FOUND, Boolean.FALSE, 3003, "모임에 가입된 회원이 아닙니다."),
     CLASS_MASTER_TRANSFER_REQUIRED(HttpStatus.FORBIDDEN, Boolean.FALSE, 3004, "마스터는 권한을 위임해야만 탈퇴할 수 있습니다."),
+    CLASS_MODIFY_DENIED(HttpStatus.FORBIDDEN, Boolean.FALSE, 3005, "모임방의 정보는 모임장만 수정 가능합니다."),
+    CLASS_USER_FORBIDDEN(HttpStatus.FORBIDDEN, Boolean.FALSE, 3006, "권한이 없습니다."),
+    CLASS_DELETE_DENIED_WITH_MEMBERS(HttpStatus.BAD_REQUEST, Boolean.FALSE, 3007, "회원이 존재하는 모임은 삭제할 수 없습니다. 권한을 위임하고 탈퇴해주세요."),
 
     //4000 ~ 4999
     // 오류 종류 : 일정

@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import z9.second.domain.classes.entity.ClassEntity;
+import z9.second.model.user.User;
+
+import java.util.List;
 
 public class ClassResponse {
 
@@ -56,6 +59,40 @@ public class ClassResponse {
                     .builder()
                     .id(classes.getId())
                     .name(classes.getName())
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class ClassUserListData {
+        private final Long classId;
+        private final Long masterId;
+        private final List<ClassUserInfo> userList;
+
+        public static ClassUserListData from(ClassEntity classes, List<User> users) {
+            return ClassUserListData.builder()
+                    .classId(classes.getId())
+                    .masterId(classes.getMasterId())
+                    .userList(users.stream()
+                            .map(ClassUserInfo::from)
+                            .toList())
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class ClassUserInfo {
+        private final Long userId;
+        private final String nickName;
+
+        public static ClassUserInfo from(User user) {
+            return ClassUserInfo.builder()
+                    .userId(user.getId())
+                    .nickName(user.getNickname())
                     .build();
         }
     }

@@ -1,5 +1,6 @@
 package z9.second.domain.schedules.controller;
 
+import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.*;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
@@ -11,6 +12,7 @@ import z9.second.domain.schedules.dto.SchedulesRequestDto;
 import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.user.User;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -21,6 +23,7 @@ import static z9.second.global.security.constant.JWTConstant.ACCESS_TOKEN_HEADER
 @Transactional
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class SchedulesControllerTest extends SchedulesBaseTest {
+    private User masterUser;
     private User memberUser;
     private String masterToken;
     private String memberToken;
@@ -31,7 +34,7 @@ class SchedulesControllerTest extends SchedulesBaseTest {
     @BeforeEach
     void setUp() throws Exception {
         // 마스터와 멤버 유저 생성
-        User masterUser = createTestUser("test@email.com", "테스터");
+        masterUser = createTestUser("test@email.com", "테스터");
         memberUser = createTestUser("member@email.com", "멤버");
 
         // 토큰 발급
@@ -48,8 +51,11 @@ class SchedulesControllerTest extends SchedulesBaseTest {
 
     @Test
     @Order(1)
-    @DisplayName("모임 일정 생성")
+    @DisplayName("모임 일정 생성 - 모든 멤버의 체크인도 함께 생성")
     void createSchedule() throws Exception {
+        // given
+        addMemberToClass(memberUser, classEntity);
+
         // when
         ResultActions result = mockMvc.perform(post("/api/v1/schedules/classes")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -61,6 +67,30 @@ class SchedulesControllerTest extends SchedulesBaseTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.isSuccess").value(true))
                 .andExpect(jsonPath("$.data.meetingTitle").value("테스트 일정"));
+
+        // 생성된 일정의 ID 추출
+        String response = result.andReturn().getResponse().getContentAsString();
+        Long scheduleId = JsonPath.parse(response)
+                .read("$.data.scheduleId", Long.class);
+
+        // 생성된 일정 조회
+        SchedulesEntity savedSchedule = schedulesRepository.findById(scheduleId)
+                .orElseThrow();
+
+        // 체크인 검증
+        assertThat(savedSchedule.getCheckins()).hasSize(2); // 모임장 + 멤버 1명
+
+        // 모임장의 체크인 검증
+        assertThat(savedSchedule.getCheckins().stream()
+                .anyMatch(checkin ->
+                        checkin.getUserId().equals(masterUser.getId()) && !checkin.isCheckIn()))
+                .isTrue();
+
+        // 멤버의 체크인 검증
+        assertThat(savedSchedule.getCheckins().stream()
+                .anyMatch(checkin ->
+                        checkin.getUserId().equals(memberUser.getId()) && !checkin.isCheckIn()))
+                .isTrue();
     }
 
     @Test

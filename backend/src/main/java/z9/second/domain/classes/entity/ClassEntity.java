@@ -54,4 +54,26 @@ public class ClassEntity {
     public void removeMember(ClassUserEntity user) {
         users.remove(user);
     }
+
+    public void updateClassInfo(String name, String description) {
+        if (name != null) {
+            this.name = name;
+        }
+        if (description != null) {
+            this.description = description;
+        }
+    }
+
+    public void setMasterId(Long userId) {
+        masterId = userId;
+    }
+
+    public void addBlackList(Long userId) {
+        ClassBlackListEntity blackUser = ClassBlackListEntity.builder()
+                .classes(this)
+                .userId(userId)
+                .build();
+
+        blackLists.add(blackUser);
+    }
 }

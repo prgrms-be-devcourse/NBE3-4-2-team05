@@ -43,14 +43,34 @@ class SchedulesServiceTest extends SchedulesBaseTest {
 
     @Test
     @Order(1)
-    @DisplayName("일정 생성")
+    @DisplayName("일정 생성 - 모든 멤버의 체크인도 함께 생성")
     void create() {
+        // given
+        addMemberToClass(memberUser, classEntity);
+
         // when
         SchedulesResponseDto.ResponseData response = schedulesService.create(scheduleRequest, masterUser.getId());
 
         // then
         assertThat(response).isNotNull();
         assertThat(response.getMeetingTitle()).isEqualTo(TEST_MEETING_TITLE);
+
+        // 생성된 일정 조회
+        SchedulesEntity savedSchedule = schedulesRepository.findById(response.getScheduleId())
+                .orElseThrow();
+
+        // 체크인 검증
+        assertThat(savedSchedule.getCheckins()).hasSize(2); // 모임장 + 멤버 1명
+
+        // 모임장의 체크인 검증
+        assertThat(savedSchedule.getCheckins())
+                .anyMatch(checkin ->
+                        checkin.getUserId().equals(masterUser.getId()) && !checkin.isCheckIn());
+
+        // 멤버의 체크인 검증
+        assertThat(savedSchedule.getCheckins())
+                .anyMatch(checkin ->
+                        checkin.getUserId().equals(memberUser.getId()) && !checkin.isCheckIn());
     }
 
     @DisplayName("일정 생성 실패 - 존재하지 않는 모임")

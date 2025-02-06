@@ -1,6 +1,7 @@
 package z9.second.global.config;
 
 import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
 import static z9.second.global.security.constant.HeaderConstant.CONTENT_TYPE;
 import static z9.second.global.security.constant.JWTConstant.ACCESS_TOKEN_HEADER;
@@ -79,6 +80,10 @@ public class SecurityConfig {
                 .requestMatchers(GET, "/api/v1/sample/only-user").authenticated()
                 .requestMatchers(GET, "/api/v1/sample/only-admin").hasRole("ADMIN")
                 .requestMatchers(POST, "/api/v1/logout").authenticated()
+                .requestMatchers(PATCH, "/api/v1/resign").authenticated()
+                //user Domain
+                .requestMatchers(GET, "/api/v1/users").authenticated()
+                .requestMatchers(PATCH, "/api/v1/users/profile").authenticated()
                 .anyRequest().permitAll());
 
         http.exceptionHandling((exception) -> exception
