@@ -109,4 +109,17 @@ public class ClassResponse {
                     .build();
         }
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class CheckBlackListData {
+        private final boolean isBlackListed;
+
+        public static CheckBlackListData from(boolean isBlackListed) {
+            return CheckBlackListData.builder()
+                    .isBlackListed(isBlackListed)
+                    .build();
+        }
+    }
 }
