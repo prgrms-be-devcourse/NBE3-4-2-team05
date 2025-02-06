@@ -1,7 +1,7 @@
 // @ts-nocheck
 import Alert from "src/components/alert/Alert";
 
-const useValidate = (body) => {
+const Validate = (body) => {
 	const requiredFields = Object.keys(body);
 
 	for (let field of requiredFields) {
@@ -13,4 +13,4 @@ const useValidate = (body) => {
 	return true;
 };
 
-export default useValidate;
+export default Validate;

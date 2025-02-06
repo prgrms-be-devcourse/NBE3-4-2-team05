@@ -7,19 +7,22 @@ import Login from "./pages/login/Login";
 import SignUp from "./pages/signUp/SignUp";
 import Class from "./pages/class/Class";
 import Schedule from "./pages/schedule/Schedule";
+import Layout from "./pages/layout/Layout";
 
 const App = () => {
 	return (
-		<BrowserRouter>
-			<Routes>
-				<Route path="/" element={<Home />} />
-				<Route path="/login" element={<Login />} />
-				<Route path="/join" element={<SignUp />} />
-				<Route path="/classess" element={<Class />} />
-				<Route path="/schedules" element={<Schedule />} />
-			</Routes>
-		</BrowserRouter>
-	);
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/join" element={<SignUp />} />
+          <Route path="/classess" element={<Class />} />
+          <Route path="/schedules" element={<Schedule />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 };
 
 // @ts-ignore

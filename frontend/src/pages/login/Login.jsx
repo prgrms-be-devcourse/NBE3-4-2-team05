@@ -5,9 +5,10 @@ import { useNavigate } from "react-router-dom";
 import Form from "src/components/form/Form";
 import Title from "src/components/title/Title";
 import Alert from "src/components/alert/Alert";
-import useValidate from "src/hooks/useValidate";
+
 import { Element } from "src/constants/element";
 import { UserService } from "src/services/UserService";
+import Validate from "src/hooks/validate";
 
 const Login = () => {
 	const router = useNavigate();
@@ -29,7 +30,7 @@ const Login = () => {
 
 	const onClickLogin = async (e) => {
 		e.preventDefault();
-		if (!useValidate(body)) return;
+		if (!Validate(body)) return;
 		try {
 			setIsLoading(true);
 			const res = await UserService.Login(body);
