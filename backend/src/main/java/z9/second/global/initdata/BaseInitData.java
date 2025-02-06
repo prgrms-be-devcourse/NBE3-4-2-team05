@@ -15,6 +15,7 @@ import z9.second.domain.favorite.entity.FavoriteEntity;
 import z9.second.domain.favorite.repository.FavoriteRepository;
 import z9.second.model.sample.SampleEntity;
 import z9.second.model.sample.SampleRepository;
+import z9.second.model.schedules.SchedulesCheckInEntity;
 import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.schedules.SchedulesRepository;
 import z9.second.model.user.User;
@@ -22,6 +23,8 @@ import z9.second.model.user.UserRepository;
 import z9.second.model.userfavorite.UserFavorite;
 import z9.second.model.userfavorite.UserFavoriteRepository;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -165,11 +168,35 @@ public class BaseInitData {
         for (ClassEntity classEntity : classes) {
             // 각 클래스마다 3개의 일정 생성
             for (int i = 1; i <= 3; i++) {
+                // 현재 시간으로부터 i주 후로 설정
+                LocalDateTime futureTime = LocalDateTime.now().plusWeeks(i);
+                String meetingTime = futureTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
                 SchedulesEntity schedule = SchedulesEntity.builder()
                         .classes(classEntity)
-                        .meetingTime("2025-02-" + String.format("%02d", i) + " 14:00:00")
+                        .meetingTime(meetingTime)
                         .meetingTitle("모임 " + classEntity.getId() + "의 " + i + "번째 일정")
                         .build();
+
+                // 모임장의 체크인 생성
+                SchedulesCheckInEntity masterCheckIn = SchedulesCheckInEntity.builder()
+                        .schedules(schedule)
+                        .userId(classEntity.getMasterId())
+                        .checkIn(false)
+                        .build();
+                schedule.getCheckins().add(masterCheckIn);
+
+                // 모든 모임 멤버의 체크인 생성
+                classEntity.getUsers().forEach(user -> {
+                    if (!user.getUserId().equals(classEntity.getMasterId())) {
+                        SchedulesCheckInEntity memberCheckIn = SchedulesCheckInEntity.builder()
+                                .schedules(schedule)
+                                .userId(user.getUserId())
+                                .checkIn(false)
+                                .build();
+                        schedule.getCheckins().add(memberCheckIn);
+                    }
+                });
 
                 schedulesRepository.save(schedule);
             }
