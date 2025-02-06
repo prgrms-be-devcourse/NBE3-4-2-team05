@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import z9.second.domain.classes.entity.ClassEntity;
 import z9.second.model.BaseEntity;
-
 import java.util.ArrayList;
 import java.util.List;
 
