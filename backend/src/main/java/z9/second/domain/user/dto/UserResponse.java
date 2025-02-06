@@ -6,7 +6,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.user.User;
 
 public class UserResponse {
@@ -30,34 +29,6 @@ public class UserResponse {
                     .role(user.getRole().getValue())
                     .createdAt(formattedDate)
                     .favorite(favorite)
-                    .build();
-        }
-    }
-
-    @Getter
-    @Builder(access = AccessLevel.PRIVATE)
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class UserSchedule {
-        private final List<ScheduleInfo> schedule;
-
-        public static UserSchedule of(List<ScheduleInfo> schedule) {
-            return UserSchedule.builder().schedule(schedule).build();
-        }
-    }
-
-    @Getter
-    @Builder(access = AccessLevel.PRIVATE)
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ScheduleInfo {
-        private final Long classId;
-        private final String meetingTime; //yyyy-MM-dd HH:mm:ss
-        private final String meetingTitle;
-
-        public static ScheduleInfo from(SchedulesEntity schedulesEntity) {
-            return ScheduleInfo.builder()
-                    .classId(schedulesEntity.getClasses().getId())
-                    .meetingTime(schedulesEntity.getMeetingTime())
-                    .meetingTitle(schedulesEntity.getMeetingTitle())
                     .build();
         }
     }

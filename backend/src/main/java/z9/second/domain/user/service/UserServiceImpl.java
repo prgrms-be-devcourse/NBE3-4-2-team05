@@ -11,8 +11,6 @@ import z9.second.domain.user.dto.UserRequest;
 import z9.second.domain.user.dto.UserResponse;
 import z9.second.global.exception.CustomException;
 import z9.second.global.response.ErrorCode;
-import z9.second.model.schedules.SchedulesEntity;
-import z9.second.model.schedules.SchedulesRepository;
 import z9.second.model.user.User;
 import z9.second.model.user.UserRepository;
 import z9.second.model.userfavorite.UserFavorite;
@@ -25,7 +23,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserFavoriteRepository userFavoriteRepository;
     private final FavoriteRepository favoriteRepository;
-    private final SchedulesRepository schedulesRepository;
 
     @Transactional(readOnly = true)
     @Override
@@ -67,17 +64,5 @@ public class UserServiceImpl implements UserService {
             userFavoriteList.add(newUserFavorite);
         }
         userFavoriteRepository.saveAll(userFavoriteList);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public UserResponse.UserSchedule findUserSchedules(Long userId) {
-        List<SchedulesEntity> findData = schedulesRepository.findUserSchedulesInfoByUserId(userId);
-
-        List<UserResponse.ScheduleInfo> scheduleInfoList = findData.stream()
-                .map(UserResponse.ScheduleInfo::from)
-                .toList();
-
-        return UserResponse.UserSchedule.of(scheduleInfoList);
     }
 }
