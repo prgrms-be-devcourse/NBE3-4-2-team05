@@ -36,5 +36,4 @@ public class SchedulesEntity extends BaseEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "schedules", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CheckInEntity> checkins = new ArrayList<>();
 }
