@@ -139,4 +139,18 @@ public class ClassController {
 
         return BaseResponse.ok(SuccessCode.CLASS_ADD_BLACKLIST_SUCCESS);
     }
+
+    @GetMapping("/{classId}/checkMember")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "가입된 회원 재가입 확인")
+    public BaseResponse<ClassResponse.CheckMemberData> checkMember(
+            @PathVariable Long classId,
+            Principal principal
+    ) {
+        Long currentUserId = Long.parseLong(principal.getName());
+
+        ClassResponse.CheckMemberData checkMember = classService.checkMember(classId, currentUserId);
+
+        return BaseResponse.ok(SuccessCode.SUCCESS, checkMember);
+    }
 }
