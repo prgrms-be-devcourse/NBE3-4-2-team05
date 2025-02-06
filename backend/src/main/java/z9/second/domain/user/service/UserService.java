@@ -8,4 +8,6 @@ public interface UserService {
     UserResponse.UserInfo findUserInfo(Long userId);
 
     void patchUserInfo(UserRequest.PatchUserInfo requestDto, Long userId);
+
+    UserResponse.UserSchedule findUserSchedules(Long userId);
 }
