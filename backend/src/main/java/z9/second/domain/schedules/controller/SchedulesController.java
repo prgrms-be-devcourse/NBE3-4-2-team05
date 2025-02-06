@@ -38,6 +38,22 @@ public class SchedulesController {
         return BaseResponse.ok(SuccessCode.SCHEDULE_CREATE_SUCCESS, response);
     }
 
+    @PutMapping("/{scheduleId}/classes/{classId}")
+    @Operation(
+            summary = "모임 일정 수정",
+            description = "{classId}모임의 {scheduleId}번 일정을 수정합니다."
+    )
+    public BaseResponse<SchedulesResponseDto.ResponseData> modify(
+            @PathVariable Long scheduleId,
+            @PathVariable Long classId,
+            @RequestBody @Valid SchedulesRequestDto.RequestData requestData,
+            Principal principal
+    ) {
+        SchedulesResponseDto.ResponseData response =
+                schedulesService.modify(scheduleId, classId, requestData, extractUserId(principal));
+        return BaseResponse.ok(SuccessCode.SCHEDULE_MODIFY_SUCCESS, response);
+    }
+
     @GetMapping("/classes/{classId}")
     @Operation(summary = "모임 전체 일정 조회")
     public BaseResponse<List<SchedulesResponseDto.ResponseData>> getSchedulesList(

@@ -47,8 +47,9 @@ public enum ErrorCode {
     // 오류 종류 : 일정
     SCHEDULE_CREATE_FAILED(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4001, "일정 생성에 실패했습니다."),
     SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, Boolean.FALSE, 4002, "해당 일정을 찾을 수 없습니다."),
-    INVALID_MEETING_TIME(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4003, "과거 날짜는 설정할 수 없습니다."),
-    INVALID_MEETING_TIME_FORMAT(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4004, "날짜 형식이 올바르지 않습니다."),
+    SCHEDULE_UPDATE_FAILED(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4003, "일정 수정에 실패했습니다."),
+    INVALID_MEETING_TIME(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4005, "과거 날짜는 설정할 수 없습니다."),
+    INVALID_MEETING_TIME_FORMAT(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4006, "날짜 형식이 올바르지 않습니다."),
 
     //9000 ~ 9999
     //오류 종류 : 공통 에러

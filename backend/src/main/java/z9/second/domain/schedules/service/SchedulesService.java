@@ -87,6 +87,48 @@ public class SchedulesService {
         }
     }
 
+    //수정
+    @Transactional
+    public SchedulesResponseDto.ResponseData modify(Long scheduleId, Long classId, SchedulesRequestDto.RequestData requestData, Long userId) {
+        try {
+            // 일정 조회
+            SchedulesEntity schedule = schedulesRepository.findScheduleByIdAndClassesId(scheduleId, classId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.SCHEDULE_NOT_FOUND));
+
+            // 모임장 권한 체크
+            if (!schedule.getClasses().getMasterId().equals(userId)) {
+                throw new CustomException(ErrorCode.CLASS_ACCESS_DENIED);
+            }
+
+            // 날짜 형식 검증
+            LocalDateTime meetingDateTime = LocalDateTime.parse(
+                    requestData.getMeetingTime(),
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+            );
+
+            // 현재 시간과 비교하여 과거인지 확인
+            if (meetingDateTime.isBefore(LocalDateTime.now())) {
+                throw new CustomException(ErrorCode.INVALID_MEETING_TIME);
+            }
+
+            // 일정 정보 업데이트
+            schedule.updateSchedule(
+                    requestData.getMeetingTime(),
+                    requestData.getMeetingTitle()
+            );
+
+            // DB에 저장
+            SchedulesEntity savedSchedule = schedulesRepository.save(schedule);
+
+            // 수정된 결과를 ResponseDto로 변환해서 반환
+            return SchedulesResponseDto.ResponseData.from(savedSchedule);
+        } catch (DateTimeParseException e) {
+            throw new CustomException(ErrorCode.INVALID_MEETING_TIME_FORMAT);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.SCHEDULE_UPDATE_FAILED);
+        }
+    }
+
     @Transactional(readOnly = true)
     public List<SchedulesResponseDto.ResponseData> getSchedulesList(Long classId, Long userId) {
         ClassEntity classes = classesRepository.findById(classId)
