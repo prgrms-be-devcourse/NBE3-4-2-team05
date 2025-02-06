@@ -7,6 +7,7 @@ import Login from "./pages/login/Login";
 import SignUp from "./pages/signUp/SignUp";
 import Class from "./pages/class/Class";
 import Schedule from "./pages/schedule/Schedule";
+
 import Layout from "./pages/layout/Layout";
 
 const App = () => {

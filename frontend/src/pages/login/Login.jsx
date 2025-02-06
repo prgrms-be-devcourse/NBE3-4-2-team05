@@ -30,6 +30,7 @@ const Login = () => {
 
 	const onClickLogin = async (e) => {
 		e.preventDefault();
+
 		if (!Validate(body)) return;
 		try {
 			setIsLoading(true);
