@@ -62,8 +62,8 @@ public abstract class SchedulesBaseTest extends SpringBootTestSupporter {
         classEntity.getUsers().add(classUser);
     }
 
-    protected SchedulesRequestDto.RequestData createScheduleRequest(Long classId) {
-        return SchedulesRequestDto.RequestData.builder()
+    protected SchedulesRequestDto.CreateRequest createScheduleRequest(Long classId) {
+        return SchedulesRequestDto.CreateRequest.builder()
                 .classId(classId)
                 .meetingTime(getTestMeetingTime())
                 .meetingTitle(TEST_MEETING_TITLE)

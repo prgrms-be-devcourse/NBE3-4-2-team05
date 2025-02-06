@@ -27,7 +27,7 @@ public class SchedulesService {
 
     //생성
     @Transactional
-    public SchedulesResponseDto.ResponseData create(SchedulesRequestDto.RequestData requestData, Long userId) {
+    public SchedulesResponseDto.ResponseData create(SchedulesRequestDto.CreateRequest requestData, Long userId) {
         ClassEntity classes = classesRepository.findById(requestData.getClassId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
 
@@ -89,7 +89,7 @@ public class SchedulesService {
 
     //수정
     @Transactional
-    public SchedulesResponseDto.ResponseData modify(Long scheduleId, Long classId, SchedulesRequestDto.RequestData requestData, Long userId) {
+    public SchedulesResponseDto.ResponseData modify(Long scheduleId, Long classId, SchedulesRequestDto.UpdateRequest requestData, Long userId) {
         // 일정 조회 및 모임 Id 조회
         SchedulesEntity schedule = schedulesRepository.findScheduleByIdAndClassesId(scheduleId, classId)
                 .orElseThrow(() -> new CustomException(ErrorCode.SCHEDULE_NOT_FOUND));

@@ -28,7 +28,7 @@ class SchedulesControllerTest extends SchedulesBaseTest {
     private String memberToken;
     private ClassEntity classEntity;
     private SchedulesEntity scheduleEntity;
-    private SchedulesRequestDto.RequestData scheduleRequest;
+    private SchedulesRequestDto.CreateRequest scheduleRequest;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -97,7 +97,7 @@ class SchedulesControllerTest extends SchedulesBaseTest {
     @DisplayName("모임 일정 생성 실패 - 유효성 검증 실패")
     void createSchedule_ValidationFail() throws Exception {
         // given
-        SchedulesRequestDto.RequestData request = SchedulesRequestDto.RequestData.builder()
+        SchedulesRequestDto.CreateRequest request = SchedulesRequestDto.CreateRequest.builder()
                 .classId(classEntity.getId())
                 .meetingTime("2025-02-05") // 잘못된 형식
                 .meetingTitle("테") // 2글자 미만
@@ -208,8 +208,7 @@ class SchedulesControllerTest extends SchedulesBaseTest {
     @DisplayName("모임 일정 수정 - 모임장 권한으로 성공")
     void modifySchedule() throws Exception {
         // given
-        SchedulesRequestDto.RequestData updateRequest = SchedulesRequestDto.RequestData.builder()
-                .classId(classEntity.getId())
+        SchedulesRequestDto.UpdateRequest updateRequest = SchedulesRequestDto.UpdateRequest.builder()
                 .meetingTime(getTestMeetingTime())
                 .meetingTitle("수정된 테스트 일정")
                 .build();
@@ -235,8 +234,7 @@ class SchedulesControllerTest extends SchedulesBaseTest {
     void modifySchedule_NotMaster() throws Exception {
         // given
         addMemberToClass(memberUser, classEntity);
-        SchedulesRequestDto.RequestData updateRequest = SchedulesRequestDto.RequestData.builder()
-                .classId(classEntity.getId())
+        SchedulesRequestDto.UpdateRequest updateRequest = SchedulesRequestDto.UpdateRequest.builder()
                 .meetingTime(getTestMeetingTime())
                 .meetingTitle("수정된 테스트 일정")
                 .build();

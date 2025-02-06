@@ -23,7 +23,7 @@ class SchedulesServiceTest extends SchedulesBaseTest {
     private User memberUser;
     private ClassEntity classEntity;
     private SchedulesEntity scheduleEntity;
-    private SchedulesRequestDto.RequestData scheduleRequest;
+    private SchedulesRequestDto.CreateRequest scheduleRequest;
 
     @BeforeEach
     void setUp() {
@@ -78,7 +78,7 @@ class SchedulesServiceTest extends SchedulesBaseTest {
     @Order(2)
     void create_ClassNotFound() {
         // given
-        SchedulesRequestDto.RequestData request = SchedulesRequestDto.RequestData.builder()
+        SchedulesRequestDto.CreateRequest request = SchedulesRequestDto.CreateRequest.builder()
                 .classId(999L)
                 .meetingTime("2025-02-05 14:00:00")
                 .meetingTitle("테스트 일정")
@@ -144,7 +144,7 @@ class SchedulesServiceTest extends SchedulesBaseTest {
 
         // then
         assertThat(schedules).hasSize(1);
-        assertThat(schedules.get(0).getMeetingTitle()).isEqualTo("테스트 일정");
+        assertThat(schedules.getFirst().getMeetingTitle()).isEqualTo("테스트 일정");
     }
 
     @DisplayName("특정 일정 상세 조회 - 모임 멤버로 조회 성공")
@@ -169,8 +169,7 @@ class SchedulesServiceTest extends SchedulesBaseTest {
     void modify_Success() {
         // given
         String newMeetingTime = getTestMeetingTime();
-        SchedulesRequestDto.RequestData updateRequest = SchedulesRequestDto.RequestData.builder()
-                .classId(classEntity.getId())
+        SchedulesRequestDto.UpdateRequest updateRequest = SchedulesRequestDto.UpdateRequest.builder()
                 .meetingTime(newMeetingTime)
                 .meetingTitle("수정된 테스트 일정")
                 .build();
@@ -195,8 +194,7 @@ class SchedulesServiceTest extends SchedulesBaseTest {
     @DisplayName("일정 수정 실패 - 존재하지 않는 일정")
     void modify_ScheduleNotFound() {
         // given
-        SchedulesRequestDto.RequestData updateRequest = SchedulesRequestDto.RequestData.builder()
-                .classId(classEntity.getId())
+        SchedulesRequestDto.UpdateRequest updateRequest = SchedulesRequestDto.UpdateRequest.builder()
                 .meetingTime(getTestMeetingTime())
                 .meetingTitle("수정된 테스트 일정")
                 .build();
@@ -215,8 +213,7 @@ class SchedulesServiceTest extends SchedulesBaseTest {
     void modify_AccessDenied() {
         // given
         addMemberToClass(memberUser, classEntity);
-        SchedulesRequestDto.RequestData updateRequest = SchedulesRequestDto.RequestData.builder()
-                .classId(classEntity.getId())
+        SchedulesRequestDto.UpdateRequest updateRequest = SchedulesRequestDto.UpdateRequest.builder()
                 .meetingTime(getTestMeetingTime())
                 .meetingTitle("수정된 테스트 일정")
                 .build();
