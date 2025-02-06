@@ -91,8 +91,6 @@ const FOOTER_ICONS = [
 const Element = {
   LOGIN_FORM,
   FOOTER_ICONS,
-const Element = {
-	LOGIN_FORM,
-};
+}
 
 export { Element };
