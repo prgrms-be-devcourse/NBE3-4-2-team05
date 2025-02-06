@@ -9,7 +9,7 @@ import z9.second.domain.schedules.dto.SchedulesRequestDto;
 import z9.second.domain.schedules.dto.SchedulesResponseDto;
 import z9.second.global.exception.CustomException;
 import z9.second.global.response.ErrorCode;
-import z9.second.model.schedules.SchedulesCheckInEntity;
+import z9.second.model.checkIn.CheckInEntity;
 import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.schedules.SchedulesRepository;
 
@@ -56,7 +56,7 @@ public class SchedulesService {
                     .build();
 
             // 모임장의 체크인 생성
-            SchedulesCheckInEntity masterCheckIn = SchedulesCheckInEntity.builder()
+            CheckInEntity masterCheckIn = CheckInEntity.builder()
                     .schedules(schedules)
                     .userId(classes.getMasterId())
                     .checkIn(false)
@@ -66,7 +66,7 @@ public class SchedulesService {
             // 모든 모임 멤버의 체크인 생성
             classes.getUsers().forEach(user -> {
                 if (!user.getUserId().equals(classes.getMasterId())) {  // 모임장 중복 방지
-                    SchedulesCheckInEntity memberCheckIn = SchedulesCheckInEntity.builder()
+                    CheckInEntity memberCheckIn = CheckInEntity.builder()
                             .schedules(schedules)
                             .userId(user.getUserId())
                             .checkIn(false)

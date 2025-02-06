@@ -52,6 +52,8 @@ public enum ErrorCode {
 
     //5000 ~ 5999
     // 오류 종류 : 체크인
+    CHECK_IN_CREATE_FAILED(HttpStatus.BAD_REQUEST, Boolean.FALSE, 5001, "참석 여부 생성에 실패했습니다."),
+    INVALID_CHECK_IN(HttpStatus.BAD_REQUEST, Boolean.FALSE, 5003, "지난 일정입니다!"),
 
     //9000 ~ 9999
     //오류 종류 : 공통 에러

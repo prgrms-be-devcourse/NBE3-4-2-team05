@@ -11,11 +11,12 @@ public class CheckInRequestDto {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class CreateCheckIn {
+    public static class CheckInDto {
         @NotNull(message = "Schedule ID must not be null")
         private Long scheduleId;
 
         @NotNull(message = "Check-in status must not be null")
         private Boolean checkIn;
     }
+
 }

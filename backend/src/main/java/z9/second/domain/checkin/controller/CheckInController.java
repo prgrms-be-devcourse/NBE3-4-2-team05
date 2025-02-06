@@ -6,10 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import z9.second.domain.checkin.dto.CheckInRequestDto;
 import z9.second.domain.checkin.service.CheckInService;
 import z9.second.global.response.BaseResponse;
@@ -28,11 +25,11 @@ public class CheckInController {
     @SecurityRequirement(name = "bearerAuth")
     public BaseResponse<Void> createCheckIn(
             Principal principal,
-            @Valid @RequestBody CheckInRequestDto.CreateCheckIn requestDto
+            @Valid @RequestBody CheckInRequestDto.CheckInDto requestDto
     ) {
         Long userId = Long.parseLong(principal.getName());
-        checkInService.createCheckIn(userId, requestDto);
-
+        checkInService.CheckIn(userId, requestDto);
         return BaseResponse.ok(SuccessCode.CHECK_IN_CREATE_SUCCESS);
     }
+
 }
