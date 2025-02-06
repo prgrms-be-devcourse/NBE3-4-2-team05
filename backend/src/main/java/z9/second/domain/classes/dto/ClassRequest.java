@@ -13,7 +13,7 @@ public class ClassRequest {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class RequestData {
+    public static class ClassRequestData {
         @Size(min = 3, message = "제목은 3글자 이상이어야 합니다.")
         private String name;
 
@@ -23,7 +23,7 @@ public class ClassRequest {
         @Size(min = 10, message = "내용은 10글자 이상이어야 합니다.")
         private String description;
 
-        public static ClassEntity from(RequestData requestData) {
+        public static ClassEntity from(ClassRequestData requestData) {
             return ClassEntity
                            .builder()
                            .name(requestData.getName())
@@ -31,5 +31,17 @@ public class ClassRequest {
                            .description(requestData.getDescription())
                            .build();
         }
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ModifyRequestData {
+        @Size(min = 3, message = "제목은 3글자 이상이어야 합니다.")
+        private String name;
+
+        @Size(min = 10, message = "내용은 10글자 이상이어야 합니다.")
+        private String description;
     }
 }

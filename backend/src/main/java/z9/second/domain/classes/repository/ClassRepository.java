@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ClassRepository extends JpaRepository<ClassEntity, Long> {
     List<ClassEntity> findByMasterId(Long userId);
+
+    boolean existsByMasterId(Long userId);
 }

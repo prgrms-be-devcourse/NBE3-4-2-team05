@@ -7,13 +7,24 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import z9.second.domain.classes.entity.ClassEntity;
+import z9.second.domain.classes.entity.ClassUserEntity;
+import z9.second.domain.classes.repository.ClassRepository;
+import z9.second.domain.classes.repository.ClassUserRepository;
 import z9.second.domain.favorite.entity.FavoriteEntity;
 import z9.second.domain.favorite.repository.FavoriteRepository;
 import z9.second.model.sample.SampleEntity;
 import z9.second.model.sample.SampleRepository;
+import z9.second.model.schedules.SchedulesCheckInEntity;
+import z9.second.model.schedules.SchedulesEntity;
+import z9.second.model.schedules.SchedulesRepository;
 import z9.second.model.user.User;
 import z9.second.model.user.UserRepository;
+import z9.second.model.userfavorite.UserFavorite;
+import z9.second.model.userfavorite.UserFavoriteRepository;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,13 +37,36 @@ public class BaseInitData {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final FavoriteRepository favoriteRepository;
+    private final UserFavoriteRepository userFavoriteRepository;
+    private final ClassRepository classRepository;
+    private final ClassUserRepository classUserRepository;
+    private final SchedulesRepository schedulesRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     @Transactional
     void init() {
         List<SampleEntity> sampleData = createSampleData(10);
         List<User> savedUserData = createUserData(10);
+        List<ClassEntity> savedClassData = createClassData(10, savedUserData);
+        createScheduleData(savedClassData);
         List<FavoriteEntity> saveFavoriteData = createFavoriteData();
+        List<UserFavorite> savedUserFavoriteData = createUserFavoriteData(savedUserData, saveFavoriteData);
+    }
+
+    private List<UserFavorite> createUserFavoriteData(
+            List<User> savedUserData,
+            List<FavoriteEntity> saveFavoriteData) {
+        List<UserFavorite> savedUserFavoriteData = new ArrayList<>();
+
+        for (User savedUser : savedUserData) {
+            for (FavoriteEntity savedFavorite : saveFavoriteData) {
+                UserFavorite newUserFavorite = UserFavorite.createNewUserFavorite(savedUser, savedFavorite);
+                UserFavorite save = userFavoriteRepository.save(newUserFavorite);
+                savedUserFavoriteData.add(save);
+            }
+        }
+
+        return savedUserFavoriteData;
     }
 
     private List<SampleEntity> createSampleData(final int count) {
@@ -93,5 +127,79 @@ public class BaseInitData {
         savedFavoriteList.addAll(List.of(favorite1, favorite2, favorite3, favorite4, favorite5, favorite6));
 
         return savedFavoriteList;
+    }
+
+    private List<ClassEntity> createClassData(final int count, final List<User> users) {
+        if (classRepository.count() != 0) {
+            return classRepository.findAll();
+        }
+
+        List<ClassEntity> savedClassList = new ArrayList<>();
+        for (int i = 1; i <= count; i++) {
+            // 각 클래스의 모임장을 users 리스트에서 순차적으로 설정
+            Long masterId = users.get(i-1).getId();
+
+            ClassEntity classEntity = ClassEntity.builder()
+                    .name("테스트 모임" + i)
+                    .favorite("취미" + i)
+                    .description("테스트 모임" + i + "의 설명입니다.")
+                    .masterId(masterId)
+                    .build();
+
+            ClassEntity savedClass = classRepository.save(classEntity);
+            savedClassList.add(savedClass);
+
+            // 모임장을 ClassUser로 추가
+            ClassUserEntity classUser = ClassUserEntity.builder()
+                    .classes(savedClass)
+                    .userId(masterId)
+                    .build();
+            classUserRepository.save(classUser);
+        }
+
+        return savedClassList;
+    }
+
+    private void createScheduleData(List<ClassEntity> classes) {
+        if (schedulesRepository.count() != 0) {
+            return;
+        }
+
+        for (ClassEntity classEntity : classes) {
+            // 각 클래스마다 3개의 일정 생성
+            for (int i = 1; i <= 3; i++) {
+                // 현재 시간으로부터 i주 후로 설정
+                LocalDateTime futureTime = LocalDateTime.now().plusWeeks(i);
+                String meetingTime = futureTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+                SchedulesEntity schedule = SchedulesEntity.builder()
+                        .classes(classEntity)
+                        .meetingTime(meetingTime)
+                        .meetingTitle("모임 " + classEntity.getId() + "의 " + i + "번째 일정")
+                        .build();
+
+                // 모임장의 체크인 생성
+                SchedulesCheckInEntity masterCheckIn = SchedulesCheckInEntity.builder()
+                        .schedules(schedule)
+                        .userId(classEntity.getMasterId())
+                        .checkIn(false)
+                        .build();
+                schedule.getCheckins().add(masterCheckIn);
+
+                // 모든 모임 멤버의 체크인 생성
+                classEntity.getUsers().forEach(user -> {
+                    if (!user.getUserId().equals(classEntity.getMasterId())) {
+                        SchedulesCheckInEntity memberCheckIn = SchedulesCheckInEntity.builder()
+                                .schedules(schedule)
+                                .userId(user.getUserId())
+                                .checkIn(false)
+                                .build();
+                        schedule.getCheckins().add(memberCheckIn);
+                    }
+                });
+
+                schedulesRepository.save(schedule);
+            }
+        }
     }
 }

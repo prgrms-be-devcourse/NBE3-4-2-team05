@@ -2,6 +2,7 @@ package z9.second.model.schedules;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class SchedulesCheckInEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +23,7 @@ public class SchedulesCheckInEntity {
     private SchedulesEntity schedules;
 
     @Column(name = "user_id", nullable = false)
-    private Long userId;  // Entity 관계 매핑 대신 단순 컬럼으로 저장
+    private Long userId;
 
     @Column(name = "check_in", nullable = false)
     private boolean checkIn;

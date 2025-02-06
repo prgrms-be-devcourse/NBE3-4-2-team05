@@ -1,5 +1,7 @@
 package z9.second.global.utils;
 
+import static z9.second.global.security.constant.JWTConstant.ACCESS_TOKEN_PREFIX;
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -25,5 +27,9 @@ public abstract class ControllerUtils {
 
     public static int parseMsToSec(Long ms) {
         return (int) (ms / 1000);
+    }
+
+    public static String makeBearerToken(String refreshToken) {
+        return String.format("%s %s", ACCESS_TOKEN_PREFIX, refreshToken);
     }
 }

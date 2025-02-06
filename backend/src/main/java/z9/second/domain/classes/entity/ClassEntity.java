@@ -33,9 +33,48 @@ public class ClassEntity {
     @Column(name = "master_id", nullable = false)
     private Long masterId;
 
-    @OneToMany(mappedBy = "classes")
+    @OneToMany(mappedBy = "classes", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @Builder.Default
     private List<ClassUserEntity> users = new ArrayList<>();
 
-    @OneToMany(mappedBy = "classes")
+    @OneToMany(mappedBy = "classes", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @Builder.Default
     private List<ClassBlackListEntity> blackLists = new ArrayList<>();
+
+    public ClassUserEntity addMember(Long userId) {
+        ClassUserEntity user = ClassUserEntity.builder()
+                .classes(this)
+                .userId(userId)
+                .build();
+
+        users.add(user);
+
+        return user;
+    }
+
+    public void removeMember(ClassUserEntity user) {
+        users.remove(user);
+    }
+
+    public void updateClassInfo(String name, String description) {
+        if (name != null) {
+            this.name = name;
+        }
+        if (description != null) {
+            this.description = description;
+        }
+    }
+
+    public void setMasterId(Long userId) {
+        masterId = userId;
+    }
+
+    public void addBlackList(Long userId) {
+        ClassBlackListEntity blackUser = ClassBlackListEntity.builder()
+                .classes(this)
+                .userId(userId)
+                .build();
+
+        blackLists.add(blackUser);
+    }
 }

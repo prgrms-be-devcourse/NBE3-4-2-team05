@@ -32,6 +32,12 @@ public class SchedulesEntity extends BaseEntity {
     @Column(name = "meeting_title", nullable = false)
     private String meetingTitle;
 
-    @OneToMany(mappedBy = "schedules",cascade = CascadeType.ALL)
+    @Builder.Default
+    @OneToMany(mappedBy = "schedules", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SchedulesCheckInEntity> checkins = new ArrayList<>();
+
+    public void updateSchedule(String meetingTime, String meetingTitle) {
+        this.meetingTime = meetingTime;
+        this.meetingTitle = meetingTitle;
+    }
 }

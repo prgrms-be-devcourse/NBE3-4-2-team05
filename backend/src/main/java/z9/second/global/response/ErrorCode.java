@@ -21,19 +21,35 @@ public enum ErrorCode {
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, Boolean.FALSE, 1004, "토큰이 만료되었습니다. 재로그인 진행해 주세요."),
     OAUTH_USER_LOGIN_FAIL(HttpStatus.BAD_REQUEST, Boolean.FALSE, 1005, "소셜 로그인 회원 입니다. 소셜 로그인으로 진행 해 주세요."),
     INVALID_OAUTH_PROVIDER(HttpStatus.BAD_REQUEST, Boolean.FALSE, 1006, "지원하지 않는 로그인 방식 입니다."),
+    NOT_EXIST_FAVORITE(HttpStatus.BAD_REQUEST, Boolean.FALSE, 1007, "등록되지 않은 관심사 입니다."),
+    DUPLICATED_LOGIN_ID(HttpStatus.BAD_REQUEST, Boolean.FALSE, 1008, "중복된 로그인 아이디 입니다."),
+    DUPLICATED_NICKNAME(HttpStatus.BAD_REQUEST, Boolean.FALSE, 1009, "중복된 닉네임 입니다."),
 
     //2000 ~ 2999
     // 오류 종류 : 회원 도메인 에러
+    USER_NOT_FOUND(HttpStatus.BAD_REQUEST, Boolean.FALSE, 2000, "로그인 된 회원 정보 조회 실패. 재로그인 해주세요."),
+    ALREADY_DELETE_USER(HttpStatus.BAD_REQUEST, Boolean.FALSE, 2001, "이미 탈퇴된 회원입니다."),
+    LOGIN_RESIGN_USER(HttpStatus.BAD_REQUEST, Boolean.FALSE, 2002, "탈퇴된 회원 입니다."),
 
     //3000 ~ 3999
     // 오류 종류 : 모임
     CLASS_CREATE_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, Boolean.FALSE, 3000, "더 이상 모임을 생성하실 수 없습니다."),
     CLASS_NOT_FOUND(HttpStatus.NOT_FOUND, Boolean.FALSE, 3001, "해당하는 모임을 찾을 수 없습니다."),
     CLASS_ACCESS_DENIED(HttpStatus.FORBIDDEN, Boolean.FALSE, 3002, "해당 모임에 대한 권한이 없습니다."),
+    CLASS_EXISTS_MEMBER(HttpStatus.BAD_REQUEST, Boolean.FALSE, 3003, "이미 가입된 회원입니다."),
+    CLASS_NOT_EXISTS_MEMBER(HttpStatus.NOT_FOUND, Boolean.FALSE, 3003, "모임에 가입된 회원이 아닙니다."),
+    CLASS_MASTER_TRANSFER_REQUIRED(HttpStatus.FORBIDDEN, Boolean.FALSE, 3004, "마스터는 권한을 위임해야만 탈퇴할 수 있습니다."),
+    CLASS_MODIFY_DENIED(HttpStatus.FORBIDDEN, Boolean.FALSE, 3005, "모임방의 정보는 모임장만 수정 가능합니다."),
+    CLASS_USER_FORBIDDEN(HttpStatus.FORBIDDEN, Boolean.FALSE, 3006, "권한이 없습니다."),
+    CLASS_DELETE_DENIED_WITH_MEMBERS(HttpStatus.BAD_REQUEST, Boolean.FALSE, 3007, "회원이 존재하는 모임은 삭제할 수 없습니다. 권한을 위임하고 탈퇴해주세요."),
 
     //4000 ~ 4999
     // 오류 종류 : 일정
     SCHEDULE_CREATE_FAILED(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4001, "일정 생성에 실패했습니다."),
+    SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, Boolean.FALSE, 4002, "해당 일정을 찾을 수 없습니다."),
+    SCHEDULE_UPDATE_FAILED(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4003, "일정 수정에 실패했습니다."),
+    INVALID_MEETING_TIME(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4005, "과거 날짜는 설정할 수 없습니다."),
+    INVALID_MEETING_TIME_FORMAT(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4006, "날짜 형식이 올바르지 않습니다."),
 
     //9000 ~ 9999
     //오류 종류 : 공통 에러

@@ -80,17 +80,13 @@ public class ReissueFilter extends OncePerRequestFilter {
         // 7. 해당 api 요청 응답에 새로운 토큰 값 저장
         ControllerUtils.addHeaderResponse(
                 ACCESS_TOKEN_HEADER,
-                newAccessToken,
+                ControllerUtils.makeBearerToken(newAccessToken),
                 response);
         ControllerUtils.addCookieResponse(
                 REFRESH_TOKEN_HEADER,
                 newRefreshToken,
                 ControllerUtils.parseMsToSec(jwtProperties.getRefreshExpiration()),
                 response);
-
-        log.info(String.format("userId:%s 사용자, 토큰 재발급 되었습니다.", userId));
-        log.info(String.format("Refresh Token = %s", newRefreshToken));
-        log.info(String.format("Access Token = %s", newAccessToken));
 
         filterChain.doFilter(request, response);
     }

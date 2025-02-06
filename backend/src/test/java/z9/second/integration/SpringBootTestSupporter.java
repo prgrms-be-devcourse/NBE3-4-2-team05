@@ -10,9 +10,16 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import z9.second.domain.authentication.service.AuthenticationService;
+import z9.second.domain.user.service.UserService;
 import z9.second.global.redis.RedisRepository;
 import z9.second.domain.favorite.repository.FavoriteRepository;
+import z9.second.domain.classes.repository.ClassRepository;
+import z9.second.domain.classes.repository.ClassUserRepository;
+import z9.second.domain.schedules.service.SchedulesService;
+import z9.second.model.schedules.SchedulesCheckInEntityRepository;
+import z9.second.model.schedules.SchedulesRepository;
 import z9.second.model.user.UserRepository;
+import z9.second.model.userfavorite.UserFavoriteRepository;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -32,6 +39,10 @@ public abstract class SpringBootTestSupporter {
     protected UserRepository userRepository;
     @Autowired
     protected FavoriteRepository favoriteRepository;
+    @Autowired
+    protected UserFavoriteRepository userFavoriteRepository;
+    @Autowired
+    protected SchedulesCheckInEntityRepository schedulesCheckInEntityRepository;
 
 
     /**
@@ -39,6 +50,8 @@ public abstract class SpringBootTestSupporter {
      */
     @Autowired
     protected AuthenticationService authenticationService;
+    @Autowired
+    protected UserService userService;
 
     /**
      * Common
@@ -51,6 +64,18 @@ public abstract class SpringBootTestSupporter {
 
     @Autowired
     protected ObjectMapper objectMapper;
+
+    @Autowired
+    protected ClassRepository classRepository;
+
+    @Autowired
+    protected ClassUserRepository classUserRepository;
+
+    @Autowired
+    protected SchedulesRepository schedulesRepository;
+
+    @Autowired
+    protected SchedulesService schedulesService;
 
     /**
      * Mocking
