@@ -23,7 +23,7 @@ class SchedulesServiceTest extends SchedulesBaseTest {
     private User memberUser;
     private ClassEntity classEntity;
     private SchedulesEntity scheduleEntity;
-    private SchedulesRequestDto.RequestData scheduleRequest;
+    private SchedulesRequestDto.CreateRequest scheduleRequest;
 
     @BeforeEach
     void setUp() {
@@ -78,7 +78,7 @@ class SchedulesServiceTest extends SchedulesBaseTest {
     @Order(2)
     void create_ClassNotFound() {
         // given
-        SchedulesRequestDto.RequestData request = SchedulesRequestDto.RequestData.builder()
+        SchedulesRequestDto.CreateRequest request = SchedulesRequestDto.CreateRequest.builder()
                 .classId(999L)
                 .meetingTime("2025-02-05 14:00:00")
                 .meetingTitle("테스트 일정")
@@ -144,7 +144,7 @@ class SchedulesServiceTest extends SchedulesBaseTest {
 
         // then
         assertThat(schedules).hasSize(1);
-        assertThat(schedules.get(0).getMeetingTitle()).isEqualTo("테스트 일정");
+        assertThat(schedules.getFirst().getMeetingTitle()).isEqualTo("테스트 일정");
     }
 
     @DisplayName("특정 일정 상세 조회 - 모임 멤버로 조회 성공")
@@ -161,5 +161,68 @@ class SchedulesServiceTest extends SchedulesBaseTest {
         // then
         assertThat(response).isNotNull();
         assertThat(response.getMeetingTitle()).isEqualTo("테스트 일정");
+    }
+
+    @Test
+    @Order(8)
+    @DisplayName("일정 수정 성공 - 모임장 권한")
+    void modify_Success() {
+        // given
+        String newMeetingTime = getTestMeetingTime();
+        SchedulesRequestDto.UpdateRequest updateRequest = SchedulesRequestDto.UpdateRequest.builder()
+                .meetingTime(newMeetingTime)
+                .meetingTitle("수정된 테스트 일정")
+                .build();
+
+        // when
+        SchedulesResponseDto.ResponseData response =
+                schedulesService.modify(scheduleEntity.getId(), classEntity.getId(), updateRequest, masterUser.getId());
+
+        // then
+        assertThat(response).isNotNull();
+        assertThat(response.getMeetingTitle()).isEqualTo("수정된 테스트 일정");
+        assertThat(response.getMeetingTime()).isEqualTo(newMeetingTime);
+
+        // DB에 실제로 수정되었는지 확인
+        SchedulesEntity updatedSchedule = schedulesRepository.findById(scheduleEntity.getId()).orElseThrow();
+        assertThat(updatedSchedule.getMeetingTitle()).isEqualTo("수정된 테스트 일정");
+        assertThat(updatedSchedule.getMeetingTime()).isEqualTo(newMeetingTime);
+    }
+
+    @Test
+    @Order(9)
+    @DisplayName("일정 수정 실패 - 존재하지 않는 일정")
+    void modify_ScheduleNotFound() {
+        // given
+        SchedulesRequestDto.UpdateRequest updateRequest = SchedulesRequestDto.UpdateRequest.builder()
+                .meetingTime(getTestMeetingTime())
+                .meetingTitle("수정된 테스트 일정")
+                .build();
+
+        // when & then
+        assertThatThrownBy(() ->
+                schedulesService.modify(999L, classEntity.getId(), updateRequest, masterUser.getId()))
+                .isInstanceOf(CustomException.class)
+                .extracting("code")
+                .isEqualTo(ErrorCode.SCHEDULE_NOT_FOUND);
+    }
+
+    @Test
+    @Order(10)
+    @DisplayName("일정 수정 실패 - 권한 없는 멤버")
+    void modify_AccessDenied() {
+        // given
+        addMemberToClass(memberUser, classEntity);
+        SchedulesRequestDto.UpdateRequest updateRequest = SchedulesRequestDto.UpdateRequest.builder()
+                .meetingTime(getTestMeetingTime())
+                .meetingTitle("수정된 테스트 일정")
+                .build();
+
+        // when & then
+        assertThatThrownBy(() ->
+                schedulesService.modify(scheduleEntity.getId(), classEntity.getId(), updateRequest, memberUser.getId()))
+                .isInstanceOf(CustomException.class)
+                .extracting("code")
+                .isEqualTo(ErrorCode.CLASS_ACCESS_DENIED);
     }
 }
