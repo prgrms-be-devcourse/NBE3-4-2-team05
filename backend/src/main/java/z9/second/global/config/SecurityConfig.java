@@ -84,6 +84,7 @@ public class SecurityConfig {
                 //user Domain
                 .requestMatchers(GET, "/api/v1/users").authenticated()
                 .requestMatchers(PATCH, "/api/v1/users/profile").authenticated()
+                .requestMatchers(GET, "/api/v1/users/schedules").authenticated()
                 .anyRequest().permitAll());
 
         http.exceptionHandling((exception) -> exception

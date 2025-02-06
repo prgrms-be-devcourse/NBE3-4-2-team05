@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import z9.second.domain.classes.entity.ClassEntity;
 import z9.second.model.BaseEntity;
-import z9.second.model.checkIn.CheckInEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,5 +35,10 @@ public class SchedulesEntity extends BaseEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "schedules", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CheckInEntity> checkins = new ArrayList<>();
+    private List<ClassEntity> checkins = new ArrayList<>();
+
+    public void updateSchedule(String meetingTime, String meetingTitle) {
+        this.meetingTime = meetingTime;
+        this.meetingTitle = meetingTitle;
+    }
 }

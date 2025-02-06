@@ -42,13 +42,15 @@ public enum ErrorCode {
     CLASS_MODIFY_DENIED(HttpStatus.FORBIDDEN, Boolean.FALSE, 3005, "모임방의 정보는 모임장만 수정 가능합니다."),
     CLASS_USER_FORBIDDEN(HttpStatus.FORBIDDEN, Boolean.FALSE, 3006, "권한이 없습니다."),
     CLASS_DELETE_DENIED_WITH_MEMBERS(HttpStatus.BAD_REQUEST, Boolean.FALSE, 3007, "회원이 존재하는 모임은 삭제할 수 없습니다. 권한을 위임하고 탈퇴해주세요."),
+    CLASS_USER_BANNED(HttpStatus.FORBIDDEN, Boolean.FALSE, 3008, "강퇴당한 회원은 재가입 하실 수 없습니다."),
 
     //4000 ~ 4999
     // 오류 종류 : 일정
     SCHEDULE_CREATE_FAILED(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4001, "일정 생성에 실패했습니다."),
     SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, Boolean.FALSE, 4002, "해당 일정을 찾을 수 없습니다."),
-    INVALID_MEETING_TIME(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4003, "과거 날짜는 설정할 수 없습니다."),
-    INVALID_MEETING_TIME_FORMAT(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4004, "날짜 형식이 올바르지 않습니다."),
+    SCHEDULE_UPDATE_FAILED(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4003, "일정 수정에 실패했습니다."),
+    INVALID_MEETING_TIME(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4005, "과거 날짜는 설정할 수 없습니다."),
+    INVALID_MEETING_TIME_FORMAT(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4006, "날짜 형식이 올바르지 않습니다."),
 
     //5000 ~ 5999
     // 오류 종류 : 체크인

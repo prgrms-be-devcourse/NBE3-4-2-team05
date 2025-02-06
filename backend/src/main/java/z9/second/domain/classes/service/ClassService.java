@@ -7,6 +7,7 @@ import z9.second.domain.classes.dto.ClassRequest;
 import z9.second.domain.classes.dto.ClassResponse;
 import z9.second.domain.classes.entity.ClassEntity;
 import z9.second.domain.classes.entity.ClassUserEntity;
+import z9.second.domain.classes.repository.ClassBlackListRepository;
 import z9.second.domain.classes.repository.ClassRepository;
 import z9.second.domain.classes.repository.ClassUserRepository;
 import z9.second.global.exception.CustomException;
@@ -22,6 +23,7 @@ public class ClassService {
     private final ClassRepository classRepository;
     private final ClassUserRepository classUserRepository;
     private final UserRepository userRepository;
+    private final ClassBlackListRepository classBlackListRepository;
 
     @Transactional
     public ClassResponse.ClassResponseData save(ClassRequest.ClassRequestData requestData, Long userId) {
@@ -49,10 +51,10 @@ public class ClassService {
     public ClassResponse.EntryResponseData getClassInfo(Long classId, Long userId) {
         // 1. 모임 존재 여부 확인
         ClassEntity classEntity = classRepository.findById(classId)
-              .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
 
         // 2. 유저가 모임 멤버인지 확인
-        if(!classUserRepository.existsByUserIdAndClassesId(userId, classId)) {
+        if (!classUserRepository.existsByUserIdAndClassesId(userId, classId)) {
             throw new CustomException(ErrorCode.CLASS_ACCESS_DENIED);
         }
         return ClassResponse.EntryResponseData.from(classEntity);
@@ -67,6 +69,11 @@ public class ClassService {
         // 이미 가입된 회원인지 검증
         if (classUserRepository.existsByClasses_IdAndUserId(classId, userId)) {
             throw new CustomException(ErrorCode.CLASS_EXISTS_MEMBER);
+        }
+
+        // 강퇴된 회원 재가입 방지
+        if (classBlackListRepository.existsByClasses_IdAndUserId(classId, userId)) {
+            throw new CustomException(ErrorCode.CLASS_USER_BANNED);
         }
 
         classEntity.addMember(userId);
@@ -92,10 +99,10 @@ public class ClassService {
     }
 
     @Transactional
-    public void modifyClassInfo(Long classId, Long userId, ClassRequest.ModifyRequestData requestData){
+    public void modifyClassInfo(Long classId, Long userId, ClassRequest.ModifyRequestData requestData) {
         // 1. 모임 존재 여부 확인
         ClassEntity classEntity = classRepository.findById(classId)
-              .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
 
         // 2. 모임장 권한 확인
         if (!classEntity.getMasterId().equals(userId)) {
@@ -122,7 +129,7 @@ public class ClassService {
     }
 
     @Transactional
-    public void deleteClass (Long classId, Long userId) {
+    public void deleteClass(Long classId, Long userId) {
         // 1. 모임 존재 여부 확인
         ClassEntity classEntity = classRepository.findById(classId)
                 .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
@@ -176,8 +183,37 @@ public class ClassService {
         ClassUserEntity user = classUserRepository.findByClassesIdAndUserId(classId, userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_EXISTS_MEMBER));
 
+        // 모임장은 강퇴 되지 않도록 체크
+        if (userId.equals(classEntity.getMasterId())) {
+            throw new CustomException(ErrorCode.FAIL);
+        }
+
         classEntity.removeMember(user);
 
         classEntity.addBlackList(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public ClassResponse.CheckMemberData checkMember(Long classId, Long currentUserId) {
+        // 해당 모임이 존재하는지 확인
+        ClassEntity classEntity = classRepository.findById(classId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+
+        // 가입된 회원인지 검증 -> 가입된 회원이면 true, 아니면 false
+        boolean isMember = classUserRepository.existsByClasses_IdAndUserId(classId, currentUserId);
+
+        return ClassResponse.CheckMemberData.from(isMember);
+    }
+
+    @Transactional(readOnly = true)
+    public ClassResponse.CheckBlackListData checkBlackList(Long classId, Long currentUserId) {
+        // 해당 모임이 존재하는지 확인
+        ClassEntity classEntity = classRepository.findById(classId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+
+        // 강퇴된 회원 검증
+        boolean isBlackList = classBlackListRepository.existsByClasses_IdAndUserId(classId, currentUserId);
+
+        return ClassResponse.CheckBlackListData.from(isBlackList);
     }
 }

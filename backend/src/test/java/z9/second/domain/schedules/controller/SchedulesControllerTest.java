@@ -13,8 +13,7 @@ import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.user.User;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,7 +28,7 @@ class SchedulesControllerTest extends SchedulesBaseTest {
     private String memberToken;
     private ClassEntity classEntity;
     private SchedulesEntity scheduleEntity;
-    private SchedulesRequestDto.RequestData scheduleRequest;
+    private SchedulesRequestDto.CreateRequest scheduleRequest;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -98,7 +97,7 @@ class SchedulesControllerTest extends SchedulesBaseTest {
     @DisplayName("모임 일정 생성 실패 - 유효성 검증 실패")
     void createSchedule_ValidationFail() throws Exception {
         // given
-        SchedulesRequestDto.RequestData request = SchedulesRequestDto.RequestData.builder()
+        SchedulesRequestDto.CreateRequest request = SchedulesRequestDto.CreateRequest.builder()
                 .classId(classEntity.getId())
                 .meetingTime("2025-02-05") // 잘못된 형식
                 .meetingTitle("테") // 2글자 미만
@@ -202,5 +201,54 @@ class SchedulesControllerTest extends SchedulesBaseTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)));
         return result.andReturn().getResponse().getHeader(ACCESS_TOKEN_HEADER);
+    }
+
+    @Test
+    @Order(8)
+    @DisplayName("모임 일정 수정 - 모임장 권한으로 성공")
+    void modifySchedule() throws Exception {
+        // given
+        SchedulesRequestDto.UpdateRequest updateRequest = SchedulesRequestDto.UpdateRequest.builder()
+                .meetingTime(getTestMeetingTime())
+                .meetingTitle("수정된 테스트 일정")
+                .build();
+
+        // when
+        ResultActions result = mockMvc.perform(put("/api/v1/schedules/{scheduleId}/classes/{classId}",
+                scheduleEntity.getId(),
+                classEntity.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateRequest))
+                .header(ACCESS_TOKEN_HEADER, masterToken));
+
+        // then
+        result.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andExpect(jsonPath("$.data.meetingTitle").value("수정된 테스트 일정"));
+    }
+
+    @Test
+    @Order(9)
+    @DisplayName("모임 일정 수정 실패 - 권한 없는 멤버")
+    void modifySchedule_NotMaster() throws Exception {
+        // given
+        addMemberToClass(memberUser, classEntity);
+        SchedulesRequestDto.UpdateRequest updateRequest = SchedulesRequestDto.UpdateRequest.builder()
+                .meetingTime(getTestMeetingTime())
+                .meetingTitle("수정된 테스트 일정")
+                .build();
+
+        // when
+        ResultActions result = mockMvc.perform(put("/api/v1/schedules/{scheduleId}/classes/{classId}",
+                scheduleEntity.getId(),
+                classEntity.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateRequest))
+                .header(ACCESS_TOKEN_HEADER, memberToken));
+
+        // then
+        result.andDo(print())
+                .andExpect(status().isForbidden());
     }
 }

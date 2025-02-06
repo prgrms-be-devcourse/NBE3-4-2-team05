@@ -96,4 +96,30 @@ public class ClassResponse {
                     .build();
         }
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class CheckMemberData {
+        private final boolean isMember;
+
+        public static CheckMemberData from(boolean isMember) {
+            return CheckMemberData.builder()
+                    .isMember(isMember)
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class CheckBlackListData {
+        private final boolean isBlackListed;
+
+        public static CheckBlackListData from(boolean isBlackListed) {
+            return CheckBlackListData.builder()
+                    .isBlackListed(isBlackListed)
+                    .build();
+        }
+    }
 }

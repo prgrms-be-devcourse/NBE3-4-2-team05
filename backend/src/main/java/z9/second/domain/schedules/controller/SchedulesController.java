@@ -30,12 +30,30 @@ public class SchedulesController {
             description = "새로운 모임 일정을 생성합니다. 모임장만 생성 가능합니다."
     )
     public BaseResponse<SchedulesResponseDto.ResponseData> create(
-            @RequestBody @Valid SchedulesRequestDto.RequestData requestData,
+            @RequestBody @Valid SchedulesRequestDto.CreateRequest requestData,
             Principal principal
     ) {
         // 모임장 권한 체크를 Service에서 처리하도록 userId 전달
         SchedulesResponseDto.ResponseData response = schedulesService.create(requestData, extractUserId(principal));
         return BaseResponse.ok(SuccessCode.SCHEDULE_CREATE_SUCCESS, response);
+    }
+
+    @PutMapping("/{scheduleId}/classes/{classId}")
+    @Operation(
+            summary = "모임 일정 수정",
+            description = "{classId}모임의 {scheduleId}번 일정을 수정합니다."
+    )
+    public BaseResponse<SchedulesResponseDto.ResponseData> modify(
+            @Parameter(description = "일정 ID", required = true)
+            @PathVariable Long scheduleId,
+            @Parameter(description = "모임 ID", required = true)
+            @PathVariable Long classId,
+            @RequestBody @Valid SchedulesRequestDto.UpdateRequest requestData,
+            Principal principal
+    ) {
+        SchedulesResponseDto.ResponseData response =
+                schedulesService.modify(scheduleId, classId, requestData, extractUserId(principal));
+        return BaseResponse.ok(SuccessCode.SCHEDULE_MODIFY_SUCCESS, response);
     }
 
     @GetMapping("/classes/{classId}")

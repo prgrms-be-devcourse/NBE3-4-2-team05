@@ -40,6 +40,8 @@ public abstract class SpringBootTestSupporter {
     protected FavoriteRepository favoriteRepository;
     @Autowired
     protected UserFavoriteRepository userFavoriteRepository;
+    @Autowired
+    protected SchedulesCheckInEntityRepository schedulesCheckInEntityRepository;
 
 
     /**
