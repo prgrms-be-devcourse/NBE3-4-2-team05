@@ -50,6 +50,8 @@ public class UserController {
     @SecurityRequirement(name = "bearerAuth")
     public BaseResponse<UserResponse.UserSchedule> findUserSchedules(
             Principal principal){
+        //todo : 필터링 조건 추가. 참석 여부, 검색 기준일 (지나간 모임 일정은 따로 빼서 쓰는게 더 나을 수도)
+        //todo : sorting 조건 추가. 현재 모임 meeting 시간 기준 내림 차순 정렬.
         UserResponse.UserSchedule findData
                 = userService.findUserSchedules(Long.parseLong(principal.getName()));
 

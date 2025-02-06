@@ -16,6 +16,7 @@ public interface SchedulesRepository extends JpaRepository<SchedulesEntity, Long
 
     @Query("SELECT s FROM SchedulesEntity s " +
             "JOIN FETCH s.checkins sc " +
-            "WHERE sc.userId = :userId AND sc.checkIn = true")
+            "WHERE sc.userId = :userId AND sc.checkIn = true " +
+            "ORDER BY s.meetingTime DESC")
     List<SchedulesEntity> findUserSchedulesInfoByUserId(@Param("userId") Long userId);
 }
