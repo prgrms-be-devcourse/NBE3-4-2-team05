@@ -32,4 +32,16 @@ public class CheckInController {
         return BaseResponse.ok(SuccessCode.CHECK_IN_CREATE_SUCCESS);
     }
 
+    @PutMapping
+    @Operation(summary = "참석 여부 변경")
+    @SecurityRequirement(name="bearerAuth")
+    public BaseResponse<Void> updateCheckIn(
+            Principal principal,
+            @Valid @RequestBody CheckInRequestDto.CheckInDto requestDto
+    ){
+        Long userId = Long.parseLong(principal.getName());
+        checkInService.CheckIn(userId, requestDto);
+        return BaseResponse.ok(SuccessCode.CHECK_IN_UPDATE_SUCCESS);
+    }
+
 }
