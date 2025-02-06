@@ -176,6 +176,11 @@ public class ClassService {
         ClassUserEntity user = classUserRepository.findByClassesIdAndUserId(classId, userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_EXISTS_MEMBER));
 
+        // 모임장은 강퇴 되지 않도록 체크
+        if (userId.equals(classEntity.getMasterId())) {
+            throw new CustomException(ErrorCode.FAIL);
+        }
+
         classEntity.removeMember(user);
 
         classEntity.addBlackList(userId);
