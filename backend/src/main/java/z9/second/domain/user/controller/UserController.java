@@ -44,4 +44,15 @@ public class UserController {
         userService.patchUserInfo(requestDto, Long.parseLong(principal.getName()));
         return BaseResponse.ok(SuccessCode.PATCH_USER_INFO_SUCCESS);
     }
+
+    @GetMapping("/schedules")
+    @Operation(summary = "내 모임일정 전체 조회")
+    @SecurityRequirement(name = "bearerAuth")
+    public BaseResponse<UserResponse.UserSchedule> findUserSchedules(
+            Principal principal){
+        UserResponse.UserSchedule findData
+                = userService.findUserSchedules(Long.parseLong(principal.getName()));
+
+        return BaseResponse.ok(SuccessCode.FIND_USER_SCHEDULES_SUCCESS, findData);
+    }
 }
