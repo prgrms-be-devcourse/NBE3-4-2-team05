@@ -2,6 +2,7 @@ package z9.second.domain.checkin.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import z9.second.domain.checkin.dto.CheckInRequestDto;
 import z9.second.domain.classes.repository.ClassUserRepository;
 import z9.second.global.exception.CustomException;
@@ -19,6 +20,7 @@ public class CheckInServiceImpl implements CheckInService {
     private final SchedulesRepository schedulesRepository;
     private final ClassUserRepository classUserRepository;
 
+    @Transactional
     @Override
     public void createCheckIn(Long userId, CheckInRequestDto.CreateCheckIn requestDto) {
         SchedulesEntity findSchedulesEntity = schedulesRepository.findById(requestDto.getScheduleId())
