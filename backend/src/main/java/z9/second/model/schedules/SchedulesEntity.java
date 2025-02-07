@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import z9.second.domain.classes.entity.ClassEntity;
 import z9.second.model.BaseEntity;
-import z9.second.model.checkin.CheckInEntity;
+import z9.second.model.checkIn.CheckInEntity;
 
 import java.util.ArrayList;
 import java.util.List;
