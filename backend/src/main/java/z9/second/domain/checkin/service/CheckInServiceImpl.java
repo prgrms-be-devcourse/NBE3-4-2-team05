@@ -11,6 +11,7 @@ import z9.second.global.response.ErrorCode;
 
 import z9.second.model.checkin.CheckInEntity;
 import z9.second.model.checkin.CheckInEntityRepository;
+
 import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.schedules.SchedulesRepository;
 
@@ -22,7 +23,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CheckInServiceImpl implements CheckInService {
-
     private final CheckInEntityRepository checkInEntityRepository;
     private final SchedulesRepository schedulesRepository;
     private final ClassUserRepository classUserRepository;
@@ -68,9 +68,6 @@ public class CheckInServiceImpl implements CheckInService {
 //        findSchedulesEntity.getCheckins().add(newCheckIn);
 
         checkInEntityRepository.save(newCheckIn);
-        findSchedulesEntity.getCheckins().add(newSchedulesCheckIn);
-
-        checkInEntityRepository.save(newSchedulesCheckIn);
     }
     @Transactional
     @Override
