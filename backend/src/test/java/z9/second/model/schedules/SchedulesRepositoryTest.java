@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import z9.second.domain.classes.entity.ClassEntity;
 import z9.second.domain.favorite.entity.FavoriteEntity;
 import z9.second.integration.SpringBootTestSupporter;
-import z9.second.model.checkIn.CheckInEntity;
+import z9.second.model.checkin.CheckInEntity;
 import z9.second.model.user.User;
 import z9.second.model.userfavorite.UserFavorite;
 
