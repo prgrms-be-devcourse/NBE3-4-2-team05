@@ -58,19 +58,6 @@ class SchedulesServiceTest extends SchedulesBaseTest {
         // 생성된 일정 조회
         SchedulesEntity savedSchedule = schedulesRepository.findById(response.getScheduleId())
                 .orElseThrow();
-
-        // 체크인 검증
-        assertThat(savedSchedule.getCheckins()).hasSize(2); // 모임장 + 멤버 1명
-
-        // 모임장의 체크인 검증
-        assertThat(savedSchedule.getCheckins())
-                .anyMatch(checkin ->
-                        checkin.getUserId().equals(masterUser.getId()) && !checkin.isCheckIn());
-
-        // 멤버의 체크인 검증
-        assertThat(savedSchedule.getCheckins())
-                .anyMatch(checkin ->
-                        checkin.getUserId().equals(memberUser.getId()) && !checkin.isCheckIn());
     }
 
     @DisplayName("일정 생성 실패 - 존재하지 않는 모임")

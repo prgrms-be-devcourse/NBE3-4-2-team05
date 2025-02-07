@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import z9.second.model.checkin.CheckInEntity;
 
+
 public class CheckInResponseDto {
     @Getter
     @Builder

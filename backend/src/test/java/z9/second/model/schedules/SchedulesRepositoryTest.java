@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import z9.second.domain.classes.entity.ClassEntity;
 import z9.second.domain.favorite.entity.FavoriteEntity;
 import z9.second.integration.SpringBootTestSupporter;
+import z9.second.model.checkIn.CheckInEntity;
 import z9.second.model.user.User;
 import z9.second.model.userfavorite.UserFavorite;
 
@@ -60,21 +61,21 @@ class SchedulesRepositoryTest extends SpringBootTestSupporter {
         SchedulesEntity saveSchedule2 = schedulesRepository.save(schedules2);
 
         //체크인 등록
-        SchedulesCheckInEntity newCheckin = SchedulesCheckInEntity
+        CheckInEntity newCheckin = CheckInEntity
                 .builder()
                 .schedules(saveSchedule)
                 .userId(saveUser.getId())
                 .checkIn(true)
                 .build();
-        schedulesCheckInEntityRepository.save(newCheckin);
+        checkInEntityRepository.save(newCheckin);
 
-        SchedulesCheckInEntity newCheckin2 = SchedulesCheckInEntity
+        CheckInEntity newCheckin2 = CheckInEntity
                 .builder()
                 .schedules(saveSchedule)
                 .userId(saveUser.getId())
                 .checkIn(false)
                 .build();
-        schedulesCheckInEntityRepository.save(newCheckin2);
+        checkInEntityRepository.save(newCheckin2);
 
         em.flush();
         em.clear();

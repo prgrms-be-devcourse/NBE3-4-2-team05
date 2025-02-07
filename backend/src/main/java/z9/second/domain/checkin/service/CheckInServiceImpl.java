@@ -8,6 +8,7 @@ import z9.second.domain.checkin.dto.CheckInResponseDto;
 import z9.second.domain.classes.repository.ClassUserRepository;
 import z9.second.global.exception.CustomException;
 import z9.second.global.response.ErrorCode;
+
 import z9.second.model.checkin.CheckInEntity;
 import z9.second.model.checkin.CheckInEntityRepository;
 import z9.second.model.schedules.SchedulesEntity;
@@ -67,6 +68,9 @@ public class CheckInServiceImpl implements CheckInService {
 //        findSchedulesEntity.getCheckins().add(newCheckIn);
 
         checkInEntityRepository.save(newCheckIn);
+        findSchedulesEntity.getCheckins().add(newSchedulesCheckIn);
+
+        checkInEntityRepository.save(newSchedulesCheckIn);
     }
     @Transactional
     @Override
