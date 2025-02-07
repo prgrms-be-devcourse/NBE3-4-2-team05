@@ -251,4 +251,38 @@ class SchedulesControllerTest extends SchedulesBaseTest {
         result.andDo(print())
                 .andExpect(status().isForbidden());
     }
+
+    @Test
+    @Order(11)
+    @DisplayName("모임 일정 삭제 - 모임장 권한으로 성공")
+    void deleteSchedule() throws Exception {
+        // when
+        ResultActions result = mockMvc.perform(delete("/api/v1/schedules/{scheduleId}/classes/{classId}",
+                scheduleEntity.getId(),
+                classEntity.getId())
+                .header(ACCESS_TOKEN_HEADER, masterToken));
+
+        // then
+        result.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true));
+    }
+
+    @Test
+    @Order(12)
+    @DisplayName("모임 일정 삭제 실패 - 권한 없는 멤버")
+    void deleteSchedule_NotMaster() throws Exception {
+        // given
+        addMemberToClass(memberUser, classEntity);
+
+        // when
+        ResultActions result = mockMvc.perform(delete("/api/v1/schedules/{scheduleId}/classes/{classId}",
+                scheduleEntity.getId(),
+                classEntity.getId())
+                .header(ACCESS_TOKEN_HEADER, memberToken));
+
+        // then
+        result.andDo(print())
+                .andExpect(status().isForbidden());
+    }
 }

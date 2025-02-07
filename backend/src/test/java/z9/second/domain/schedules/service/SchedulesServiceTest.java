@@ -225,4 +225,43 @@ class SchedulesServiceTest extends SchedulesBaseTest {
                 .extracting("code")
                 .isEqualTo(ErrorCode.CLASS_ACCESS_DENIED);
     }
+
+    @Test
+    @Order(11)
+    @DisplayName("일정 삭제 성공 - 모임장 권한")
+    void delete_Success() {
+        // when
+        schedulesService.delete(scheduleEntity.getId(), classEntity.getId(), masterUser.getId());
+
+        // then
+        // DB에서 실제로 삭제되었는지 확인
+        assertThat(schedulesRepository.findById(scheduleEntity.getId())).isEmpty();
+    }
+
+    @Test
+    @Order(12)
+    @DisplayName("일정 삭제 실패 - 존재하지 않는 일정")
+    void delete_ScheduleNotFound() {
+        // when & then
+        assertThatThrownBy(() ->
+                schedulesService.delete(999L, classEntity.getId(), masterUser.getId()))
+                .isInstanceOf(CustomException.class)
+                .extracting("code")
+                .isEqualTo(ErrorCode.SCHEDULE_NOT_FOUND);
+    }
+
+    @Test
+    @Order(13)
+    @DisplayName("일정 삭제 실패 - 권한 없는 멤버")
+    void delete_AccessDenied() {
+        // given
+        addMemberToClass(memberUser, classEntity);
+
+        // when & then
+        assertThatThrownBy(() ->
+                schedulesService.delete(scheduleEntity.getId(), classEntity.getId(), memberUser.getId()))
+                .isInstanceOf(CustomException.class)
+                .extracting("code")
+                .isEqualTo(ErrorCode.CLASS_ACCESS_DENIED);
+    }
 }

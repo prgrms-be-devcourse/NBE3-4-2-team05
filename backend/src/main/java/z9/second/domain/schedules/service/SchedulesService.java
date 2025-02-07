@@ -129,6 +129,24 @@ public class SchedulesService {
         }
     }
 
+    public void delete(Long scheduleId, Long classId, Long userId) {
+        // 일정 조회 및 모임 id 조회
+        SchedulesEntity schedule = schedulesRepository.findScheduleByIdAndClassesId(scheduleId, classId)
+                .orElseThrow(() -> new CustomException(ErrorCode.SCHEDULE_NOT_FOUND));
+
+        // 모임장 권한 체크
+        if (!schedule.getClasses().getMasterId().equals(userId)) {
+            throw new CustomException(ErrorCode.CLASS_ACCESS_DENIED);
+        }
+
+        try {
+            // 일정 삭제
+            schedulesRepository.delete(schedule);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.SCHEDULE_DELETE_FAILED);
+        }
+    }
+
     @Transactional(readOnly = true)
     public List<SchedulesResponseDto.ResponseData> getSchedulesList(Long classId, Long userId) {
         ClassEntity classes = classesRepository.findById(classId)
