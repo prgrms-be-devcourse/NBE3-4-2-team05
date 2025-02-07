@@ -8,6 +8,7 @@ import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import z9.second.domain.checkin.dto.CheckInRequestDto;
+import z9.second.domain.checkin.dto.CheckInResponseDto;
 import z9.second.domain.checkin.service.CheckInService;
 import z9.second.global.response.BaseResponse;
 import z9.second.global.response.SuccessCode;
@@ -28,7 +29,7 @@ public class CheckInController {
             @Valid @RequestBody CheckInRequestDto.CheckInDto requestDto
     ) {
         Long userId = Long.parseLong(principal.getName());
-        checkInService.CheckIn(userId, requestDto);
+        checkInService.CreateCheckIn(userId, requestDto);
         return BaseResponse.ok(SuccessCode.CHECK_IN_CREATE_SUCCESS);
     }
 
@@ -40,7 +41,7 @@ public class CheckInController {
             @Valid @RequestBody CheckInRequestDto.CheckInDto requestDto
     ){
         Long userId = Long.parseLong(principal.getName());
-        checkInService.CheckIn(userId, requestDto);
+        checkInService.UpdateCheckIn(userId, requestDto);
         return BaseResponse.ok(SuccessCode.CHECK_IN_UPDATE_SUCCESS);
     }
 

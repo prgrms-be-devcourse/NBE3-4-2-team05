@@ -55,26 +55,6 @@ public class SchedulesService {
                     .meetingTitle(requestData.getMeetingTitle())
                     .build();
 
-            // 모임장의 체크인 생성
-            CheckInEntity masterCheckIn = CheckInEntity.builder()
-                    .schedules(schedules)
-                    .userId(classes.getMasterId())
-                    .checkIn(false)
-                    .build();
-            schedules.getCheckins().add(masterCheckIn);
-
-            // 모든 모임 멤버의 체크인 생성
-            classes.getUsers().forEach(user -> {
-                if (!user.getUserId().equals(classes.getMasterId())) {  // 모임장 중복 방지
-                    CheckInEntity memberCheckIn = CheckInEntity.builder()
-                            .schedules(schedules)
-                            .userId(user.getUserId())
-                            .checkIn(false)
-                            .build();
-                    schedules.getCheckins().add(memberCheckIn);
-                }
-            });
-
             // DB에 저장
             SchedulesEntity savedSchedule = schedulesRepository.save(schedules);
 
