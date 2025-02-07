@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import z9.second.domain.checkin.dto.CheckInRequestDto;
+import z9.second.domain.classes.repository.ClassRepository;
 import z9.second.domain.classes.repository.ClassUserRepository;
 import z9.second.global.exception.CustomException;
 import z9.second.global.response.ErrorCode;
@@ -32,7 +33,6 @@ public class CheckInServiceImpl implements CheckInService {
         }
         checkInProcess(userId, requestDto);
     }
-
     // 투표 결과 변경
     @Transactional
     @Override
@@ -49,13 +49,12 @@ public class CheckInServiceImpl implements CheckInService {
             throw new CustomException(ErrorCode.CLASS_NOT_EXISTS_MEMBER);
         }
 
-        LocalDateTime currentTime = LocalDateTime.now();
         LocalDateTime meetingDateTime = LocalDateTime.parse(
                 findSchedulesEntity.getMeetingTime(),
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         );
 
-        if (currentTime.isBefore(meetingDateTime)) {
+        if (meetingDateTime.isBefore(LocalDateTime.now())) {
             throw new CustomException(ErrorCode.INVALID_PASSED_CHECK_IN);
         }
 
@@ -65,6 +64,7 @@ public class CheckInServiceImpl implements CheckInService {
                 .userId(userId)
                 .checkIn(requestDto.getCheckIn())
                 .build();
+        findSchedulesEntity.getCheckins().add(newSchedulesCheckIn);
 
         checkInEntityRepository.save(newSchedulesCheckIn);
     }

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import z9.second.model.BaseEntity;
 import z9.second.model.schedules.SchedulesEntity;
 
 @Entity
@@ -13,7 +14,7 @@ import z9.second.model.schedules.SchedulesEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CheckInEntity {
+public class CheckInEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "sc_id", nullable = false)
