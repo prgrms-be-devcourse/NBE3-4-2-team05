@@ -21,14 +21,12 @@ import z9.second.domain.favorite.entity.FavoriteEntity;
 import z9.second.domain.user.dto.UserRequest;
 import z9.second.global.response.SuccessCode;
 import z9.second.integration.SpringBootTestSupporter;
-import z9.second.integration.factory.UserFactory;
 import z9.second.integration.security.WithCustomUser;
 import z9.second.model.schedules.SchedulesCheckInEntity;
 import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.user.User;
 import z9.second.model.user.UserRole;
 import z9.second.model.user.UserType;
-import z9.second.model.userfavorite.UserFavorite;
 
 @Transactional
 class UserControllerTest extends SpringBootTestSupporter {
@@ -46,14 +44,12 @@ class UserControllerTest extends SpringBootTestSupporter {
         List<User> saveUserList = userFactory.saveAndCreateUserData(1);
         User saveUser = saveUserList.getFirst();
 
-        List<String> favorite = List.of("관심사1", "관심사2");
-        FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
-        FavoriteEntity fe2 = FavoriteEntity.createNewFavorite("관심사2");
-        List<FavoriteEntity> saveFavoriteEntities = favoriteRepository.saveAll(List.of(fe1, fe2));
+        // 관심사 등록
+        List<FavoriteEntity> saveFavoriteList = favoriteFactory.saveAndCreateFavoriteData(2);
+        List<String> favoriteNameList = saveFavoriteList.stream().map(FavoriteEntity::getName).toList();
 
-        userFavoriteRepository.save(
-                UserFavorite.createNewUserFavorite(saveUser, saveFavoriteEntities.get(0)));
-        userFavoriteRepository.save(UserFavorite.createNewUserFavorite(saveUser, saveFavoriteEntities.get(1)));
+        // 회원-관심사 등록
+        userFactory.saveUserFavorite(saveUser, saveFavoriteList);
 
         // when
         ResultActions result = mockMvc.perform(get("/api/v1/users"));
@@ -70,7 +66,7 @@ class UserControllerTest extends SpringBootTestSupporter {
                 .andExpect(jsonPath("$.data.createdAt").value(Matchers.matchesPattern("\\d{4}-\\d{2}-\\d{2}")))
                 .andExpect(jsonPath("$.data.favorite").isArray())
                 .andExpect(jsonPath("$.data.favorite.length()").value(2))
-                .andExpect(jsonPath("$.data.favorite").value(Matchers.containsInAnyOrder("관심사1", "관심사2")));
+                .andExpect(jsonPath("$.data.favorite").value(Matchers.containsInAnyOrder(favoriteNameList.toArray())));
     }
 
     @WithCustomUser
@@ -81,15 +77,15 @@ class UserControllerTest extends SpringBootTestSupporter {
         List<User> saveUserList = userFactory.saveAndCreateUserData(1);
         User saveUser = saveUserList.getFirst();
 
-        List<String> favorite = List.of("관심사1", "관심사2");
-        FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
-        FavoriteEntity fe2 = FavoriteEntity.createNewFavorite("관심사2");
-        List<FavoriteEntity> saveFavoriteEntities = favoriteRepository.saveAll(List.of(fe1, fe2));
+        // 관심사 등록
+        List<FavoriteEntity> saveFavoriteList = favoriteFactory.saveAndCreateFavoriteData(2);
+        List<String> favoriteNameList = saveFavoriteList.stream().map(FavoriteEntity::getName).toList();
 
-        userFavoriteRepository.save(UserFavorite.createNewUserFavorite(saveUser, saveFavoriteEntities.get(0)));
+        // 회원-관심사 등록
+        userFactory.saveUserFavorite(saveUser, saveFavoriteList);
 
         String changeNickname = "변경된닉네임";
-        UserRequest.PatchUserInfo request = UserRequest.PatchUserInfo.of(changeNickname, favorite);
+        UserRequest.PatchUserInfo request = UserRequest.PatchUserInfo.of(changeNickname, favoriteNameList);
 
         // when
         ResultActions result = mockMvc.perform(patch("/api/v1/users/profile")
@@ -114,17 +110,17 @@ class UserControllerTest extends SpringBootTestSupporter {
         List<User> saveUserList = userFactory.saveAndCreateUserData(1);
         User saveUser = saveUserList.getFirst();
 
-        //관심사 등록
-        FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
-        FavoriteEntity fe2 = FavoriteEntity.createNewFavorite("관심사2");
-        List<FavoriteEntity> saveFavoriteEntities = favoriteRepository.saveAll(List.of(fe1, fe2));
-        userFavoriteRepository.save(UserFavorite.createNewUserFavorite(saveUser, saveFavoriteEntities.get(0)));
-        userFavoriteRepository.save(UserFavorite.createNewUserFavorite(saveUser, saveFavoriteEntities.get(1)));
+        // 관심사 등록
+        List<FavoriteEntity> saveFavoriteList = favoriteFactory.saveAndCreateFavoriteData(2);
+        List<String> favoriteNameList = saveFavoriteList.stream().map(FavoriteEntity::getName).toList();
+
+        // 회원-관심사 등록
+        userFactory.saveUserFavorite(saveUser, saveFavoriteList);
 
         //방 생성
         ClassEntity newClass = ClassEntity.builder()
                 .name("새로운 모임")
-                .favorite(fe1.getName())
+                .favorite(favoriteNameList.getFirst())
                 .description("모임 설명 글 입니다!!")
                 .masterId(saveUser.getId())
                 .build();

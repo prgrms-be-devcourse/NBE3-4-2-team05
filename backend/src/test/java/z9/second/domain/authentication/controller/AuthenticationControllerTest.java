@@ -61,20 +61,16 @@ class AuthenticationControllerTest extends SpringBootTestSupporter {
     @Test
     void signup() throws Exception {
         // given
+        // 관심사 등록
+        List<FavoriteEntity> saveFavoriteList = favoriteFactory.saveAndCreateFavoriteData(2);
+        List<String> saveFavoriteNameList = saveFavoriteList.stream().map(FavoriteEntity::getName).toList();
+
         String loginId = "test1@email.com";
         String password = "!test1234";
-        List<String> favorite = List.of("관심사1", "관심사2");
+        List<String> favorite = saveFavoriteNameList;
         String nickname = "test1";
-
-        FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
-        FavoriteEntity fe2 = FavoriteEntity.createNewFavorite("관심사2");
-        favoriteRepository.saveAll(List.of(fe1, fe2));
-
         AuthenticationRequest.Signup request =
                 AuthenticationRequest.Signup.of(loginId, password, favorite, nickname);
-
-        em.flush();
-        em.clear();
 
         // when
         ResultActions result = mockMvc.perform(post("/api/v1/signup")

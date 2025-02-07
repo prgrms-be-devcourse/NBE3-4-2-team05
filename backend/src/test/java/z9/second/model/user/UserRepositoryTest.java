@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.annotation.Transactional;
 import z9.second.integration.SpringBootTestSupporter;
-import z9.second.integration.factory.UserFactory;
 
 @Transactional
 class UserRepositoryTest extends SpringBootTestSupporter {

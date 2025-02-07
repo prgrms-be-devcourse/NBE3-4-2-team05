@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.transaction.annotation.Transactional;
 import z9.second.domain.favorite.entity.FavoriteEntity;
 import z9.second.integration.SpringBootTestSupporter;
-import z9.second.integration.factory.UserFactory;
 import z9.second.model.user.User;
 
 @Transactional
@@ -18,26 +17,22 @@ class UserFavoriteRepositoryTest extends SpringBootTestSupporter {
     @Test
     void findFavoriteNamesByUserId1() {
         // given
+        //사용자 등록
         List<User> saveUserList = userFactory.saveAndCreateUserData(1);
         User saveUser = saveUserList.getFirst();
 
-        List<String> favorite = List.of("관심사1", "관심사2");
-        FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
-        FavoriteEntity fe2 = FavoriteEntity.createNewFavorite("관심사2");
-        List<FavoriteEntity> saveFavoriteEntities = favoriteRepository.saveAll(List.of(fe1, fe2));
+        // 관심사 등록
+        List<FavoriteEntity> saveFavoriteList = favoriteFactory.saveAndCreateFavoriteData(2);
+        List<String> favoriteNameList = saveFavoriteList.stream().map(FavoriteEntity::getName).toList();
 
-        userFavoriteRepository.save(UserFavorite.createNewUserFavorite(saveUser, saveFavoriteEntities.get(0)));
-        userFavoriteRepository.save(UserFavorite.createNewUserFavorite(saveUser, saveFavoriteEntities.get(1)));
-
-        em.flush();
-        em.clear();
+        // 회원-관심사 등록
+        userFactory.saveUserFavorite(saveUser, saveFavoriteList);
 
         // when
-        List<String> findDataList = userFavoriteRepository.findFavoriteNamesByUserId(
-                saveUser.getId());
+        List<String> findDataList = userFavoriteRepository.findFavoriteNamesByUserId(saveUser.getId());
 
         // then
         assertThat(findDataList).hasSize(2);
-        assertThat(findDataList).containsExactlyInAnyOrder("관심사1", "관심사2");
+        assertThat(findDataList).containsAll(favoriteNameList);
     }
 }

@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,13 +17,11 @@ import z9.second.domain.user.dto.UserResponse;
 import z9.second.global.exception.CustomException;
 import z9.second.global.response.ErrorCode;
 import z9.second.integration.SpringBootTestSupporter;
-import z9.second.integration.factory.UserFactory;
 import z9.second.model.schedules.SchedulesCheckInEntity;
 import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.user.User;
 import z9.second.model.user.UserRole;
 import z9.second.model.user.UserType;
-import z9.second.model.userfavorite.UserFavorite;
 
 @Transactional
 class UserServiceImplTest extends SpringBootTestSupporter {
@@ -31,20 +30,16 @@ class UserServiceImplTest extends SpringBootTestSupporter {
     @Test
     void findUserInfo() {
         // given
+        //사용자 등록
         List<User> saveUserList = userFactory.saveAndCreateUserData(1);
         User saveUser = saveUserList.getFirst();
 
-        List<String> favorite = List.of("관심사1", "관심사2");
-        FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
-        FavoriteEntity fe2 = FavoriteEntity.createNewFavorite("관심사2");
-        List<FavoriteEntity> saveFavoriteEntities = favoriteRepository.saveAll(List.of(fe1, fe2));
+        // 관심사 등록
+        List<FavoriteEntity> saveFavoriteList = favoriteFactory.saveAndCreateFavoriteData(2);
+        List<String> saveFavoriteNameList = saveFavoriteList.stream().map(FavoriteEntity::getName).toList();
 
-        userFavoriteRepository.save(
-                UserFavorite.createNewUserFavorite(saveUser, saveFavoriteEntities.get(0)));
-        userFavoriteRepository.save(UserFavorite.createNewUserFavorite(saveUser, saveFavoriteEntities.get(1)));
-
-        em.flush();
-        em.clear();
+        // 회원-관심사 등록
+        userFactory.saveUserFavorite(saveUser, saveFavoriteList);
 
         // when
         UserResponse.UserInfo findData = userService.findUserInfo(saveUser.getId());
@@ -56,18 +51,16 @@ class UserServiceImplTest extends SpringBootTestSupporter {
         assertThat(findData.getCreatedAt()).matches("\\d{4}-\\d{2}-\\d{2}");
         assertThat(findData.getFavorite())
                 .hasSize(2)
-                .containsExactlyInAnyOrder("관심사1", "관심사2");
+                .containsAll(saveFavoriteNameList);
     }
 
     @DisplayName("회원 정보를 찾습니다. 관심사가 없을 경우, 빈 배열이 출력되어야 합니다.")
     @Test
     void findUserInfo2() {
         // given
+        //사용자 등록
         List<User> saveUserList = userFactory.saveAndCreateUserData(1);
         User saveUser = saveUserList.getFirst();
-
-        em.flush();
-        em.clear();
 
         // when
         UserResponse.UserInfo findData = userService.findUserInfo(saveUser.getId());
@@ -93,38 +86,37 @@ class UserServiceImplTest extends SpringBootTestSupporter {
                 .isEqualTo(ErrorCode.USER_NOT_FOUND);
     }
 
-    @DisplayName("회원 정보를 수정 합니다.")
+    @DisplayName("회원 정보를 수정 합니다. 닉네임을 변경할 수 있습니다.")
     @Test
     void patchUserInfo1() {
         // given
         List<User> saveUserList = userFactory.saveAndCreateUserData(1);
         User saveUser = saveUserList.getFirst();
 
-        List<String> favorite = List.of("관심사1", "관심사2");
-        FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
-        FavoriteEntity fe2 = FavoriteEntity.createNewFavorite("관심사2");
-        List<FavoriteEntity> saveFavoriteEntities = favoriteRepository.saveAll(List.of(fe1, fe2));
+        // 관심사 등록
+        List<FavoriteEntity> saveFavoriteList = favoriteFactory.saveAndCreateFavoriteData(2);
+        List<String> saveFavoriteNameList = saveFavoriteList.stream().map(FavoriteEntity::getName).toList();
 
-        userFavoriteRepository.save(UserFavorite.createNewUserFavorite(saveUser, saveFavoriteEntities.get(0)));
+        // 회원-관심사 등록
+        userFactory.saveUserFavorite(saveUser, saveFavoriteList);
 
         String changeNickname = "변경된닉네임";
-        UserRequest.PatchUserInfo request = UserRequest.PatchUserInfo.of(changeNickname, favorite);
-
-        em.flush();
-        em.clear();
+        UserRequest.PatchUserInfo request = UserRequest.PatchUserInfo.of(changeNickname, saveFavoriteNameList);
 
         // when
         userService.patchUserInfo(request, saveUser.getId());
 
         // then
-        User findUser = userRepository.findById(saveUser.getId()).get();
+        Optional<User> findUserOptional = userRepository.findById(saveUser.getId());
+        assertThat(findUserOptional).isPresent();
+        User findUser = findUserOptional.get();
         List<String> findFavoriteList = userFavoriteRepository.findFavoriteNamesByUserId(saveUser.getId());
         assertThat(findUser)
                 .extracting("nickname")
                 .isEqualTo(changeNickname);
         assertThat(findFavoriteList)
                 .hasSize(2)
-                .containsExactlyInAnyOrder("관심사1", "관심사2");
+                .containsAll(saveFavoriteNameList);
     }
 
     @DisplayName("회원 정보를 수정 합니다. 원래 있던 관심사가 입력되지 않으면 그전 데이터는 삭제 됩니다.")
@@ -134,32 +126,32 @@ class UserServiceImplTest extends SpringBootTestSupporter {
         List<User> saveUserList = userFactory.saveAndCreateUserData(1);
         User saveUser = saveUserList.getFirst();
 
-        List<String> favorite = List.of("관심사1", "관심사2");
-        FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
-        FavoriteEntity fe2 = FavoriteEntity.createNewFavorite("관심사2");
-        List<FavoriteEntity> saveFavoriteEntities = favoriteRepository.saveAll(List.of(fe1, fe2));
+        // 관심사 등록
+        List<FavoriteEntity> saveFavoriteList = favoriteFactory.saveAndCreateFavoriteData(2);
+        FavoriteEntity saveFavorite = saveFavoriteList.getFirst();
 
-        userFavoriteRepository.save(UserFavorite.createNewUserFavorite(saveUser, saveFavoriteEntities.get(0)));
-        userFavoriteRepository.save(UserFavorite.createNewUserFavorite(saveUser, saveFavoriteEntities.get(1)));
+        // 회원-관심사 등록
+        userFactory.saveUserFavorite(saveUser, saveFavoriteList);
 
         String changeNickname = "변경된닉네임";
-        UserRequest.PatchUserInfo request = UserRequest.PatchUserInfo.of(changeNickname, List.of(fe1.getName()));
-
-        em.flush();
-        em.clear();
+        UserRequest.PatchUserInfo request = UserRequest.PatchUserInfo.of(changeNickname, List.of(saveFavorite.getName()));
 
         // when
         userService.patchUserInfo(request, saveUser.getId());
 
         // then
-        User findUser = userRepository.findById(saveUser.getId()).get();
+        Optional<User> findUserOptional = userRepository.findById(saveUser.getId());
+        assertThat(findUserOptional).isPresent();
+        User findUser = findUserOptional.get();
+
         List<String> findFavoriteList = userFavoriteRepository.findFavoriteNamesByUserId(saveUser.getId());
+
         assertThat(findUser)
                 .extracting("nickname")
                 .isEqualTo(changeNickname);
         assertThat(findFavoriteList)
                 .hasSize(1)
-                .containsExactlyInAnyOrder("관심사1");
+                .containsExactlyInAnyOrder(request.getFavorite().getFirst());
     }
 
     @DisplayName("회원 정보를 수정 합니다. 서버에 등록된 관심사가 아니라면, 오류가 발생합니다.")
@@ -169,17 +161,15 @@ class UserServiceImplTest extends SpringBootTestSupporter {
         List<User> saveUserList = userFactory.saveAndCreateUserData(1);
         User saveUser = saveUserList.getFirst();
 
-        List<String> favorite = List.of("관심사1", "관심사2");
-        FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
-        List<FavoriteEntity> saveFavoriteEntities = favoriteRepository.saveAll(List.of(fe1));
+        // 관심사 등록
+        List<FavoriteEntity> saveFavoriteList = favoriteFactory.saveAndCreateFavoriteData(2);
 
-        userFavoriteRepository.save(UserFavorite.createNewUserFavorite(saveUser, saveFavoriteEntities.get(0)));
+        // 회원-관심사 등록
+        userFactory.saveUserFavorite(saveUser, saveFavoriteList);
 
         String changeNickname = "변경된닉네임";
-        UserRequest.PatchUserInfo request = UserRequest.PatchUserInfo.of(changeNickname, favorite);
-
-        em.flush();
-        em.clear();
+        UserRequest.PatchUserInfo request =
+                UserRequest.PatchUserInfo.of(changeNickname, List.of("미등록 관심사"));
 
         // when // then
         assertThatThrownBy( () -> userService.patchUserInfo(request, saveUser.getId()))
@@ -196,17 +186,17 @@ class UserServiceImplTest extends SpringBootTestSupporter {
         List<User> saveUserList = userFactory.saveAndCreateUserData(1);
         User saveUser = saveUserList.getFirst();
 
-        //관심사 등록
-        FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
-        FavoriteEntity fe2 = FavoriteEntity.createNewFavorite("관심사2");
-        List<FavoriteEntity> saveFavoriteEntities = favoriteRepository.saveAll(List.of(fe1, fe2));
-        userFavoriteRepository.save(UserFavorite.createNewUserFavorite(saveUser, saveFavoriteEntities.get(0)));
-        userFavoriteRepository.save(UserFavorite.createNewUserFavorite(saveUser, saveFavoriteEntities.get(1)));
+        // 관심사 등록
+        List<FavoriteEntity> saveFavoriteList = favoriteFactory.saveAndCreateFavoriteData(2);
+        List<String> favoriteNameList = saveFavoriteList.stream().map(FavoriteEntity::getName).toList();
+
+        // 회원-관심사 등록
+        userFactory.saveUserFavorite(saveUser, saveFavoriteList);
 
         //방 생성
         ClassEntity newClass = ClassEntity.builder()
                 .name("새로운 모임")
-                .favorite(fe1.getName())
+                .favorite(favoriteNameList.getFirst())
                 .description("모임 설명 글 입니다!!")
                 .masterId(saveUser.getId())
                 .build();

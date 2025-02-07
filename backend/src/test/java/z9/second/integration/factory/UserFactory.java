@@ -3,13 +3,14 @@ package z9.second.integration.factory;
 import jakarta.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import z9.second.domain.favorite.entity.FavoriteEntity;
 import z9.second.model.user.User;
 import z9.second.model.user.UserRepository;
+import z9.second.model.userfavorite.UserFavorite;
+import z9.second.model.userfavorite.UserFavoriteRepository;
 
 @Component
 @RequiredArgsConstructor
@@ -22,6 +23,7 @@ public final class UserFactory {
 
     private final EntityManager em;
     private final UserRepository userRepository;
+    private final UserFavoriteRepository userFavoriteRepository;
     private final PasswordEncoder passwordEncoder;
 
     /**
@@ -44,9 +46,20 @@ public final class UserFactory {
             savedUserList.add(saveUser);
         }
 
-        em.flush();
-        em.clear();
+        flushAndClear();
 
         return savedUserList;
+    }
+
+    public void saveUserFavorite(User user, List<FavoriteEntity> favoriteList) {
+        for (FavoriteEntity favorite : favoriteList) {
+            userFavoriteRepository.save(UserFavorite.createNewUserFavorite(user, favorite));
+        }
+        flushAndClear();
+    }
+
+    private void flushAndClear() {
+        em.flush();
+        em.clear();
     }
 }
