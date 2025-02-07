@@ -23,6 +23,7 @@ public enum SuccessCode {
     FIND_USER_INFO_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "회원정보 조회 성공"),
     PATCH_USER_INFO_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "회원정보 수정 성공"),
     FIND_USER_SCHEDULES_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "회원 모임 일정 조회 성공"),
+    FIND_USER_CLASSES_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "회원 전체 모임 조회 성공"),
 
     // Class
     CLASS_CREATE_SUCCESS(HttpStatus.CREATED, Boolean.TRUE, 201, "모임이 생성되었습니다."),

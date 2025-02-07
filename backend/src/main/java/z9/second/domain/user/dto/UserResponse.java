@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import z9.second.domain.classes.entity.ClassEntity;
 import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.user.User;
 
@@ -40,7 +41,7 @@ public class UserResponse {
     public static class UserSchedule {
         private final List<ScheduleInfo> schedule;
 
-        public static UserSchedule of(List<ScheduleInfo> schedule) {
+        public static UserSchedule from(List<ScheduleInfo> schedule) {
             return UserSchedule.builder().schedule(schedule).build();
         }
     }
@@ -58,6 +59,37 @@ public class UserResponse {
                     .classId(schedulesEntity.getClasses().getId())
                     .meetingTime(schedulesEntity.getMeetingTime())
                     .meetingTitle(schedulesEntity.getMeetingTitle())
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class UserClass {
+        private final List<ClassInfo> classInfo;
+
+        public static UserClass from(List<ClassInfo> classInfo) {
+            return UserClass.builder().classInfo(classInfo).build();
+        }
+    }
+
+    @Getter
+    @Builder(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class ClassInfo {
+        private final Long classId;
+        private final String name;
+        private final String description;
+        private final String favorite;
+
+        public static ClassInfo from(ClassEntity classEntity) {
+            return ClassInfo
+                    .builder()
+                    .classId(classEntity.getId())
+                    .name(classEntity.getName())
+                    .description(classEntity.getDescription())
+                    .favorite(classEntity.getFavorite())
                     .build();
         }
     }

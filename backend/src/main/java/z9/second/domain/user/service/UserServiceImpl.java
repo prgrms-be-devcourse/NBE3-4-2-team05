@@ -5,6 +5,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import z9.second.domain.classes.entity.ClassEntity;
+import z9.second.domain.classes.repository.ClassRepository;
 import z9.second.domain.favorite.entity.FavoriteEntity;
 import z9.second.domain.favorite.repository.FavoriteRepository;
 import z9.second.domain.user.dto.UserRequest;
@@ -26,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final UserFavoriteRepository userFavoriteRepository;
     private final FavoriteRepository favoriteRepository;
     private final SchedulesRepository schedulesRepository;
+    private final ClassRepository classRepository;
 
     @Transactional(readOnly = true)
     @Override
@@ -78,6 +81,18 @@ public class UserServiceImpl implements UserService {
                 .map(UserResponse.ScheduleInfo::from)
                 .toList();
 
-        return UserResponse.UserSchedule.of(scheduleInfoList);
+        return UserResponse.UserSchedule.from(scheduleInfoList);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public UserResponse.UserClass findUserClasses(Long userId) {
+        List<ClassEntity> findData = classRepository.findByUserId(userId);
+
+        List<UserResponse.ClassInfo> classInfoList = findData.stream()
+                .map(UserResponse.ClassInfo::from)
+                .toList();
+
+        return UserResponse.UserClass.from(classInfoList);
     }
 }
