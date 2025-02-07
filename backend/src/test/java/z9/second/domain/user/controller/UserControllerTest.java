@@ -112,20 +112,16 @@ class UserControllerTest extends SpringBootTestSupporter {
 
         // 관심사 등록
         List<FavoriteEntity> saveFavoriteList = favoriteFactory.saveAndCreateFavoriteData(2);
+        FavoriteEntity saveFavorite = saveFavoriteList.getFirst();
         List<String> favoriteNameList = saveFavoriteList.stream().map(FavoriteEntity::getName).toList();
 
         // 회원-관심사 등록
         userFactory.saveUserFavorite(saveUser, saveFavoriteList);
 
         //방 생성
-        ClassEntity newClass = ClassEntity.builder()
-                .name("새로운 모임")
-                .favorite(favoriteNameList.getFirst())
-                .description("모임 설명 글 입니다!!")
-                .masterId(saveUser.getId())
-                .build();
-        newClass.addMember(saveUser.getId());
-        ClassEntity saveClass = classRepository.save(newClass);
+        List<ClassEntity> saveClassList =
+                classFactory.saveAndCreateClassData(1, saveUser, saveFavorite);
+        ClassEntity saveClass = saveClassList.getFirst();
 
         //스케줄 생성 2개
         LocalDateTime now = LocalDateTime.now();

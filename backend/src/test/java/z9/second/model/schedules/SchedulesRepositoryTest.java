@@ -31,14 +31,9 @@ class SchedulesRepositoryTest extends SpringBootTestSupporter {
         userFactory.saveUserFavorite(saveUser, saveFavoriteList);
 
         //방 생성
-        ClassEntity newClass = ClassEntity.builder()
-                .name("새로운 모임")
-                .favorite(saveFavorite.getName())
-                .description("모임 설명 글 입니다!!")
-                .masterId(saveUser.getId())
-                .build();
-        newClass.addMember(saveUser.getId());
-        ClassEntity saveClass = classRepository.save(newClass);
+        List<ClassEntity> saveClassList =
+                classFactory.saveAndCreateClassData(1, saveUser, saveFavorite);
+        ClassEntity saveClass = saveClassList.getFirst();
 
         //스케줄 생성
         SchedulesEntity schedules = SchedulesEntity.builder()
@@ -104,24 +99,15 @@ class SchedulesRepositoryTest extends SpringBootTestSupporter {
         userFactory.saveUserFavorite(saveUser, saveFavoriteList);
 
         //방 생성
-        ClassEntity newClass = ClassEntity.builder()
-                .name("새로운 모임")
-                .favorite(saveFavorite.getName())
-                .description("모임 설명 글 입니다!!")
-                .masterId(saveUser.getId())
-                .build();
-        newClass.addMember(saveUser.getId());
-        ClassEntity saveClass = classRepository.save(newClass);
-
-        em.flush();
-        em.clear();
+        List<ClassEntity> saveClassList =
+                classFactory.saveAndCreateClassData(1, saveUser, saveFavorite);
+        ClassEntity saveClass = saveClassList.getFirst();
 
         // when
-        List<SchedulesEntity> findData = schedulesRepository.findUserSchedulesInfoByUserId(
-                saveUser.getId());
+        List<SchedulesEntity> findData =
+                schedulesRepository.findUserSchedulesInfoByUserId(saveUser.getId());
 
         // then
-        assertThat(findData)
-                .hasSize(0);
+        assertThat(findData).hasSize(0);
     }
 }
