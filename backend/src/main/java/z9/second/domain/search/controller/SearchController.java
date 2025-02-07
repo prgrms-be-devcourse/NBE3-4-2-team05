@@ -21,11 +21,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/search")
 @Tag(name = "Search Controller", description = "모임 검색 정렬 컨트롤러")
+@SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 public class SearchController {
     private final SearchService searchService;
 
-    // todo : bearer인증을 통해 로그인, 비로그인시 관심사 정렬 다르게 설정되도록 수정필요
     @GetMapping("/classes")
     @Operation(summary = "모임 리스트 조회", description = "정렬 조건에 따른 모임 리스트를 조회합니다.")
     public BaseResponse<List<SearchResponseDto>> searchClasses(
@@ -43,7 +43,6 @@ public class SearchController {
 
     @GetMapping("/favorite")
     @Operation(summary = "관심사 기반 모임 리스트 조회", description = "사용자의 관심사와 일치하는 모임 리스트를 조회합니다.")
-    @SecurityRequirement(name = "bearerAuth")
     public BaseResponse<List<SearchResponseDto>> searchFavoriteClasses(Principal principal) {
         Long userId = Long.parseLong(principal.getName());
         List<SearchResponseDto> response = searchService.searchClasses(SortBy.FAVORITE, userId);
