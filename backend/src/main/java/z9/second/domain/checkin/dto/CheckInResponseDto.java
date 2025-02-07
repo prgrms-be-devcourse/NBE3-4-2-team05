@@ -1,11 +1,9 @@
 package z9.second.domain.checkin.dto;
 
-import z9.second.model.checkin.CheckInEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
-
+import z9.second.model.checkin.CheckInEntity;
 
 
 public class CheckInResponseDto {
