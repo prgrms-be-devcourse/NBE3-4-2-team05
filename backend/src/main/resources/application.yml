@@ -8,3 +8,6 @@ spring:
       #      prod: [ "prod_auth", "prod_db", "prod_web", "prod_server" ]
       dev: [ "dev_auth", "dev_db", "dev_web", "dev_server" ,"dev_docs" ]
     active: dev
+    spring:
+      main:
+        allow-bean-definition-overriding=true:
