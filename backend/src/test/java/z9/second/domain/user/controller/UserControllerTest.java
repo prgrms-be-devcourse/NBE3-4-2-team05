@@ -157,21 +157,21 @@ class UserControllerTest extends SpringBootTestSupporter {
         SchedulesEntity saveSchedule2 = schedulesRepository.save(schedules2);
 
         //체크인 등록 2개
-        CheckInEntity newCheckin = CheckInEntity
+        SchedulesCheckInEntity newCheckin = SchedulesCheckInEntity
                 .builder()
                 .schedules(saveSchedule)
                 .userId(saveUser.getId())
                 .checkIn(true)
                 .build();
-        checkInEntityRepository.save(newCheckin);
+        schedulesCheckInEntityRepository.save(newCheckin);
 
-        CheckInEntity newCheckin2 = CheckInEntity
+        SchedulesCheckInEntity newCheckin2 = SchedulesCheckInEntity
                 .builder()
                 .schedules(saveSchedule)
                 .userId(saveUser.getId())
                 .checkIn(false)
                 .build();
-        checkInEntityRepository.save(newCheckin2);
+        schedulesCheckInEntityRepository.save(newCheckin2);
 
         em.flush();
         em.clear();

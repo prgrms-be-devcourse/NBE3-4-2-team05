@@ -16,7 +16,6 @@ import z9.second.domain.user.dto.UserResponse;
 import z9.second.global.exception.CustomException;
 import z9.second.global.response.ErrorCode;
 import z9.second.integration.SpringBootTestSupporter;
-import z9.second.model.checkIn.CheckInEntity;
 import z9.second.model.schedules.SchedulesCheckInEntity;
 import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.user.User;
@@ -250,21 +249,21 @@ class UserServiceImplTest extends SpringBootTestSupporter {
         SchedulesEntity saveSchedule2 = schedulesRepository.save(schedules2);
 
         //체크인 등록 2개
-        CheckInEntity newCheckin = CheckInEntity
+        SchedulesCheckInEntity newCheckin = SchedulesCheckInEntity
                 .builder()
                 .schedules(saveSchedule)
                 .userId(saveUser.getId())
                 .checkIn(true)
                 .build();
-        checkInEntityRepository.save(newCheckin);
+        schedulesCheckInEntityRepository.save(newCheckin);
 
-        CheckInEntity newCheckin2 = CheckInEntity
+        SchedulesCheckInEntity newCheckin2 = SchedulesCheckInEntity
                 .builder()
                 .schedules(saveSchedule)
                 .userId(saveUser.getId())
                 .checkIn(false)
                 .build();
-        checkInEntityRepository.save(newCheckin2);
+        schedulesCheckInEntityRepository.save(newCheckin2);
 
         em.flush();
         em.clear();
