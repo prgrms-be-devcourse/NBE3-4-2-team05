@@ -6,8 +6,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -128,25 +126,9 @@ class UserControllerTest extends SpringBootTestSupporter {
                 schedulesFactory.saveAndCreateClassData(2, saveClass);
         SchedulesEntity saveSchedule = saveSchedulesList.getFirst();
 
-        //체크인 등록 2개
-        SchedulesCheckInEntity newCheckin = SchedulesCheckInEntity
-                .builder()
-                .schedules(saveSchedule)
-                .userId(saveUser.getId())
-                .checkIn(true)
-                .build();
-        schedulesCheckInEntityRepository.save(newCheckin);
-
-        SchedulesCheckInEntity newCheckin2 = SchedulesCheckInEntity
-                .builder()
-                .schedules(saveSchedule)
-                .userId(saveUser.getId())
-                .checkIn(false)
-                .build();
-        schedulesCheckInEntityRepository.save(newCheckin2);
-
-        em.flush();
-        em.clear();
+        //체크인 등록
+        List<SchedulesCheckInEntity> saveCheckInList =
+                checkInFactory.saveAndCreateCheckInData(2, saveSchedule, saveUser, List.of(true, false));
 
         // when
         ResultActions result = mockMvc.perform(get("/api/v1/users/schedules"));

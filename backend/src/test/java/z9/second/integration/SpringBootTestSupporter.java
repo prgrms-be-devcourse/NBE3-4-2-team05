@@ -16,6 +16,7 @@ import z9.second.domain.favorite.repository.FavoriteRepository;
 import z9.second.domain.classes.repository.ClassRepository;
 import z9.second.domain.classes.repository.ClassUserRepository;
 import z9.second.domain.schedules.service.SchedulesService;
+import z9.second.integration.factory.CheckInFactory;
 import z9.second.integration.factory.ClassFactory;
 import z9.second.integration.factory.FavoriteFactory;
 import z9.second.integration.factory.SchedulesFactory;
@@ -41,6 +42,8 @@ public abstract class SpringBootTestSupporter {
     public ClassFactory classFactory;
     @Autowired
     public SchedulesFactory schedulesFactory;
+    @Autowired
+    public CheckInFactory checkInFactory;
 
     /**
      * mock Mvc

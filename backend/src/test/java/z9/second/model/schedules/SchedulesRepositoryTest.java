@@ -2,7 +2,6 @@ package z9.second.model.schedules;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,33 +40,15 @@ class SchedulesRepositoryTest extends SpringBootTestSupporter {
         SchedulesEntity saveSchedule = saveSchedulesList.getFirst();
 
         //체크인 등록
-        SchedulesCheckInEntity newCheckin = SchedulesCheckInEntity
-                .builder()
-                .schedules(saveSchedule)
-                .userId(saveUser.getId())
-                .checkIn(true)
-                .build();
-        schedulesCheckInEntityRepository.save(newCheckin);
-
-        SchedulesCheckInEntity newCheckin2 = SchedulesCheckInEntity
-                .builder()
-                .schedules(saveSchedule)
-                .userId(saveUser.getId())
-                .checkIn(false)
-                .build();
-        schedulesCheckInEntityRepository.save(newCheckin2);
-
-        em.flush();
-        em.clear();
+        List<SchedulesCheckInEntity> saveCheckInList =
+                checkInFactory.saveAndCreateCheckInData(2, saveSchedule, saveUser, List.of(true, false));
 
         // when
         List<SchedulesEntity> findData = schedulesRepository.findUserSchedulesInfoByUserId(
                 saveUser.getId());
 
         // then
-        assertThat(findData)
-                .hasSize(1);
-
+        assertThat(findData).hasSize(1);
         assertThat(findData.getFirst())
                 .extracting("meetingTitle")
                 .isEqualTo(saveSchedule.getMeetingTitle());

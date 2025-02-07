@@ -202,25 +202,9 @@ class UserServiceImplTest extends SpringBootTestSupporter {
                 schedulesFactory.saveAndCreateClassData(2, saveClass);
         SchedulesEntity saveSchedule = saveSchedulesList.getFirst();
 
-        //체크인 등록 2개
-        SchedulesCheckInEntity newCheckin = SchedulesCheckInEntity
-                .builder()
-                .schedules(saveSchedule)
-                .userId(saveUser.getId())
-                .checkIn(true)
-                .build();
-        schedulesCheckInEntityRepository.save(newCheckin);
-
-        SchedulesCheckInEntity newCheckin2 = SchedulesCheckInEntity
-                .builder()
-                .schedules(saveSchedule)
-                .userId(saveUser.getId())
-                .checkIn(false)
-                .build();
-        schedulesCheckInEntityRepository.save(newCheckin2);
-
-        em.flush();
-        em.clear();
+        //체크인 등록
+        List<SchedulesCheckInEntity> saveCheckInList =
+                checkInFactory.saveAndCreateCheckInData(2, saveSchedule, saveUser, List.of(true, false));
 
         // when
         UserResponse.UserSchedule findData = userService.findUserSchedules(saveUser.getId());
