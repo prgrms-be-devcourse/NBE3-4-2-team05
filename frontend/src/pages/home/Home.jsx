@@ -2,7 +2,11 @@ import React from "react";
 import "./Home.css";
 
 const Home = () => {
-	return <div>메인</div>;
+	return (
+		<section>
+			<div>TOdo....</div>
+		</section>
+	);
 };
 
 export default Home;
