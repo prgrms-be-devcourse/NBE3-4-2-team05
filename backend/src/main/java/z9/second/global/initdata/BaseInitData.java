@@ -46,10 +46,10 @@ public class BaseInitData {
     @Transactional
     void init() {
         List<SampleEntity> sampleData = createSampleData(10);
+        List<FavoriteEntity> saveFavoriteData = createFavoriteData(); // 먼저 관심사 생성
         List<User> savedUserData = createUserData(10);
         List<ClassEntity> savedClassData = createClassData(10, savedUserData);
         createScheduleData(savedClassData);
-        List<FavoriteEntity> saveFavoriteData = createFavoriteData();
         List<UserFavorite> savedUserFavoriteData = createUserFavoriteData(savedUserData, saveFavoriteData);
     }
 
@@ -134,14 +134,20 @@ public class BaseInitData {
             return classRepository.findAll();
         }
 
+        // 먼저 저장된 관심사 목록을 가져옵니다
+        List<FavoriteEntity> favorites = favoriteRepository.findAll();
         List<ClassEntity> savedClassList = new ArrayList<>();
+
         for (int i = 1; i <= count; i++) {
             // 각 클래스의 모임장을 users 리스트에서 순차적으로 설정
             Long masterId = users.get(i-1).getId();
 
+            // favorites 리스트에서 순환하면서 관심사를 선택 (인덱스가 넘어가면 처음부터 다시)
+            String favorite = favorites.get((i-1) % favorites.size()).getName();
+
             ClassEntity classEntity = ClassEntity.builder()
                     .name("테스트 모임" + i)
-                    .favorite("취미" + i)
+                    .favorite(favorite)
                     .description("테스트 모임" + i + "의 설명입니다.")
                     .masterId(masterId)
                     .build();
