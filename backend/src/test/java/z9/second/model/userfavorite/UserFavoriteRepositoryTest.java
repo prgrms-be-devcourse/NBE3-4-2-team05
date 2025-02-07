@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.transaction.annotation.Transactional;
 import z9.second.domain.favorite.entity.FavoriteEntity;
 import z9.second.integration.SpringBootTestSupporter;
+import z9.second.integration.factory.UserFactory;
 import z9.second.model.user.User;
 
 @Transactional
@@ -17,11 +18,8 @@ class UserFavoriteRepositoryTest extends SpringBootTestSupporter {
     @Test
     void findFavoriteNamesByUserId1() {
         // given
-        String loginId = "test1@email.com";
-        String password = "!test1234";
-        String nickname = "test";
-        User newUser = User.createNewUser(loginId, password, nickname);
-        User saveUser = userRepository.save(newUser);
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
 
         List<String> favorite = List.of("관심사1", "관심사2");
         FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");

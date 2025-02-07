@@ -21,6 +21,7 @@ import z9.second.domain.favorite.entity.FavoriteEntity;
 import z9.second.domain.user.dto.UserRequest;
 import z9.second.global.response.SuccessCode;
 import z9.second.integration.SpringBootTestSupporter;
+import z9.second.integration.factory.UserFactory;
 import z9.second.integration.security.WithCustomUser;
 import z9.second.model.schedules.SchedulesCheckInEntity;
 import z9.second.model.schedules.SchedulesEntity;
@@ -42,11 +43,8 @@ class UserControllerTest extends SpringBootTestSupporter {
     @Test
     void findUserInfo() throws Exception {
         // given
-        String loginId = "test1@email.com";
-        String password = "!test1234";
-        String nickname = "test";
-        User newUser = User.createNewUser(loginId, password, nickname);
-        User saveUser = userRepository.save(newUser);
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
 
         List<String> favorite = List.of("관심사1", "관심사2");
         FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
@@ -66,7 +64,7 @@ class UserControllerTest extends SpringBootTestSupporter {
                 .andExpect(jsonPath("$.isSuccess").value(SuccessCode.FIND_USER_INFO_SUCCESS.getIsSuccess()))
                 .andExpect(jsonPath("$.message").value(SuccessCode.FIND_USER_INFO_SUCCESS.getMessage()))
                 .andExpect(jsonPath("$.code").value(SuccessCode.FIND_USER_INFO_SUCCESS.getCode()))
-                .andExpect(jsonPath("$.data.nickname").value(nickname))
+                .andExpect(jsonPath("$.data.nickname").value(saveUser.getNickname()))
                 .andExpect(jsonPath("$.data.type").value(UserType.NORMAL.getValue()))
                 .andExpect(jsonPath("$.data.role").value(UserRole.ROLE_USER.getValue()))
                 .andExpect(jsonPath("$.data.createdAt").value(Matchers.matchesPattern("\\d{4}-\\d{2}-\\d{2}")))
@@ -80,11 +78,8 @@ class UserControllerTest extends SpringBootTestSupporter {
     @Test
     void modifyUserInfo() throws Exception {
         // given
-        String loginId = "test1@email.com";
-        String password = "!test1234";
-        String nickname = "test";
-        User newUser = User.createNewUser(loginId, password, nickname);
-        User saveUser = userRepository.save(newUser);
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
 
         List<String> favorite = List.of("관심사1", "관심사2");
         FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
@@ -116,11 +111,8 @@ class UserControllerTest extends SpringBootTestSupporter {
     void findUserSchedules() throws Exception {
         // given
         //사용자 등록
-        String loginId = "test1@email.com";
-        String password = "!test1234";
-        String nickname = "test";
-        User newUser = User.createNewUser(loginId, password, nickname);
-        User saveUser = userRepository.save(newUser);
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
 
         //관심사 등록
         FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");

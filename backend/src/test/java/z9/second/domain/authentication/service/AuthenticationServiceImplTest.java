@@ -14,6 +14,7 @@ import z9.second.domain.favorite.entity.FavoriteEntity;
 import z9.second.global.exception.CustomException;
 import z9.second.global.response.ErrorCode;
 import z9.second.integration.SpringBootTestSupporter;
+import z9.second.integration.factory.UserFactory;
 import z9.second.model.user.User;
 import z9.second.model.user.UserRole;
 import z9.second.model.user.UserStatus;
@@ -26,17 +27,14 @@ class AuthenticationServiceImplTest extends SpringBootTestSupporter {
     @Test
     void login() {
         // given
-        String loginId = "test@email.com";
-        String password = "!test1234";
-        String nickName = "테스터";
-        userRepository.save(
-                User.createNewUser(loginId, passwordEncoder.encode(password), nickName));
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
         em.flush();
         em.clear();
 
         // when
         AuthenticationResponse.UserToken userToken = authenticationService.login(
-                AuthenticationRequest.Login.of(loginId, password));
+                AuthenticationRequest.Login.of(saveUser.getLoginId(), UserFactory.USER_LOGIN_PASSWORD));
 
         // then
         assertThat(userToken.getAccessToken())
@@ -103,8 +101,8 @@ class AuthenticationServiceImplTest extends SpringBootTestSupporter {
         FavoriteEntity fe2 = FavoriteEntity.createNewFavorite("관심사2");
         favoriteRepository.saveAll(List.of(fe1, fe2));
 
-        AuthenticationRequest.Signup signupDto = AuthenticationRequest.Signup.of(loginId, password,
-                favorite, nickname);
+        AuthenticationRequest.Signup signupDto =
+                AuthenticationRequest.Signup.of(loginId, password, favorite, nickname);
 
         User newUser = User.createNewUser(loginId, password, "test2");
         userRepository.save(newUser);

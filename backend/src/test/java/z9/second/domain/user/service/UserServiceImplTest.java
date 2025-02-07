@@ -16,6 +16,7 @@ import z9.second.domain.user.dto.UserResponse;
 import z9.second.global.exception.CustomException;
 import z9.second.global.response.ErrorCode;
 import z9.second.integration.SpringBootTestSupporter;
+import z9.second.integration.factory.UserFactory;
 import z9.second.model.schedules.SchedulesCheckInEntity;
 import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.user.User;
@@ -30,11 +31,8 @@ class UserServiceImplTest extends SpringBootTestSupporter {
     @Test
     void findUserInfo() {
         // given
-        String loginId = "test1@email.com";
-        String password = "!test1234";
-        String nickname = "test";
-        User newUser = User.createNewUser(loginId, password, nickname);
-        User saveUser = userRepository.save(newUser);
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
 
         List<String> favorite = List.of("관심사1", "관심사2");
         FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
@@ -54,7 +52,7 @@ class UserServiceImplTest extends SpringBootTestSupporter {
         // then
         assertThat(findData)
                 .extracting("nickname", "type", "role")
-                .containsExactly(nickname, UserType.NORMAL.getValue(), UserRole.ROLE_USER.getValue());
+                .containsExactly(saveUser.getNickname(), UserType.NORMAL.getValue(), UserRole.ROLE_USER.getValue());
         assertThat(findData.getCreatedAt()).matches("\\d{4}-\\d{2}-\\d{2}");
         assertThat(findData.getFavorite())
                 .hasSize(2)
@@ -65,11 +63,8 @@ class UserServiceImplTest extends SpringBootTestSupporter {
     @Test
     void findUserInfo2() {
         // given
-        String loginId = "test1@email.com";
-        String password = "!test1234";
-        String nickname = "test";
-        User newUser = User.createNewUser(loginId, password, nickname);
-        User saveUser = userRepository.save(newUser);
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
 
         em.flush();
         em.clear();
@@ -80,7 +75,7 @@ class UserServiceImplTest extends SpringBootTestSupporter {
         // then
         assertThat(findData)
                 .extracting("nickname", "type", "role")
-                .containsExactly(nickname, UserType.NORMAL.getValue(), UserRole.ROLE_USER.getValue());
+                .containsExactly(saveUser.getNickname(), UserType.NORMAL.getValue(), UserRole.ROLE_USER.getValue());
         assertThat(findData.getCreatedAt()).matches("\\d{4}-\\d{2}-\\d{2}");
         assertThat(findData.getFavorite())
                 .hasSize(0);
@@ -90,9 +85,6 @@ class UserServiceImplTest extends SpringBootTestSupporter {
     @Test
     void findUserInfo3() {
         // given
-
-        em.flush();
-        em.clear();
 
         // when // then
         assertThatThrownBy(() -> userService.findUserInfo(1L))
@@ -105,11 +97,8 @@ class UserServiceImplTest extends SpringBootTestSupporter {
     @Test
     void patchUserInfo1() {
         // given
-        String loginId = "test1@email.com";
-        String password = "!test1234";
-        String nickname = "test";
-        User newUser = User.createNewUser(loginId, password, nickname);
-        User saveUser = userRepository.save(newUser);
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
 
         List<String> favorite = List.of("관심사1", "관심사2");
         FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
@@ -142,11 +131,8 @@ class UserServiceImplTest extends SpringBootTestSupporter {
     @Test
     void patchUserInfo2() {
         // given
-        String loginId = "test1@email.com";
-        String password = "!test1234";
-        String nickname = "test";
-        User newUser = User.createNewUser(loginId, password, nickname);
-        User saveUser = userRepository.save(newUser);
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
 
         List<String> favorite = List.of("관심사1", "관심사2");
         FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
@@ -180,11 +166,8 @@ class UserServiceImplTest extends SpringBootTestSupporter {
     @Test
     void patchUserInfo3() {
         // given
-        String loginId = "test1@email.com";
-        String password = "!test1234";
-        String nickname = "test";
-        User newUser = User.createNewUser(loginId, password, nickname);
-        User saveUser = userRepository.save(newUser);
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
 
         List<String> favorite = List.of("관심사1", "관심사2");
         FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
@@ -210,11 +193,8 @@ class UserServiceImplTest extends SpringBootTestSupporter {
     void findUserSchedules1() {
         // given
         //사용자 등록
-        String loginId = "test1@email.com";
-        String password = "!test1234";
-        String nickname = "test";
-        User newUser = User.createNewUser(loginId, password, nickname);
-        User saveUser = userRepository.save(newUser);
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
 
         //관심사 등록
         FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");

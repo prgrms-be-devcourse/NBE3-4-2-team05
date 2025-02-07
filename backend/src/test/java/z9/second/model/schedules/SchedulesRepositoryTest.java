@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import z9.second.domain.classes.entity.ClassEntity;
 import z9.second.domain.favorite.entity.FavoriteEntity;
 import z9.second.integration.SpringBootTestSupporter;
+import z9.second.integration.factory.UserFactory;
 import z9.second.model.user.User;
 import z9.second.model.userfavorite.UserFavorite;
 
@@ -21,11 +22,8 @@ class SchedulesRepositoryTest extends SpringBootTestSupporter {
     void findUserSchedulesInfoByUserId1() {
         // given
         //사용자 등록
-        String loginId = "test1@email.com";
-        String password = "!test1234";
-        String nickname = "test";
-        User newUser = User.createNewUser(loginId, password, nickname);
-        User saveUser = userRepository.save(newUser);
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
 
         //관심사 등록
         FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
@@ -97,11 +95,8 @@ class SchedulesRepositoryTest extends SpringBootTestSupporter {
     void findUserSchedulesInfoByUserId2() {
         // given
         //사용자 등록
-        String loginId = "test1@email.com";
-        String password = "!test1234";
-        String nickname = "test";
-        User newUser = User.createNewUser(loginId, password, nickname);
-        User saveUser = userRepository.save(newUser);
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
 
         //관심사 등록
         FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
