@@ -15,12 +15,10 @@ public class CheckInResponseDto {
         private final Long userId;
         private final Boolean checkIn;
 
-        public static ResponseData from(CheckInEntity schedulesCheckInEntity) {
+        public static ResponseData from(CheckInEntity checkInEntity) {
             return ResponseData.builder()
-                    .checkInId(schedulesCheckInEntity.getId())
-                    .scheduleId(schedulesCheckInEntity.getSchedules().getId())
-                    .userId(schedulesCheckInEntity.getUserId())
-                    .checkIn(schedulesCheckInEntity.isCheckIn())
+                    .scheduleId(checkInEntity.getSchedules().getId())
+                    .checkIn(checkInEntity.isCheckIn())
                     .build();
         }
     }

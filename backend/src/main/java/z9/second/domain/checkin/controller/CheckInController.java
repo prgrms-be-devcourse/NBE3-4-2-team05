@@ -13,12 +13,13 @@ import z9.second.domain.checkin.service.CheckInService;
 import z9.second.global.response.BaseResponse;
 import z9.second.global.response.SuccessCode;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/checkin")
 @Tag(name = "Checkin controller", description = "모임 참석 유무 컨트롤러")
 public class CheckInController {
-
     private final CheckInService checkInService;
 
     @PostMapping
@@ -43,6 +44,15 @@ public class CheckInController {
         Long userId = Long.parseLong(principal.getName());
         checkInService.UpdateCheckIn(userId, requestDto);
         return BaseResponse.ok(SuccessCode.CHECK_IN_UPDATE_SUCCESS);
+    }
+
+    // 스케줄 ID로 체크인 정보 조회
+    @GetMapping("/schedules/{scheduleId}")
+    @Operation(summary = "모임 내 투표 현황 보여주기")
+    @SecurityRequirement(name="bearerAuth")
+    public ResponseEntity<List<CheckInResponseDto.ResponseData>> getAllCheckIns(@PathVariable Long scheduleId) {
+        List<CheckInResponseDto.ResponseData> checkIns = checkInService.GetAllCheckIns(scheduleId);
+        return ResponseEntity.ok(checkIns);
     }
 
 }

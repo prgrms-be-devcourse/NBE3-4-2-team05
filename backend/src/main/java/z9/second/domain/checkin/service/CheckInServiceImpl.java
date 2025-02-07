@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import z9.second.domain.checkin.dto.CheckInRequestDto;
+import z9.second.domain.checkin.dto.CheckInResponseDto;
+import z9.second.domain.classes.dto.ClassResponse;
+import z9.second.domain.classes.entity.ClassEntity;
 import z9.second.domain.classes.repository.ClassRepository;
 import z9.second.domain.classes.repository.ClassUserRepository;
 import z9.second.global.exception.CustomException;
@@ -15,6 +18,8 @@ import z9.second.model.schedules.SchedulesRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +53,6 @@ public class CheckInServiceImpl implements CheckInService {
         if (!classUserRepository.existsByClassesAndUserId(findSchedulesEntity.getClasses(), userId)) {
             throw new CustomException(ErrorCode.CLASS_NOT_EXISTS_MEMBER);
         }
-
         LocalDateTime meetingDateTime = LocalDateTime.parse(
                 findSchedulesEntity.getMeetingTime(),
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
@@ -57,7 +61,6 @@ public class CheckInServiceImpl implements CheckInService {
         if (meetingDateTime.isBefore(LocalDateTime.now())) {
             throw new CustomException(ErrorCode.INVALID_PASSED_CHECK_IN);
         }
-
         CheckInEntity newSchedulesCheckIn = CheckInEntity
                 .builder()
                 .schedules(findSchedulesEntity)
@@ -68,4 +71,15 @@ public class CheckInServiceImpl implements CheckInService {
 
         checkInEntityRepository.save(newSchedulesCheckIn);
     }
+
+    @Transactional
+    @Override
+    public List<CheckInResponseDto.ResponseData> GetAllCheckIns(Long scheduleId) {
+        List<CheckInEntity> response = checkInEntityRepository.findBySchedulesId(scheduleId);
+         return response.stream()
+                .map(CheckInResponseDto.ResponseData::from)
+                .collect(Collectors.toList());
+        }
+
+
 }
