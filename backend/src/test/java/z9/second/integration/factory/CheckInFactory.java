@@ -33,7 +33,7 @@ public class CheckInFactory {
                     .builder()
                     .schedules(schedule)
                     .userId(user.getId())
-                    .checkIn(check.get(index))
+                    .checkIn(check.get(index-1))
                     .build();
             SchedulesCheckInEntity saveCheckIn = schedulesCheckInEntityRepository.save(newCheckIn);
             saveCheckInList.add(saveCheckIn);

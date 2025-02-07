@@ -63,7 +63,6 @@ public abstract class SpringBootTestSupporter {
     @Autowired
     protected SchedulesCheckInEntityRepository schedulesCheckInEntityRepository;
 
-
     /**
      * service
      */

@@ -216,4 +216,31 @@ class UserServiceImplTest extends SpringBootTestSupporter {
                 .extracting("meetingTitle")
                 .isEqualTo(saveSchedule.getMeetingTitle());
     }
+
+    @DisplayName("로그인 한 회원의 모든 모임을 조회 합니다.")
+    @Test
+    void findUserClasses1() {
+        // given
+        // 회원 등록
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
+
+        // 관심사 등록
+        List<FavoriteEntity> saveFavoriteList = favoriteFactory.saveAndCreateFavoriteData(1);
+        FavoriteEntity saveFavorite = saveFavoriteList.getFirst();
+
+        // 모임 등록
+        List<ClassEntity> saveClassList =
+                classFactory.saveAndCreateClassData(1, saveUser, saveFavorite);
+        ClassEntity saveClass = saveClassList.getFirst();
+
+        // when
+        UserResponse.UserClass findData = userService.findUserClasses(saveUser.getId());
+
+        // then
+        assertThat(findData.getClassInfo()).hasSize(1);
+        assertThat(findData.getClassInfo().getFirst())
+                .extracting("name", "description", "favorite")
+                .containsExactly(saveClass.getName(), saveClass.getDescription(), saveClass.getFavorite());
+    }
 }

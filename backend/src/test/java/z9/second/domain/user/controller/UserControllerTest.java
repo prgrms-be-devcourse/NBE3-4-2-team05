@@ -145,4 +145,40 @@ class UserControllerTest extends SpringBootTestSupporter {
                 .andExpect(jsonPath("$.data.schedule[0].meetingTime").value(Matchers.matchesPattern("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")))
                 .andExpect(jsonPath("$.data.schedule[0].meetingTitle").value(saveSchedule.getMeetingTitle()));
     }
+
+    @WithCustomUser
+    @DisplayName("로그인 한 사용자의 모임방을 전체 조회 합니다.")
+    @Test
+    void findUserClasses() throws Exception {
+        // given
+        // 회원 등록
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
+
+        // 관심사 등록
+        List<FavoriteEntity> saveFavoriteList = favoriteFactory.saveAndCreateFavoriteData(1);
+        FavoriteEntity saveFavorite = saveFavoriteList.getFirst();
+
+        // 모임 등록
+        List<ClassEntity> saveClassList =
+                classFactory.saveAndCreateClassData(2, saveUser, saveFavorite);
+        ClassEntity saveClass = saveClassList.getFirst();
+
+        // when
+        ResultActions result = mockMvc.perform(get("/api/v1/users/classes"));
+
+        // then
+        result.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(SuccessCode.FIND_USER_CLASSES_SUCCESS.getIsSuccess()))
+                .andExpect(jsonPath("$.message").value(SuccessCode.FIND_USER_CLASSES_SUCCESS.getMessage()))
+                .andExpect(jsonPath("$.code").value(SuccessCode.FIND_USER_CLASSES_SUCCESS.getCode()))
+                .andExpect(jsonPath("$.data.classInfo").isArray())
+                .andExpect(jsonPath("$.data.classInfo[0].name").value(saveClassList.get(0).getName()))
+                .andExpect(jsonPath("$.data.classInfo[0].description").value(saveClassList.get(0).getDescription()))
+                .andExpect(jsonPath("$.data.classInfo[0].favorite").value(saveClassList.get(0).getFavorite()))
+                .andExpect(jsonPath("$.data.classInfo[1].name").value(saveClassList.get(1).getName()))
+                .andExpect(jsonPath("$.data.classInfo[1].description").value(saveClassList.get(1).getDescription()))
+                .andExpect(jsonPath("$.data.classInfo[1].favorite").value(saveClassList.get(1).getFavorite()));
+    }
 }
