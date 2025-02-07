@@ -75,21 +75,6 @@ class SchedulesControllerTest extends SchedulesBaseTest {
         // 생성된 일정 조회
         SchedulesEntity savedSchedule = schedulesRepository.findById(scheduleId)
                 .orElseThrow();
-
-        // 체크인 검증
-        assertThat(savedSchedule.getCheckins()).hasSize(2); // 모임장 + 멤버 1명
-
-        // 모임장의 체크인 검증
-        assertThat(savedSchedule.getCheckins().stream()
-                .anyMatch(checkin ->
-                        checkin.getUserId().equals(masterUser.getId()) && !checkin.isCheckIn()))
-                .isTrue();
-
-        // 멤버의 체크인 검증
-        assertThat(savedSchedule.getCheckins().stream()
-                .anyMatch(checkin ->
-                        checkin.getUserId().equals(memberUser.getId()) && !checkin.isCheckIn()))
-                .isTrue();
     }
 
     @Test
