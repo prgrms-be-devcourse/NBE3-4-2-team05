@@ -1,12 +1,10 @@
-package z9.second.model.checkIn;
+package z9.second.model.schedules;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import z9.second.model.BaseEntity;
-import z9.second.model.schedules.SchedulesEntity;
 
 @Entity
 @Table(name = "schedules_checkin")
@@ -14,7 +12,7 @@ import z9.second.model.schedules.SchedulesEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CheckInEntity extends BaseEntity {
+public class SchedulesCheckInEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "sc_id", nullable = false)
