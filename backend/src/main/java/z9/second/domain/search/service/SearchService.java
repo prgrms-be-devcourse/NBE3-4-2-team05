@@ -41,19 +41,8 @@ public class SearchService {
                     if (userId != null) {
                         // 로그인: 사용자의 관심사와 일치하는 모임만 조회
                         List<String> userFavorites = userFavoriteRepository.findFavoriteNamesByUserId(userId);
-                        // 데이터 확인을 위한 로깅 추가
-                        log.info("userId: {}", userId);
-                        log.info("User Favorites: {}", userFavorites);
-
-                        // ClassEntity의 favorite 값들도 확인
-                        List<String> allClassFavorites = classRepository.findAll().stream()
-                                .map(ClassEntity::getFavorite)
-                                .distinct()
-                                .collect(Collectors.toList());
-                        log.info("All Class Favorites: {}", allClassFavorites);
 
                         classes = classRepository.findByUserFavorites(userFavorites);
-                        log.info("Found Classes Size: {}", classes.size());
                     } else {
                         // 비로그인: 전체 모임을 관심사별, 가나다순 정렬
                         classes = classRepository.findByFavorites();
@@ -66,15 +55,10 @@ public class SearchService {
                 default -> classes = classRepository.findAllByOrderByCreatedAtDesc();
             }
 
-            // 데이터 확인을 위한 로깅 추가
-            List<SearchResponseDto> result = classes.stream()
+            return classes.stream()
                     .map(SearchResponseDto::from)
                     .collect(Collectors.toList());
-
-            log.info("Final result size: {}", result.size());
-            return result;
         } catch (Exception e) {
-            log.error("Failed to search classes", e);
             throw new CustomException(ErrorCode.CLASS_READ_FAILED);
         }
     }

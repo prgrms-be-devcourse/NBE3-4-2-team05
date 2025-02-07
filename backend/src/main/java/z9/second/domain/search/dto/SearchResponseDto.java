@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import z9.second.domain.classes.entity.ClassEntity;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 public class SearchResponseDto {
@@ -13,6 +15,7 @@ public class SearchResponseDto {
     private String description;
     private int participantCount;
     private Long masterId;
+    private LocalDateTime createdAt;
 
     public static SearchResponseDto from(ClassEntity entity) {
         return SearchResponseDto.builder()
@@ -22,6 +25,7 @@ public class SearchResponseDto {
                 .description(entity.getDescription())
                 .participantCount(entity.getUsers().size())
                 .masterId(entity.getMasterId())
+                .createdAt(entity.getCreatedAt())
                 .build();
     }
 }
