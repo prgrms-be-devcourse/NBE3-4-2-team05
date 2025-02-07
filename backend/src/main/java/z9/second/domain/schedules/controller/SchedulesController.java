@@ -56,6 +56,22 @@ public class SchedulesController {
         return BaseResponse.ok(SuccessCode.SCHEDULE_MODIFY_SUCCESS, response);
     }
 
+    @DeleteMapping("/{scheduleId}/classes/{classId}")
+    @Operation(
+            summary = "모임 일정 삭제",
+            description = "{classId}모임의 {scheduleId}번 일정을 삭제합니다."
+    )
+    public BaseResponse<Void> delete(
+            @Parameter(description = "일정 ID", required = true)
+            @PathVariable Long scheduleId,
+            @Parameter(description = "모임 ID", required = true)
+            @PathVariable Long classId,
+            Principal principal
+    ) {
+        schedulesService.delete(scheduleId, classId, extractUserId(principal));
+        return BaseResponse.ok(SuccessCode.SCHEDULE_DELETE_SUCCESS);
+    }
+
     @GetMapping("/classes/{classId}")
     @Operation(summary = "모임 전체 일정 조회")
     public BaseResponse<List<SchedulesResponseDto.ResponseData>> getSchedulesList(
@@ -68,7 +84,7 @@ public class SchedulesController {
     }
 
     @GetMapping("/{scheduleId}/classes/{classId}")
-    @Operation(summary = "모임 일제 상세 조회")
+    @Operation(summary = "모임 일정 상세 조회")
     public BaseResponse<SchedulesResponseDto.ResponseData> getScheduleDetail(
             @Parameter(description = "일정 ID", required = true)
             @PathVariable Long scheduleId,
