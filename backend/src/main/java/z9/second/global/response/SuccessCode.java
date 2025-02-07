@@ -38,6 +38,7 @@ public enum SuccessCode {
     SCHEDULE_CREATE_SUCCESS(HttpStatus.CREATED, Boolean.TRUE, 201, "모임 일정 생성되었습니다!"),
     SCHEDULE_READ_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "모임 전체 일정 조회되었습니다!"),
     SCHEDULE_MODIFY_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "모임 일정이 성공적으로 수정되었습니다."),
+    SCHEDULE_DELETE_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "모임 일정이 삭제되었습니다."),
 
     // Common
     SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "요청 응답 성공"),
