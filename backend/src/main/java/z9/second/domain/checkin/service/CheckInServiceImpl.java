@@ -5,9 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import z9.second.domain.checkin.dto.CheckInRequestDto;
 import z9.second.domain.checkin.dto.CheckInResponseDto;
-import z9.second.domain.classes.dto.ClassResponse;
-import z9.second.domain.classes.entity.ClassEntity;
-import z9.second.domain.classes.repository.ClassRepository;
 import z9.second.domain.classes.repository.ClassUserRepository;
 import z9.second.global.exception.CustomException;
 import z9.second.global.response.ErrorCode;
@@ -32,7 +29,7 @@ public class CheckInServiceImpl implements CheckInService {
     // 처음 투표 시 생성
     @Transactional
     @Override
-    public void CreateCheckIn(Long userId, CheckInRequestDto.CheckInDto requestDto) {
+    public void createCheckIn(Long userId, CheckInRequestDto.CheckInDto requestDto) {
         if (checkInEntityRepository.existsByUserIdAndSchedulesId(userId, requestDto.getScheduleId())) {
             throw new CustomException(ErrorCode.CHECK_IN_ALREADY_EXISTS);
         }
@@ -41,7 +38,7 @@ public class CheckInServiceImpl implements CheckInService {
     // 투표 결과 변경
     @Transactional
     @Override
-    public void UpdateCheckIn(Long userId, CheckInRequestDto.CheckInDto requestDto) {
+    public void updateCheckIn(Long userId, CheckInRequestDto.CheckInDto requestDto) {
         checkInProcess(userId, requestDto);
     }
 
@@ -71,15 +68,15 @@ public class CheckInServiceImpl implements CheckInService {
 
         checkInEntityRepository.save(newSchedulesCheckIn);
     }
-
     @Transactional
     @Override
-    public List<CheckInResponseDto.ResponseData> GetAllCheckIns(Long scheduleId) {
-        List<CheckInEntity> response = checkInEntityRepository.findBySchedulesId(scheduleId);
-         return response.stream()
+    public List<CheckInResponseDto.ResponseData> getAllCheckIns(Long scheduleId) {
+        List<CheckInEntity> checkInEntities = checkInEntityRepository.findBySchedulesId(scheduleId);
+        if (checkInEntities == null || checkInEntities.isEmpty()) {
+            throw new CustomException(ErrorCode.SCHEDULE_NOT_FOUND);
+        }
+        return checkInEntities.stream()
                 .map(CheckInResponseDto.ResponseData::from)
                 .collect(Collectors.toList());
-        }
-
-
+    }
 }

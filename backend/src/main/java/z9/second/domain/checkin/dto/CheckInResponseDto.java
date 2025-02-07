@@ -17,7 +17,9 @@ public class CheckInResponseDto {
 
         public static ResponseData from(CheckInEntity checkInEntity) {
             return ResponseData.builder()
+                    .checkInId(checkInEntity.getId())
                     .scheduleId(checkInEntity.getSchedules().getId())
+                    .userId(checkInEntity.getUserId())
                     .checkIn(checkInEntity.isCheckIn())
                     .build();
         }
