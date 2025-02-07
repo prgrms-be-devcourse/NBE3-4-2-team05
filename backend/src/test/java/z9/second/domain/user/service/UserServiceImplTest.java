@@ -4,7 +4,6 @@ package z9.second.domain.user.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -198,20 +197,10 @@ class UserServiceImplTest extends SpringBootTestSupporter {
                 classFactory.saveAndCreateClassData(1, saveUser, saveFavorite);
         ClassEntity saveClass = saveClassList.getFirst();
 
-        //스케줄 생성 2개
-        SchedulesEntity schedules = SchedulesEntity.builder()
-                .classes(saveClass)
-                .meetingTime(LocalDateTime.now().toString())
-                .meetingTitle("정기모임 1회차")
-                .build();
-        SchedulesEntity saveSchedule = schedulesRepository.save(schedules);
-
-        SchedulesEntity schedules2 = SchedulesEntity.builder()
-                .classes(saveClass)
-                .meetingTime(LocalDateTime.now().toString())
-                .meetingTitle("정기모임 2회차")
-                .build();
-        SchedulesEntity saveSchedule2 = schedulesRepository.save(schedules2);
+        //스케줄 생성
+        List<SchedulesEntity> saveSchedulesList =
+                schedulesFactory.saveAndCreateClassData(2, saveClass);
+        SchedulesEntity saveSchedule = saveSchedulesList.getFirst();
 
         //체크인 등록 2개
         SchedulesCheckInEntity newCheckin = SchedulesCheckInEntity
@@ -241,6 +230,6 @@ class UserServiceImplTest extends SpringBootTestSupporter {
                 .hasSize(1);
         assertThat(findData.getSchedule().getFirst())
                 .extracting("meetingTitle")
-                .isEqualTo("정기모임 1회차");
+                .isEqualTo(saveSchedule.getMeetingTitle());
     }
 }

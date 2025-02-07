@@ -36,19 +36,9 @@ class SchedulesRepositoryTest extends SpringBootTestSupporter {
         ClassEntity saveClass = saveClassList.getFirst();
 
         //스케줄 생성
-        SchedulesEntity schedules = SchedulesEntity.builder()
-                .classes(saveClass)
-                .meetingTime(LocalDateTime.now().toString())
-                .meetingTitle("정기모임 1회차")
-                .build();
-        SchedulesEntity saveSchedule = schedulesRepository.save(schedules);
-
-        SchedulesEntity schedules2 = SchedulesEntity.builder()
-                .classes(saveClass)
-                .meetingTime(LocalDateTime.now().toString())
-                .meetingTitle("정기모임 2회차")
-                .build();
-        SchedulesEntity saveSchedule2 = schedulesRepository.save(schedules2);
+        List<SchedulesEntity> saveSchedulesList =
+                schedulesFactory.saveAndCreateClassData(2, saveClass);
+        SchedulesEntity saveSchedule = saveSchedulesList.getFirst();
 
         //체크인 등록
         SchedulesCheckInEntity newCheckin = SchedulesCheckInEntity
@@ -80,7 +70,7 @@ class SchedulesRepositoryTest extends SpringBootTestSupporter {
 
         assertThat(findData.getFirst())
                 .extracting("meetingTitle")
-                .isEqualTo("정기모임 1회차");
+                .isEqualTo(saveSchedule.getMeetingTitle());
     }
 
     @DisplayName("회원 아이디로, 회원이 참석하기로 한 모임 일정을 찾습니다. 없으면 빈 배열이 반환됩니다.")

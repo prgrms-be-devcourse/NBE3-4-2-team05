@@ -123,22 +123,10 @@ class UserControllerTest extends SpringBootTestSupporter {
                 classFactory.saveAndCreateClassData(1, saveUser, saveFavorite);
         ClassEntity saveClass = saveClassList.getFirst();
 
-        //스케줄 생성 2개
-        LocalDateTime now = LocalDateTime.now();
-        String formattedTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        SchedulesEntity schedules = SchedulesEntity.builder()
-                .classes(saveClass)
-                .meetingTime(formattedTime)
-                .meetingTitle("정기모임 1회차")
-                .build();
-        SchedulesEntity saveSchedule = schedulesRepository.save(schedules);
-
-        SchedulesEntity schedules2 = SchedulesEntity.builder()
-                .classes(saveClass)
-                .meetingTime(formattedTime)
-                .meetingTitle("정기모임 2회차")
-                .build();
-        SchedulesEntity saveSchedule2 = schedulesRepository.save(schedules2);
+        //스케줄 생성
+        List<SchedulesEntity> saveSchedulesList =
+                schedulesFactory.saveAndCreateClassData(2, saveClass);
+        SchedulesEntity saveSchedule = saveSchedulesList.getFirst();
 
         //체크인 등록 2개
         SchedulesCheckInEntity newCheckin = SchedulesCheckInEntity
@@ -173,6 +161,6 @@ class UserControllerTest extends SpringBootTestSupporter {
                 .andExpect(jsonPath("$.data.schedule.length()").value(1))
                 .andExpect(jsonPath("$.data.schedule[0].classId").isNotEmpty())
                 .andExpect(jsonPath("$.data.schedule[0].meetingTime").value(Matchers.matchesPattern("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")))
-                .andExpect(jsonPath("$.data.schedule[0].meetingTitle").value("정기모임 1회차"));
+                .andExpect(jsonPath("$.data.schedule[0].meetingTitle").value(saveSchedule.getMeetingTitle()));
     }
 }
