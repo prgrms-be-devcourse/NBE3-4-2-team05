@@ -287,9 +287,9 @@ public class ClassControllerTest extends ClassBaseTest {
         // then
         result.andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(SuccessCode.CLASS_ADD_BLACKLIST_SUCCESS.getIsSuccess()))
-                .andExpect(jsonPath("$.message").value(SuccessCode.CLASS_ADD_BLACKLIST_SUCCESS.getMessage()))
-                .andExpect(jsonPath("$.code").value(SuccessCode.CLASS_ADD_BLACKLIST_SUCCESS.getCode()))
+                .andExpect(jsonPath("$.isSuccess").value(SuccessCode.CLASS_KICK_OUT_SUCCESS.getIsSuccess()))
+                .andExpect(jsonPath("$.message").value(SuccessCode.CLASS_KICK_OUT_SUCCESS.getMessage()))
+                .andExpect(jsonPath("$.code").value(SuccessCode.CLASS_KICK_OUT_SUCCESS.getCode()))
                 .andExpect(jsonPath("$.data").doesNotExist())
         ;
     }
