@@ -69,7 +69,7 @@ public class ClassController {
     public BaseResponse<ClassResponse.EntryResponseData> entry(
             @PathVariable("classId") Long classId,
             Principal principal
-    ){
+    ) {
         Long userId = Long.parseLong(principal.getName());
 
         ClassResponse.EntryResponseData responseData = classService.getClassInfo(classId, userId);
@@ -83,7 +83,7 @@ public class ClassController {
             @PathVariable("classId") Long classId,
             @RequestBody @Valid ClassRequest.ModifyRequestData requestData,
             Principal principal
-    ){
+    ) {
         Long userId = Long.parseLong(principal.getName());
 
         classService.modifyClassInfo(classId, userId, requestData);
@@ -101,10 +101,10 @@ public class ClassController {
     @DeleteMapping("/{classId}")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "모임 삭제")
-    public BaseResponse<Void> deleteClass (
+    public BaseResponse<Void> deleteClass(
             @PathVariable Long classId,
             Principal principal
-    ){
+    ) {
         Long userId = Long.parseLong(principal.getName());
         classService.deleteClass(classId, userId);
         return BaseResponse.ok(SuccessCode.CLASS_DELETE_SUCCESS);
@@ -125,19 +125,19 @@ public class ClassController {
         return BaseResponse.ok(SuccessCode.CLASS_MASTER_TRANSFER_SUCCESS);
     }
 
-    @PostMapping("/{classId}/users/{userId}")
+    @DeleteMapping("/{classId}/users/{userId}")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "회원 강퇴")
-    public BaseResponse<Void> addBlackList(
+    public BaseResponse<Void> kickOut(
             @PathVariable Long classId,
             @PathVariable Long userId,
             Principal principal
     ) {
         Long currentUserId = Long.parseLong(principal.getName());
 
-        classService.addBlackList(classId, userId, currentUserId);
+        classService.kickOut(classId, userId, currentUserId);
 
-        return BaseResponse.ok(SuccessCode.CLASS_ADD_BLACKLIST_SUCCESS);
+        return BaseResponse.ok(SuccessCode.CLASS_KICK_OUT_SUCCESS);
     }
 
     @GetMapping("/{classId}/checkMember")

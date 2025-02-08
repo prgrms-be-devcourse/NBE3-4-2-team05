@@ -16,6 +16,7 @@ import z9.second.model.user.User;
 import z9.second.model.user.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -50,8 +51,7 @@ public class ClassService {
     @Transactional
     public ClassResponse.EntryResponseData getClassInfo(Long classId, Long userId) {
         // 1. 모임 존재 여부 확인
-        ClassEntity classEntity = classRepository.findById(classId)
-                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+        ClassEntity classEntity = findByClassId(classId);
 
         // 2. 유저가 모임 멤버인지 확인
         if (!classUserRepository.existsByUserIdAndClassesId(userId, classId)) {
@@ -63,8 +63,7 @@ public class ClassService {
     @Transactional
     public ClassResponse.JoinResponseData joinMembership(Long classId, Long userId) {
         // 해당 모임이 존재하는지 확인
-        ClassEntity classEntity = classRepository.findById(classId)
-                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+        ClassEntity classEntity = findByClassId(classId);
 
         // 이미 가입된 회원인지 검증
         if (classUserRepository.existsByClasses_IdAndUserId(classId, userId)) {
@@ -84,13 +83,13 @@ public class ClassService {
     @Transactional
     public void deleteMembership(Long classId, Long userId) {
         // 해당 모임이 존재하는지 확인
-        ClassEntity classEntity = classRepository.findById(classId)
-                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+        ClassEntity classEntity = findByClassId(classId);
 
         // 가입된 회원인지 검증
         ClassUserEntity user = classUserRepository.findByClassesIdAndUserId(classId, userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_EXISTS_MEMBER));
 
+        // 모임장인지 검증 (모임장은 권한을 위임해야 탈퇴할 수 있음)
         if (userId.equals(classEntity.getMasterId())) {
             throw new CustomException(ErrorCode.CLASS_MASTER_TRANSFER_REQUIRED);
         }
@@ -101,8 +100,7 @@ public class ClassService {
     @Transactional
     public void modifyClassInfo(Long classId, Long userId, ClassRequest.ModifyRequestData requestData) {
         // 1. 모임 존재 여부 확인
-        ClassEntity classEntity = classRepository.findById(classId)
-                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+        ClassEntity classEntity = findByClassId(classId);
 
         // 2. 모임장 권한 확인
         if (!classEntity.getMasterId().equals(userId)) {
@@ -116,8 +114,7 @@ public class ClassService {
     @Transactional
     public ClassResponse.ClassUserListData getUserListByClassId(Long classId) {
         // 해당 모임이 존재하는지 확인
-        ClassEntity classEntity = classRepository.findById(classId)
-                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+        ClassEntity classEntity = findByClassId(classId);
 
         List<ClassUserEntity> classUserList = classUserRepository.findByClassesId(classId);
 
@@ -131,8 +128,7 @@ public class ClassService {
     @Transactional
     public void deleteClass(Long classId, Long userId) {
         // 1. 모임 존재 여부 확인
-        ClassEntity classEntity = classRepository.findById(classId)
-                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+        ClassEntity classEntity = findByClassId(classId);
 
         // 2. 모임장 권한 확인
         if (!classEntity.getMasterId().equals(userId)) {
@@ -152,8 +148,7 @@ public class ClassService {
     @Transactional
     public void transferMaster(Long classId, Long userId, Long currentUserId) {
         // 모임 존재 여부 확인
-        ClassEntity classEntity = classRepository.findById(classId)
-                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+        ClassEntity classEntity = findByClassId(classId);
 
         // 현재 회원이 모임장인지 체크
         if (!classEntity.getMasterId().equals(currentUserId)) {
@@ -169,10 +164,9 @@ public class ClassService {
     }
 
     @Transactional
-    public void addBlackList(Long classId, Long userId, Long currentUserId) {
+    public void kickOut(Long classId, Long userId, Long currentUserId) {
         // 모임 존재 여부 확인
-        ClassEntity classEntity = classRepository.findById(classId)
-                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+        ClassEntity classEntity = findByClassId(classId);
 
         // 현재 회원이 모임장인지 체크
         if (!classEntity.getMasterId().equals(currentUserId)) {
@@ -196,8 +190,7 @@ public class ClassService {
     @Transactional(readOnly = true)
     public ClassResponse.CheckMemberData checkMember(Long classId, Long currentUserId) {
         // 해당 모임이 존재하는지 확인
-        ClassEntity classEntity = classRepository.findById(classId)
-                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+        findByClassId(classId);
 
         // 가입된 회원인지 검증 -> 가입된 회원이면 true, 아니면 false
         boolean isMember = classUserRepository.existsByClasses_IdAndUserId(classId, currentUserId);
@@ -208,12 +201,22 @@ public class ClassService {
     @Transactional(readOnly = true)
     public ClassResponse.CheckBlackListData checkBlackList(Long classId, Long currentUserId) {
         // 해당 모임이 존재하는지 확인
-        ClassEntity classEntity = classRepository.findById(classId)
-                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+        findByClassId(classId);
 
         // 강퇴된 회원 검증
         boolean isBlackList = classBlackListRepository.existsByClasses_IdAndUserId(classId, currentUserId);
 
         return ClassResponse.CheckBlackListData.from(isBlackList);
+    }
+
+    // 가장 마지막에 등록된 모임 조회
+    public Optional<ClassEntity> findLatest() {
+        return classRepository.findFirstByOrderByIdDesc();
+    }
+
+    // 모임이 존재하는지 확인하는 메서드
+    public ClassEntity findByClassId(Long classId) {
+        return classRepository.findById(classId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
     }
 }

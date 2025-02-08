@@ -41,6 +41,10 @@ public class ClassEntity {
     @Builder.Default
     private List<ClassBlackListEntity> blackLists = new ArrayList<>();
 
+    @OneToMany(mappedBy = "classes", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @Builder.Default
+    private List<SchedulesEntity> schedules = new ArrayList<>();
+
     public ClassUserEntity addMember(Long userId) {
         ClassUserEntity user = ClassUserEntity.builder()
                 .classes(this)
