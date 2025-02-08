@@ -58,19 +58,6 @@ class SchedulesServiceTest extends SchedulesBaseTest {
         // 생성된 일정 조회
         SchedulesEntity savedSchedule = schedulesRepository.findById(response.getScheduleId())
                 .orElseThrow();
-
-        // 체크인 검증
-        assertThat(savedSchedule.getCheckins()).hasSize(2); // 모임장 + 멤버 1명
-
-        // 모임장의 체크인 검증
-        assertThat(savedSchedule.getCheckins())
-                .anyMatch(checkin ->
-                        checkin.getUserId().equals(masterUser.getId()) && !checkin.isCheckIn());
-
-        // 멤버의 체크인 검증
-        assertThat(savedSchedule.getCheckins())
-                .anyMatch(checkin ->
-                        checkin.getUserId().equals(memberUser.getId()) && !checkin.isCheckIn());
     }
 
     @DisplayName("일정 생성 실패 - 존재하지 않는 모임")
@@ -221,6 +208,45 @@ class SchedulesServiceTest extends SchedulesBaseTest {
         // when & then
         assertThatThrownBy(() ->
                 schedulesService.modify(scheduleEntity.getId(), classEntity.getId(), updateRequest, memberUser.getId()))
+                .isInstanceOf(CustomException.class)
+                .extracting("code")
+                .isEqualTo(ErrorCode.CLASS_ACCESS_DENIED);
+    }
+
+    @Test
+    @Order(11)
+    @DisplayName("일정 삭제 성공 - 모임장 권한")
+    void delete_Success() {
+        // when
+        schedulesService.delete(scheduleEntity.getId(), classEntity.getId(), masterUser.getId());
+
+        // then
+        // DB에서 실제로 삭제되었는지 확인
+        assertThat(schedulesRepository.findById(scheduleEntity.getId())).isEmpty();
+    }
+
+    @Test
+    @Order(12)
+    @DisplayName("일정 삭제 실패 - 존재하지 않는 일정")
+    void delete_ScheduleNotFound() {
+        // when & then
+        assertThatThrownBy(() ->
+                schedulesService.delete(999L, classEntity.getId(), masterUser.getId()))
+                .isInstanceOf(CustomException.class)
+                .extracting("code")
+                .isEqualTo(ErrorCode.SCHEDULE_NOT_FOUND);
+    }
+
+    @Test
+    @Order(13)
+    @DisplayName("일정 삭제 실패 - 권한 없는 멤버")
+    void delete_AccessDenied() {
+        // given
+        addMemberToClass(memberUser, classEntity);
+
+        // when & then
+        assertThatThrownBy(() ->
+                schedulesService.delete(scheduleEntity.getId(), classEntity.getId(), memberUser.getId()))
                 .isInstanceOf(CustomException.class)
                 .extracting("code")
                 .isEqualTo(ErrorCode.CLASS_ACCESS_DENIED);

@@ -9,7 +9,7 @@ import z9.second.domain.schedules.dto.SchedulesRequestDto;
 import z9.second.domain.schedules.dto.SchedulesResponseDto;
 import z9.second.global.exception.CustomException;
 import z9.second.global.response.ErrorCode;
-import z9.second.model.schedules.SchedulesCheckInEntity;
+import z9.second.model.checkIn.CheckInEntity;
 import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.schedules.SchedulesRepository;
 
@@ -54,26 +54,6 @@ public class SchedulesService {
                     .meetingTime(requestData.getMeetingTime())
                     .meetingTitle(requestData.getMeetingTitle())
                     .build();
-
-            // 모임장의 체크인 생성
-            SchedulesCheckInEntity masterCheckIn = SchedulesCheckInEntity.builder()
-                    .schedules(schedules)
-                    .userId(classes.getMasterId())
-                    .checkIn(false)
-                    .build();
-            schedules.getCheckins().add(masterCheckIn);
-
-            // 모든 모임 멤버의 체크인 생성
-            classes.getUsers().forEach(user -> {
-                if (!user.getUserId().equals(classes.getMasterId())) {  // 모임장 중복 방지
-                    SchedulesCheckInEntity memberCheckIn = SchedulesCheckInEntity.builder()
-                            .schedules(schedules)
-                            .userId(user.getUserId())
-                            .checkIn(false)
-                            .build();
-                    schedules.getCheckins().add(memberCheckIn);
-                }
-            });
 
             // DB에 저장
             SchedulesEntity savedSchedule = schedulesRepository.save(schedules);
@@ -126,6 +106,24 @@ public class SchedulesService {
             throw new CustomException(ErrorCode.INVALID_MEETING_TIME_FORMAT);
         } catch (Exception e) {
             throw new CustomException(ErrorCode.SCHEDULE_UPDATE_FAILED);
+        }
+    }
+
+    public void delete(Long scheduleId, Long classId, Long userId) {
+        // 일정 조회 및 모임 id 조회
+        SchedulesEntity schedule = schedulesRepository.findScheduleByIdAndClassesId(scheduleId, classId)
+                .orElseThrow(() -> new CustomException(ErrorCode.SCHEDULE_NOT_FOUND));
+
+        // 모임장 권한 체크
+        if (!schedule.getClasses().getMasterId().equals(userId)) {
+            throw new CustomException(ErrorCode.CLASS_ACCESS_DENIED);
+        }
+
+        try {
+            // 일정 삭제
+            schedulesRepository.delete(schedule);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.SCHEDULE_DELETE_FAILED);
         }
     }
 
