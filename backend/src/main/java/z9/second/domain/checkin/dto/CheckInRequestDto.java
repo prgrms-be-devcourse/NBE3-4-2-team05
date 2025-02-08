@@ -18,5 +18,4 @@ public class CheckInRequestDto {
         @NotNull(message = "Check-in status must not be null")
         private Boolean checkIn;
     }
-
 }

@@ -52,5 +52,4 @@ public class CheckInController {
         List<CheckInResponseDto.ResponseData> responseDataList = checkInService.getAllCheckIns(scheduleId);
         return BaseResponse.ok(SuccessCode.CHECK_IN_READ_SUCCESS, responseDataList);
     }
-
 }
