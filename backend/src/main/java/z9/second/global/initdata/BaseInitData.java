@@ -15,7 +15,6 @@ import z9.second.domain.favorite.entity.FavoriteEntity;
 import z9.second.domain.favorite.repository.FavoriteRepository;
 import z9.second.model.sample.SampleEntity;
 import z9.second.model.sample.SampleRepository;
-import z9.second.model.schedules.SchedulesCheckInEntity;
 import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.schedules.SchedulesRepository;
 import z9.second.model.user.User;
@@ -177,27 +176,6 @@ public class BaseInitData {
                         .meetingTime(meetingTime)
                         .meetingTitle("모임 " + classEntity.getId() + "의 " + i + "번째 일정")
                         .build();
-
-                // 모임장의 체크인 생성
-                SchedulesCheckInEntity masterCheckIn = SchedulesCheckInEntity.builder()
-                        .schedules(schedule)
-                        .userId(classEntity.getMasterId())
-                        .checkIn(false)
-                        .build();
-                schedule.getCheckins().add(masterCheckIn);
-
-                // 모든 모임 멤버의 체크인 생성
-                classEntity.getUsers().forEach(user -> {
-                    if (!user.getUserId().equals(classEntity.getMasterId())) {
-                        SchedulesCheckInEntity memberCheckIn = SchedulesCheckInEntity.builder()
-                                .schedules(schedule)
-                                .userId(user.getUserId())
-                                .checkIn(false)
-                                .build();
-                        schedule.getCheckins().add(memberCheckIn);
-                    }
-                });
-
                 schedulesRepository.save(schedule);
             }
         }

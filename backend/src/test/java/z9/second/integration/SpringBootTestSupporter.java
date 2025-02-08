@@ -21,7 +21,7 @@ import z9.second.integration.factory.ClassFactory;
 import z9.second.integration.factory.FavoriteFactory;
 import z9.second.integration.factory.SchedulesFactory;
 import z9.second.integration.factory.UserFactory;
-import z9.second.model.schedules.SchedulesCheckInEntityRepository;
+import z9.second.model.checkIn.CheckInEntityRepository;
 import z9.second.model.schedules.SchedulesRepository;
 import z9.second.model.user.UserRepository;
 import z9.second.model.userfavorite.UserFavoriteRepository;
@@ -61,7 +61,8 @@ public abstract class SpringBootTestSupporter {
     @Autowired
     protected UserFavoriteRepository userFavoriteRepository;
     @Autowired
-    protected SchedulesCheckInEntityRepository schedulesCheckInEntityRepository;
+    protected CheckInEntityRepository checkInEntityRepository;
+
 
     /**
      * service

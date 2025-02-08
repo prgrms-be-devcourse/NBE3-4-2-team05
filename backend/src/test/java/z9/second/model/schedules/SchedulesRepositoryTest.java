@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import z9.second.domain.classes.entity.ClassEntity;
 import z9.second.domain.favorite.entity.FavoriteEntity;
 import z9.second.integration.SpringBootTestSupporter;
+import z9.second.model.checkIn.CheckInEntity;
 import z9.second.model.user.User;
 
 @Transactional
@@ -40,7 +41,7 @@ class SchedulesRepositoryTest extends SpringBootTestSupporter {
         SchedulesEntity saveSchedule = saveSchedulesList.getFirst();
 
         //체크인 등록
-        List<SchedulesCheckInEntity> saveCheckInList =
+        List<CheckInEntity> saveCheckInList =
                 checkInFactory.saveAndCreateCheckInData(2, saveSchedule, saveUser, List.of(true, false));
 
         // when
