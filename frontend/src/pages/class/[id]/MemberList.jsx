@@ -27,12 +27,12 @@ const MemberList = () => {
           throw new Error("fetch 실패");
         }
         const jsonData = response.data;
-        const classInfo = jsonData?.data || [];
+        const classDetailInfo = jsonData?.data || [];
 
-        setMembers(classInfo);
+        setMembers(classDetailInfo);
 
-        const master = classInfo?.userList.find(
-          (user) => user.userId === classInfo.masterId,
+        const master = classDetailInfo?.userList.find(
+          (user) => user.userId === classDetailInfo.masterId,
         );
         setMasterName(master ? master.nickName : "no master");
       } catch (error) {
