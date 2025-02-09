@@ -2,15 +2,8 @@
   "compilerOptions": {
     "target": "es6",
     "module": "commonjs",
-    "strict": true,
     "jsx": "react",
-    "baseUrl": "./",
-    "allowJs": true,
-    "checkJs": true,
-    "noImplicitAny": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "declaration": true
+    "baseUrl": "./"
   },
   "include": ["src/**/*.js", "src/**/*.jsx", "src/hooks/useFetch.ts"],
   "exclude": ["node_modules", "build"]
