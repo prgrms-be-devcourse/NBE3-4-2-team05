@@ -41,7 +41,7 @@ const putClassLists = async (body, classId) => {
 
 // 모임 삭제
 const deleteClassLists = async (classId) => {
-  const response = await axiosInstance.post(
+  const response = await axiosInstance.delete(
     `${Project.API_URL}/classes/${classId}`,
     { withCredentials: true },
   );
@@ -59,7 +59,7 @@ const transferMaster = async (classId, userId) => {
 
 // 모임 회원 강퇴
 const kickOut = async (classId, userId) => {
-  const response = await axiosInstance.post(
+  const response = await axiosInstance.delete(
     `${Project.API_URL}/classes/${classId}/users/${userId}`,
     { withCredentials: true },
   );

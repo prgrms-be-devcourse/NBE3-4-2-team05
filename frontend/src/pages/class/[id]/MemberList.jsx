@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import CustomList from "src/components/customList/CustomList";
 import { ClassService } from "src/services/ClassService";
 import { useParams } from "react-router-dom";
@@ -7,12 +6,10 @@ import Alert from "src/components/alert/Alert";
 
 const MemberList = () => {
   const { id } = useParams();
-  const router = useNavigate();
   const [members, setMembers] = useState([]);
   const [masterName, setMasterName] = useState("");
 
   const result = () => {
-    router(`/memberList/${id}`);
     setTimeout(() => {
       window.location.reload();
     }, 100);

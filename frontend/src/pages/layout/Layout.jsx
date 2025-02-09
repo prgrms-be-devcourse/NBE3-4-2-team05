@@ -1,17 +1,24 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom';
+import React from "react";
+import { Outlet } from "react-router-dom";
 import "./Layout.css";
-import Header from 'src/components/header/Header';
-import Footer from 'src/components/footer/Footer';
+import Header from "src/components/header/Header";
+import Footer from "src/components/footer/Footer";
+import { useNavigate } from "react-router-dom";
 
 const Layout = () => {
-	return (
+  const navigate = useNavigate();
+  const goBack = () => {
+    navigate(-1); // -1은 이전 페이지로 이동
+  };
+
+  return (
     <div className="layout">
-    <Header/>
+      <Header />
       <main>
+        <button onClick={goBack}>&lt;</button>
         <Outlet />
       </main>
-	  <Footer/>
+      <Footer />
     </div>
   );
 };
