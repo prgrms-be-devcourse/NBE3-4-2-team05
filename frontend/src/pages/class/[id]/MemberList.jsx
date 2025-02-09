@@ -44,7 +44,7 @@ const MemberList = () => {
   }, [id]);
 
   // 권한 위임
-  const handleTransferMaster = async (userId) => {
+  const handlerTransferMaster = async (userId) => {
     try {
       const response = await ClassService.transferMaster(id, userId);
       if (response.status === 200) {
@@ -100,7 +100,7 @@ const MemberList = () => {
               check={true}
               button1="권한 위임"
               button2="강퇴"
-              onClick1={() => handleTransferMaster(user.userId)}
+              onClick1={() => handlerTransferMaster(user.userId)}
               onClick2={() => handlerKickOut(user.userId)}
             />
           ))}

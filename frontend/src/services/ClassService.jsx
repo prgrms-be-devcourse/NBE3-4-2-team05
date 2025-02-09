@@ -41,7 +41,7 @@ const putClassLists = async (body, classId) => {
 
 // 모임 삭제
 const deleteClassLists = async (classId) => {
-  const response = await axiosInstance.delete(
+  const response = await axiosInstance.post(
     `${Project.API_URL}/classes/${classId}`,
     { withCredentials: true },
   );
