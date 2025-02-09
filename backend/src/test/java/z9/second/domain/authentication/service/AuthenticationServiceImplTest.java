@@ -14,6 +14,7 @@ import z9.second.domain.favorite.entity.FavoriteEntity;
 import z9.second.global.exception.CustomException;
 import z9.second.global.response.ErrorCode;
 import z9.second.integration.SpringBootTestSupporter;
+import z9.second.integration.factory.UserFactory;
 import z9.second.model.user.User;
 import z9.second.model.user.UserRole;
 import z9.second.model.user.UserStatus;
@@ -26,17 +27,12 @@ class AuthenticationServiceImplTest extends SpringBootTestSupporter {
     @Test
     void login() {
         // given
-        String loginId = "test@email.com";
-        String password = "!test1234";
-        String nickName = "테스터";
-        userRepository.save(
-                User.createNewUser(loginId, passwordEncoder.encode(password), nickName));
-        em.flush();
-        em.clear();
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
 
         // when
         AuthenticationResponse.UserToken userToken = authenticationService.login(
-                AuthenticationRequest.Login.of(loginId, password));
+                AuthenticationRequest.Login.of(saveUser.getLoginId(), UserFactory.USER_LOGIN_PASSWORD));
 
         // then
         assertThat(userToken.getAccessToken())
@@ -63,20 +59,15 @@ class AuthenticationServiceImplTest extends SpringBootTestSupporter {
     @Test
     void signup1() {
         // given
+        // 관심사 등록
+        List<FavoriteEntity> saveFavoriteList = favoriteFactory.saveAndCreateFavoriteData(2);
+        List<String> saveFavoriteNameList = saveFavoriteList.stream().map(FavoriteEntity::getName).toList();
+
         String loginId = "test1@email.com";
         String password = "!test1234";
-        List<String> favorite = List.of("관심사1", "관심사2");
+        List<String> favorite = saveFavoriteNameList;
         String nickname = "test1";
-
-        FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
-        FavoriteEntity fe2 = FavoriteEntity.createNewFavorite("관심사2");
-        favoriteRepository.saveAll(List.of(fe1, fe2));
-
-        AuthenticationRequest.Signup signupDto = AuthenticationRequest.Signup.of(loginId, password,
-                favorite, nickname);
-
-        em.flush();
-        em.clear();
+        AuthenticationRequest.Signup signupDto = AuthenticationRequest.Signup.of(loginId, password, favorite, nickname);
 
         // when
         authenticationService.signup(signupDto);
@@ -94,23 +85,21 @@ class AuthenticationServiceImplTest extends SpringBootTestSupporter {
     @Test
     void signup2() {
         // given
-        String loginId = "test1@email.com";
-        String password = "!test1234";
-        List<String> favorite = List.of("관심사1", "관심사2");
-        String nickname = "test1";
+        // 관심사 등록
+        List<FavoriteEntity> saveFavoriteList = favoriteFactory.saveAndCreateFavoriteData(2);
+        List<String> saveFavoriteNameList = saveFavoriteList.stream().map(FavoriteEntity::getName).toList();
 
-        FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
-        FavoriteEntity fe2 = FavoriteEntity.createNewFavorite("관심사2");
-        favoriteRepository.saveAll(List.of(fe1, fe2));
+        //사용자 등록
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
 
-        AuthenticationRequest.Signup signupDto = AuthenticationRequest.Signup.of(loginId, password,
-                favorite, nickname);
-
-        User newUser = User.createNewUser(loginId, password, "test2");
-        userRepository.save(newUser);
-
-        em.flush();
-        em.clear();
+        // request data
+        String loginId = saveUser.getLoginId();
+        String password = UserFactory.USER_LOGIN_PASSWORD;
+        List<String> favorite = saveFavoriteNameList;
+        String nickname = "중복 없는 닉네임";
+        AuthenticationRequest.Signup signupDto =
+                AuthenticationRequest.Signup.of(loginId, password, favorite, nickname);
 
         // when // then
         assertThatThrownBy(() -> authenticationService.signup(signupDto))
@@ -123,23 +112,21 @@ class AuthenticationServiceImplTest extends SpringBootTestSupporter {
     @Test
     void signup3() {
         // given
-        String loginId = "test1@email.com";
+        // 관심사 등록
+        List<FavoriteEntity> saveFavoriteList = favoriteFactory.saveAndCreateFavoriteData(2);
+        List<String> saveFavoriteNameList = saveFavoriteList.stream().map(FavoriteEntity::getName).toList();
+
+        //사용자 등록
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
+
+        // request data
+        String loginId = "중복없는아이디@email.com";
         String password = "!test1234";
-        List<String> favorite = List.of("관심사1", "관심사2");
-        String nickname = "test1";
-
-        FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
-        FavoriteEntity fe2 = FavoriteEntity.createNewFavorite("관심사2");
-        favoriteRepository.saveAll(List.of(fe1, fe2));
-
-        AuthenticationRequest.Signup signupDto = AuthenticationRequest.Signup.of(loginId, password,
-                favorite, nickname);
-
-        User newUser = User.createNewUser("test2@email.com", password, nickname);
-        userRepository.save(newUser);
-
-        em.flush();
-        em.clear();
+        List<String> favorite = saveFavoriteNameList;
+        String nickname = saveUser.getNickname();
+        AuthenticationRequest.Signup signupDto =
+                AuthenticationRequest.Signup.of(loginId, password, favorite, nickname);
 
         // when // then
         assertThatThrownBy(() -> authenticationService.signup(signupDto))
@@ -157,18 +144,8 @@ class AuthenticationServiceImplTest extends SpringBootTestSupporter {
         List<String> favorite = List.of("미등록 관심사1", "미등록 관심사2");
         String nickname = "test1";
 
-        FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
-        FavoriteEntity fe2 = FavoriteEntity.createNewFavorite("관심사2");
-        favoriteRepository.saveAll(List.of(fe1, fe2));
-
-        AuthenticationRequest.Signup signupDto = AuthenticationRequest.Signup.of(loginId, password,
-                favorite, nickname);
-
-        User newUser = User.createNewUser(loginId, password, nickname);
-        userRepository.save(newUser);
-
-        em.flush();
-        em.clear();
+        AuthenticationRequest.Signup signupDto =
+                AuthenticationRequest.Signup.of(loginId, password, favorite, nickname);
 
         // when // then
         assertThatThrownBy(() -> authenticationService.signup(signupDto))
