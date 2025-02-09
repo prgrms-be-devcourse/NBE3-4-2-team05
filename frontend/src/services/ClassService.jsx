@@ -54,13 +54,12 @@ const transferMaster = async (classId, userId) => {
     `${Project.API_URL}/classes/${classId}/users/${userId}/role`,
     { withCredentials: true },
   );
-  console.log(Project.getJwt());
   return response;
 };
 
 // 모임 회원 강퇴
 const kickOut = async (classId, userId) => {
-  const response = await axiosInstance.delete(
+  const response = await axiosInstance.post(
     `${Project.API_URL}/classes/${classId}/users/${userId}`,
     { withCredentials: true },
   );

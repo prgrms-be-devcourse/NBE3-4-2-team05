@@ -165,6 +165,11 @@ public class ClassService {
             throw new CustomException(ErrorCode.CLASS_NOT_EXISTS_MEMBER);
         }
 
+        // 본인에게 권한 위임 시 에러발생
+        if (userId.equals(currentUserId)) {
+            throw new CustomException(ErrorCode.CLASS_MASTER_TRANSFER_ME);
+        }
+
         classEntity.setMasterId(userId);
     }
 
