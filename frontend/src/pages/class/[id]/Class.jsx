@@ -4,6 +4,7 @@ import Alert from "src/components/alert/Alert";
 import { ClassService } from "src/services/ClassService";
 import { useNavigate } from "react-router-dom";
 import Modal from "src/components/modal/Modal";
+import { ScheduleService } from "src/services/SheduleService";
 
 const Class = () => {
   const { id } = useParams();
@@ -102,7 +103,7 @@ const Class = () => {
   const handlerCreateSchedule = async () => {
     const body = {
       meetingTime: meetingTime,
-      meetingTitle: meetingTitle
+      meetingTitle: meetingTitle,
     };
     try {
       const response = await ScheduleService.postSchedulesLists(body, id);
@@ -172,20 +173,24 @@ const Class = () => {
           </button>
         </div>
       </Modal>
-      <Modal isOpen={isSchdulesModal} title={"일정 생성"} onClose={closeSchedulesModal}>
+      <Modal
+        isOpen={isSchdulesModal}
+        title={"일정 생성"}
+        onClose={closeSchedulesModal}
+      >
         <div className="modal-form">
           <label>일정 이름:</label>
           <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="일정 이름을 입력하세요"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="일정 이름을 입력하세요"
           />
           <label>일정 설명:</label>
           <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="일정 설명을 입력하세요"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="일정 설명을 입력하세요"
           />
           <button className="custom-button" onClick={handlerModifyClass}>
             생성하기
