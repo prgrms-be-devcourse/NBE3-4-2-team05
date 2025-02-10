@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import z9.second.model.BaseEntity;
+import z9.second.model.schedules.SchedulesEntity;
 
 import java.util.ArrayList;
 import java.util.List;
