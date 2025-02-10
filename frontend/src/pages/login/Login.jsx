@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -19,7 +18,6 @@ const Login = () => {
   const onChangeInput = (name = "", e) => {
     setBody((prev) => ({ ...prev, [name]: e }));
   };
-
   const result = () => {
     setIsLoading(false);
     router("/");
@@ -59,6 +57,25 @@ const Login = () => {
         onChange={onChangeInput}
         disabled={isLoading}
       />
+      <button
+        onClick={() => {
+          const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_DEFAULT_URL}/kakao/callback&response_type=code`;
+          window.location.href = kakaoAuthUrl;
+        }}
+        disabled={isLoading}
+        style={{
+          backgroundColor: "#FEE500",
+          color: "#000",
+          padding: "10px 20px",
+          borderRadius: "5px",
+          cursor: "pointer",
+          border: "none",
+          fontSize: "14px",
+          marginTop: "10px",
+        }}
+      >
+        카카오 로그인
+      </button>
     </section>
   );
 };
