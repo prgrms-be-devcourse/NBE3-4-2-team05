@@ -33,3 +33,12 @@ main {
 main > * {
   width: 100%;
 }
+
+button.back {
+  width: initial;
+  margin-bottom: 20px;
+  padding: 8px 10px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}

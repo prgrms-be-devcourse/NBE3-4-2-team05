@@ -12,7 +12,10 @@ const Home = () => {
   return (
     <section>
       <div>
-        <div onClick={() => onClickExample("1")}>1번 모임방 Test</div>
+        <div className="class-info">
+          1번 모임방 Test
+          <button onClick={() => onClickExample("1")}>입장</button>
+        </div>
       </div>
       <div>TOdo....</div>
     </section>

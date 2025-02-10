@@ -15,7 +15,9 @@ const Layout = () => {
     <div className="layout">
       <Header />
       <main>
-        <button onClick={goBack}>&lt;</button>
+        <button className="back" onClick={goBack}>
+          &lt; Back
+        </button>
         <Outlet />
       </main>
       <Footer />
