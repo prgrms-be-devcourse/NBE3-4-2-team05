@@ -11,16 +11,14 @@ function DateTimeInput({ onMeetingTimeChange }) {
   const [minute, setMinute] = useState("");
   const [second, setSecond] = useState("");
 
-  // Whenever any input changes, update the meeting time
   useEffect(() => {
-    // Only update when all fields are filled
     if (year && month && day && hour && minute && second) {
       const dateTime = new Date(year, month - 1, day, hour, minute, second);
       const formattedDateTime = `${dateTime.getFullYear()}-${String(dateTime.getMonth() + 1).padStart(2, "0")}-${String(dateTime.getDate()).padStart(2, "0")} ${String(dateTime.getHours()).padStart(2, "0")}:${String(dateTime.getMinutes()).padStart(2, "0")}:${String(dateTime.getSeconds()).padStart(2, "0")}`;
 
-      onMeetingTimeChange(formattedDateTime); // Update the parent component
+      onMeetingTimeChange(formattedDateTime);
     }
-  }, [year, month, day, hour, minute, second, onMeetingTimeChange]); // Only depend on state values, not onMeetingTimeChange
+  }, [year, month, day, hour, minute, second, onMeetingTimeChange]);
 
   const generateOptions = (start, end, type) => {
     let options = [];
