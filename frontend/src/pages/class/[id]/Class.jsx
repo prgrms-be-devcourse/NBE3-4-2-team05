@@ -9,8 +9,11 @@ const Class = () => {
   const { id } = useParams();
   const [classInfo, setClassInfo] = useState([]);
   const [name, setName] = useState("");
+  const [meetingTime, setMeetingTime] = useState("");
+  const [meetingTitle, setMeetingTitle] = useState("");
   const [description, setDescription] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSchdulesModal, setIsSchedulesModal] = useState(false);
   const router = useNavigate();
 
   const result = () => {
@@ -18,7 +21,9 @@ const Class = () => {
   };
 
   const openModal = () => setIsModalOpen(true);
+  const schedulesModal = () => setIsSchedulesModal(true);
   const closeModal = () => setIsModalOpen(false);
+  const closeSchedulesModal = () => setIsSchedulesModal(false);
 
   const modifyResult = () => {
     closeModal();
@@ -93,10 +98,35 @@ const Class = () => {
     }
   };
 
+  // 일정 생성
+  const handlerCreateSchedule = async () => {
+    const body = {
+      meetingTime: meetingTime,
+      meetingTitle: meetingTitle
+    };
+    try {
+      const response = await ScheduleService.postSchedulesLists(body, id);
+      if (response.status === 200) {
+        Alert("일정이 생성되었습니다.", "", "", () => {
+          closeSchedulesModal();
+          window.location.reload(); // 페이지 새로고침
+        });
+      } else {
+        Alert("일정 생성에 실패했습니다");
+      }
+    } catch (error) {
+      console.error("일정 생성 오류:", error);
+      if (error.response.data.code === 9000)
+        Alert(`${error.response.data.message}`);
+    }
+  };
+
   return (
     <div>
       <div className="buttons">
-        <button className="custom-button">일정 생성</button>
+        <button className="custom-button" onClick={schedulesModal}>
+          일정 생성
+        </button>
         <button className="custom-button" onClick={handlerResignClass}>
           모임 탈퇴
         </button>
@@ -139,6 +169,26 @@ const Class = () => {
           />
           <button className="custom-button" onClick={handlerModifyClass}>
             수정하기
+          </button>
+        </div>
+      </Modal>
+      <Modal isOpen={isSchdulesModal} title={"일정 생성"} onClose={closeSchedulesModal}>
+        <div className="modal-form">
+          <label>일정 이름:</label>
+          <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="일정 이름을 입력하세요"
+          />
+          <label>일정 설명:</label>
+          <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="일정 설명을 입력하세요"
+          />
+          <button className="custom-button" onClick={handlerModifyClass}>
+            생성하기
           </button>
         </div>
       </Modal>
