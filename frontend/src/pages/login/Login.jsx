@@ -12,14 +12,13 @@ import Validate from "src/hooks/validate";
 const Login = () => {
   const router = useNavigate();
   const [body, setBody] = useState({ loginId: "", password: "" });
+
   const [isLoading, setIsLoading] = useState(false);
 
   const onChangeInput = (name = "", e) => {
     setBody((prev) => ({ ...prev, [name]: e }));
   };
-
   const result = () => {
-    console.log("이동");
     setIsLoading(false);
     router("/");
     setTimeout(() => {
@@ -36,10 +35,10 @@ const Login = () => {
       const res = await UserService.Login(body);
       if (!res) {
         Alert("아이디와 비밀번호를 \n 정확히 입력해 주세요.", () =>
-          setIsLoading(false)
+          setIsLoading(false),
         );
       } else {
-        Alert("로그인 성공!", () => result());
+        Alert("로그인 성공!", "", "", () => result());
       }
     } catch (error) {
       Alert("로그인에 실패했습니다.", "", "", () => setIsLoading(false));

@@ -43,6 +43,8 @@ public enum ErrorCode {
     CLASS_USER_FORBIDDEN(HttpStatus.FORBIDDEN, Boolean.FALSE, 3006, "권한이 없습니다."),
     CLASS_DELETE_DENIED_WITH_MEMBERS(HttpStatus.BAD_REQUEST, Boolean.FALSE, 3007, "회원이 존재하는 모임은 삭제할 수 없습니다. 권한을 위임하고 탈퇴해주세요."),
     CLASS_USER_BANNED(HttpStatus.FORBIDDEN, Boolean.FALSE, 3008, "강퇴당한 회원은 재가입 하실 수 없습니다."),
+    CLASS_READ_FAILED(HttpStatus.BAD_REQUEST, Boolean.FALSE, 3009, "해당하는 모임을 조회할 수 없습니다."),
+    CLASS_MASTER_TRANSFER_ME(HttpStatus.BAD_REQUEST, Boolean.FALSE, 3009, "본인에게 권한을 위임할 수 없습니다."),
 
     //4000 ~ 4999
     // 오류 종류 : 일정
