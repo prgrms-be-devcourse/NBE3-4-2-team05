@@ -57,4 +57,16 @@ public class UserController {
 
         return BaseResponse.ok(SuccessCode.FIND_USER_SCHEDULES_SUCCESS, findData);
     }
+
+    @GetMapping("/classes")
+    @Operation(summary = "내 모임방 전체 조회")
+    @SecurityRequirement(name = "bearerAuth")
+    public BaseResponse<UserResponse.UserClass> findUserClasses(
+            Principal principal ) {
+
+        UserResponse.UserClass findData =
+                userService.findUserClasses(Long.parseLong(principal.getName()));
+
+        return BaseResponse.ok(SuccessCode.FIND_USER_CLASSES_SUCCESS, findData);
+    }
 }

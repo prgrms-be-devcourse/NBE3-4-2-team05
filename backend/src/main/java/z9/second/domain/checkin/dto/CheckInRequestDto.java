@@ -1,4 +1,4 @@
-package z9.second.domain.schedules.dto;
+package z9.second.domain.checkin.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -11,12 +11,9 @@ public class CheckInRequestDto {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class RequestData {
+    public static class CheckInDto {
         @NotNull(message = "Schedule ID must not be null")
         private Long scheduleId;
-
-        @NotNull(message = "User ID must not be null")
-        private Long userId;
 
         @NotNull(message = "Check-in status must not be null")
         private Boolean checkIn;

@@ -16,7 +16,12 @@ import z9.second.domain.favorite.repository.FavoriteRepository;
 import z9.second.domain.classes.repository.ClassRepository;
 import z9.second.domain.classes.repository.ClassUserRepository;
 import z9.second.domain.schedules.service.SchedulesService;
-import z9.second.model.schedules.SchedulesCheckInEntityRepository;
+import z9.second.integration.factory.CheckInFactory;
+import z9.second.integration.factory.ClassFactory;
+import z9.second.integration.factory.FavoriteFactory;
+import z9.second.integration.factory.SchedulesFactory;
+import z9.second.integration.factory.UserFactory;
+import z9.second.model.checkIn.CheckInEntityRepository;
 import z9.second.model.schedules.SchedulesRepository;
 import z9.second.model.user.UserRepository;
 import z9.second.model.userfavorite.UserFavoriteRepository;
@@ -25,6 +30,20 @@ import z9.second.model.userfavorite.UserFavoriteRepository;
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 public abstract class SpringBootTestSupporter {
+
+    /**
+     * Test data factory
+     */
+    @Autowired
+    public UserFactory userFactory;
+    @Autowired
+    public FavoriteFactory favoriteFactory;
+    @Autowired
+    public ClassFactory classFactory;
+    @Autowired
+    public SchedulesFactory schedulesFactory;
+    @Autowired
+    public CheckInFactory checkInFactory;
 
     /**
      * mock Mvc
@@ -42,7 +61,7 @@ public abstract class SpringBootTestSupporter {
     @Autowired
     protected UserFavoriteRepository userFavoriteRepository;
     @Autowired
-    protected SchedulesCheckInEntityRepository schedulesCheckInEntityRepository;
+    protected CheckInEntityRepository checkInEntityRepository;
 
 
     /**

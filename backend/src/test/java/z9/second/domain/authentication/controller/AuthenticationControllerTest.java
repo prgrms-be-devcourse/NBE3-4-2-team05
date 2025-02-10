@@ -24,6 +24,7 @@ import z9.second.domain.authentication.dto.AuthenticationRequest;
 import z9.second.domain.favorite.entity.FavoriteEntity;
 import z9.second.global.response.SuccessCode;
 import z9.second.integration.SpringBootTestSupporter;
+import z9.second.integration.factory.UserFactory;
 import z9.second.integration.security.WithCustomUser;
 import z9.second.model.user.User;
 
@@ -34,11 +35,10 @@ class AuthenticationControllerTest extends SpringBootTestSupporter {
     @Test
     void login() throws Exception {
         // given
-        String loginId = "test@email.com";
-        String password = "!asdf1234";
-        String nickname = "테스터";
-        userRepository.save(User.createNewUser(loginId, passwordEncoder.encode(password), nickname));
-        AuthenticationRequest.Login request = AuthenticationRequest.Login.of(loginId, password);
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
+        AuthenticationRequest.Login request =
+                AuthenticationRequest.Login.of(saveUser.getLoginId(), UserFactory.USER_LOGIN_PASSWORD);
 
         // when
         ResultActions result = mockMvc.perform(post("/api/v1/login")
@@ -61,20 +61,16 @@ class AuthenticationControllerTest extends SpringBootTestSupporter {
     @Test
     void signup() throws Exception {
         // given
+        // 관심사 등록
+        List<FavoriteEntity> saveFavoriteList = favoriteFactory.saveAndCreateFavoriteData(2);
+        List<String> saveFavoriteNameList = saveFavoriteList.stream().map(FavoriteEntity::getName).toList();
+
         String loginId = "test1@email.com";
         String password = "!test1234";
-        List<String> favorite = List.of("관심사1", "관심사2");
+        List<String> favorite = saveFavoriteNameList;
         String nickname = "test1";
-
-        FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
-        FavoriteEntity fe2 = FavoriteEntity.createNewFavorite("관심사2");
-        favoriteRepository.saveAll(List.of(fe1, fe2));
-
         AuthenticationRequest.Signup request =
                 AuthenticationRequest.Signup.of(loginId, password, favorite, nickname);
-
-        em.flush();
-        em.clear();
 
         // when
         ResultActions result = mockMvc.perform(post("/api/v1/signup")

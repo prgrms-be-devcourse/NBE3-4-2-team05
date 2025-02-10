@@ -23,6 +23,7 @@ public enum SuccessCode {
     FIND_USER_INFO_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "회원정보 조회 성공"),
     PATCH_USER_INFO_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "회원정보 수정 성공"),
     FIND_USER_SCHEDULES_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "회원 모임 일정 조회 성공"),
+    FIND_USER_CLASSES_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "회원 전체 모임 조회 성공"),
 
     // Class
     CLASS_CREATE_SUCCESS(HttpStatus.CREATED, Boolean.TRUE, 201, "모임이 생성되었습니다."),
@@ -39,6 +40,11 @@ public enum SuccessCode {
     SCHEDULE_READ_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "모임 전체 일정 조회되었습니다!"),
     SCHEDULE_MODIFY_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "모임 일정이 성공적으로 수정되었습니다."),
     SCHEDULE_DELETE_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "모임 일정이 삭제되었습니다."),
+
+    // CheckIn
+    CHECK_IN_CREATE_SUCCESS(HttpStatus.CREATED, Boolean.TRUE, 201, "모임 참가 신청 완료되었습니다!"),
+    CHECK_IN_UPDATE_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "모임 참가 변경 완료되었습니다!"),
+    CHECK_IN_READ_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "해당 모임 참석 현황이 조회되었습니다!"),
 
     // Common
     SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "요청 응답 성공"),

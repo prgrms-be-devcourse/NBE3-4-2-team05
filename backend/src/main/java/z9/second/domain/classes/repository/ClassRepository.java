@@ -12,6 +12,9 @@ public interface ClassRepository extends JpaRepository<ClassEntity, Long> {
 
     boolean existsByMasterId(Long userId);
 
+    @Query("SELECT c FROM ClassEntity c JOIN ClassUserEntity cu ON c.id = cu.classes.id WHERE cu.userId = :userId")
+    List<ClassEntity> findByUserId(@Param("userId") Long userId);
+
     // 관심사 기반 정렬 (로그인) - 사용자의 관심사 목록과 일치하는 모임을 찾는 쿼리
     @Query("SELECT c FROM ClassEntity c " +
             "WHERE c.favorite IN :userFavorites " +

@@ -6,8 +6,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,12 +20,11 @@ import z9.second.domain.user.dto.UserRequest;
 import z9.second.global.response.SuccessCode;
 import z9.second.integration.SpringBootTestSupporter;
 import z9.second.integration.security.WithCustomUser;
-import z9.second.model.schedules.SchedulesCheckInEntity;
+import z9.second.model.checkIn.CheckInEntity;
 import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.user.User;
 import z9.second.model.user.UserRole;
 import z9.second.model.user.UserType;
-import z9.second.model.userfavorite.UserFavorite;
 
 @Transactional
 class UserControllerTest extends SpringBootTestSupporter {
@@ -42,20 +39,15 @@ class UserControllerTest extends SpringBootTestSupporter {
     @Test
     void findUserInfo() throws Exception {
         // given
-        String loginId = "test1@email.com";
-        String password = "!test1234";
-        String nickname = "test";
-        User newUser = User.createNewUser(loginId, password, nickname);
-        User saveUser = userRepository.save(newUser);
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
 
-        List<String> favorite = List.of("관심사1", "관심사2");
-        FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
-        FavoriteEntity fe2 = FavoriteEntity.createNewFavorite("관심사2");
-        List<FavoriteEntity> saveFavoriteEntities = favoriteRepository.saveAll(List.of(fe1, fe2));
+        // 관심사 등록
+        List<FavoriteEntity> saveFavoriteList = favoriteFactory.saveAndCreateFavoriteData(2);
+        List<String> favoriteNameList = saveFavoriteList.stream().map(FavoriteEntity::getName).toList();
 
-        userFavoriteRepository.save(
-                UserFavorite.createNewUserFavorite(saveUser, saveFavoriteEntities.get(0)));
-        userFavoriteRepository.save(UserFavorite.createNewUserFavorite(saveUser, saveFavoriteEntities.get(1)));
+        // 회원-관심사 등록
+        userFactory.saveUserFavorite(saveUser, saveFavoriteList);
 
         // when
         ResultActions result = mockMvc.perform(get("/api/v1/users"));
@@ -66,13 +58,13 @@ class UserControllerTest extends SpringBootTestSupporter {
                 .andExpect(jsonPath("$.isSuccess").value(SuccessCode.FIND_USER_INFO_SUCCESS.getIsSuccess()))
                 .andExpect(jsonPath("$.message").value(SuccessCode.FIND_USER_INFO_SUCCESS.getMessage()))
                 .andExpect(jsonPath("$.code").value(SuccessCode.FIND_USER_INFO_SUCCESS.getCode()))
-                .andExpect(jsonPath("$.data.nickname").value(nickname))
+                .andExpect(jsonPath("$.data.nickname").value(saveUser.getNickname()))
                 .andExpect(jsonPath("$.data.type").value(UserType.NORMAL.getValue()))
                 .andExpect(jsonPath("$.data.role").value(UserRole.ROLE_USER.getValue()))
                 .andExpect(jsonPath("$.data.createdAt").value(Matchers.matchesPattern("\\d{4}-\\d{2}-\\d{2}")))
                 .andExpect(jsonPath("$.data.favorite").isArray())
                 .andExpect(jsonPath("$.data.favorite.length()").value(2))
-                .andExpect(jsonPath("$.data.favorite").value(Matchers.containsInAnyOrder("관심사1", "관심사2")));
+                .andExpect(jsonPath("$.data.favorite").value(Matchers.containsInAnyOrder(favoriteNameList.toArray())));
     }
 
     @WithCustomUser
@@ -80,21 +72,18 @@ class UserControllerTest extends SpringBootTestSupporter {
     @Test
     void modifyUserInfo() throws Exception {
         // given
-        String loginId = "test1@email.com";
-        String password = "!test1234";
-        String nickname = "test";
-        User newUser = User.createNewUser(loginId, password, nickname);
-        User saveUser = userRepository.save(newUser);
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
 
-        List<String> favorite = List.of("관심사1", "관심사2");
-        FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
-        FavoriteEntity fe2 = FavoriteEntity.createNewFavorite("관심사2");
-        List<FavoriteEntity> saveFavoriteEntities = favoriteRepository.saveAll(List.of(fe1, fe2));
+        // 관심사 등록
+        List<FavoriteEntity> saveFavoriteList = favoriteFactory.saveAndCreateFavoriteData(2);
+        List<String> favoriteNameList = saveFavoriteList.stream().map(FavoriteEntity::getName).toList();
 
-        userFavoriteRepository.save(UserFavorite.createNewUserFavorite(saveUser, saveFavoriteEntities.get(0)));
+        // 회원-관심사 등록
+        userFactory.saveUserFavorite(saveUser, saveFavoriteList);
 
         String changeNickname = "변경된닉네임";
-        UserRequest.PatchUserInfo request = UserRequest.PatchUserInfo.of(changeNickname, favorite);
+        UserRequest.PatchUserInfo request = UserRequest.PatchUserInfo.of(changeNickname, favoriteNameList);
 
         // when
         ResultActions result = mockMvc.perform(patch("/api/v1/users/profile")
@@ -116,65 +105,30 @@ class UserControllerTest extends SpringBootTestSupporter {
     void findUserSchedules() throws Exception {
         // given
         //사용자 등록
-        String loginId = "test1@email.com";
-        String password = "!test1234";
-        String nickname = "test";
-        User newUser = User.createNewUser(loginId, password, nickname);
-        User saveUser = userRepository.save(newUser);
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
 
-        //관심사 등록
-        FavoriteEntity fe1 = FavoriteEntity.createNewFavorite("관심사1");
-        FavoriteEntity fe2 = FavoriteEntity.createNewFavorite("관심사2");
-        List<FavoriteEntity> saveFavoriteEntities = favoriteRepository.saveAll(List.of(fe1, fe2));
-        userFavoriteRepository.save(UserFavorite.createNewUserFavorite(saveUser, saveFavoriteEntities.get(0)));
-        userFavoriteRepository.save(UserFavorite.createNewUserFavorite(saveUser, saveFavoriteEntities.get(1)));
+        // 관심사 등록
+        List<FavoriteEntity> saveFavoriteList = favoriteFactory.saveAndCreateFavoriteData(2);
+        FavoriteEntity saveFavorite = saveFavoriteList.getFirst();
+        List<String> favoriteNameList = saveFavoriteList.stream().map(FavoriteEntity::getName).toList();
+
+        // 회원-관심사 등록
+        userFactory.saveUserFavorite(saveUser, saveFavoriteList);
 
         //방 생성
-        ClassEntity newClass = ClassEntity.builder()
-                .name("새로운 모임")
-                .favorite(fe1.getName())
-                .description("모임 설명 글 입니다!!")
-                .masterId(saveUser.getId())
-                .build();
-        newClass.addMember(saveUser.getId());
-        ClassEntity saveClass = classRepository.save(newClass);
+        List<ClassEntity> saveClassList =
+                classFactory.saveAndCreateClassData(1, saveUser, saveFavorite);
+        ClassEntity saveClass = saveClassList.getFirst();
 
-        //스케줄 생성 2개
-        LocalDateTime now = LocalDateTime.now();
-        String formattedTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        SchedulesEntity schedules = SchedulesEntity.builder()
-                .classes(saveClass)
-                .meetingTime(formattedTime)
-                .meetingTitle("정기모임 1회차")
-                .build();
-        SchedulesEntity saveSchedule = schedulesRepository.save(schedules);
+        //스케줄 생성
+        List<SchedulesEntity> saveSchedulesList =
+                schedulesFactory.saveAndCreateClassData(2, saveClass);
+        SchedulesEntity saveSchedule = saveSchedulesList.getFirst();
 
-        SchedulesEntity schedules2 = SchedulesEntity.builder()
-                .classes(saveClass)
-                .meetingTime(formattedTime)
-                .meetingTitle("정기모임 2회차")
-                .build();
-        SchedulesEntity saveSchedule2 = schedulesRepository.save(schedules2);
-
-        //체크인 등록 2개
-        SchedulesCheckInEntity newCheckin = SchedulesCheckInEntity
-                .builder()
-                .schedules(saveSchedule)
-                .userId(saveUser.getId())
-                .checkIn(true)
-                .build();
-        schedulesCheckInEntityRepository.save(newCheckin);
-
-        SchedulesCheckInEntity newCheckin2 = SchedulesCheckInEntity
-                .builder()
-                .schedules(saveSchedule)
-                .userId(saveUser.getId())
-                .checkIn(false)
-                .build();
-        schedulesCheckInEntityRepository.save(newCheckin2);
-
-        em.flush();
-        em.clear();
+        //체크인 등록
+        List<CheckInEntity> saveCheckInList =
+                checkInFactory.saveAndCreateCheckInData(2, saveSchedule, saveUser, List.of(true, false));
 
         // when
         ResultActions result = mockMvc.perform(get("/api/v1/users/schedules"));
@@ -189,6 +143,42 @@ class UserControllerTest extends SpringBootTestSupporter {
                 .andExpect(jsonPath("$.data.schedule.length()").value(1))
                 .andExpect(jsonPath("$.data.schedule[0].classId").isNotEmpty())
                 .andExpect(jsonPath("$.data.schedule[0].meetingTime").value(Matchers.matchesPattern("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")))
-                .andExpect(jsonPath("$.data.schedule[0].meetingTitle").value("정기모임 1회차"));
+                .andExpect(jsonPath("$.data.schedule[0].meetingTitle").value(saveSchedule.getMeetingTitle()));
+    }
+
+    @WithCustomUser
+    @DisplayName("로그인 한 사용자의 모임방을 전체 조회 합니다.")
+    @Test
+    void findUserClasses() throws Exception {
+        // given
+        // 회원 등록
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
+
+        // 관심사 등록
+        List<FavoriteEntity> saveFavoriteList = favoriteFactory.saveAndCreateFavoriteData(1);
+        FavoriteEntity saveFavorite = saveFavoriteList.getFirst();
+
+        // 모임 등록
+        List<ClassEntity> saveClassList =
+                classFactory.saveAndCreateClassData(2, saveUser, saveFavorite);
+        ClassEntity saveClass = saveClassList.getFirst();
+
+        // when
+        ResultActions result = mockMvc.perform(get("/api/v1/users/classes"));
+
+        // then
+        result.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(SuccessCode.FIND_USER_CLASSES_SUCCESS.getIsSuccess()))
+                .andExpect(jsonPath("$.message").value(SuccessCode.FIND_USER_CLASSES_SUCCESS.getMessage()))
+                .andExpect(jsonPath("$.code").value(SuccessCode.FIND_USER_CLASSES_SUCCESS.getCode()))
+                .andExpect(jsonPath("$.data.classInfo").isArray())
+                .andExpect(jsonPath("$.data.classInfo[0].name").value(saveClassList.get(0).getName()))
+                .andExpect(jsonPath("$.data.classInfo[0].description").value(saveClassList.get(0).getDescription()))
+                .andExpect(jsonPath("$.data.classInfo[0].favorite").value(saveClassList.get(0).getFavorite()))
+                .andExpect(jsonPath("$.data.classInfo[1].name").value(saveClassList.get(1).getName()))
+                .andExpect(jsonPath("$.data.classInfo[1].description").value(saveClassList.get(1).getDescription()))
+                .andExpect(jsonPath("$.data.classInfo[1].favorite").value(saveClassList.get(1).getFavorite()));
     }
 }
