@@ -51,12 +51,7 @@ const MemberList = () => {
       }
     } catch (error) {
       console.error("권한 위임 오류:", error);
-      if (error.response.data.code === 3009) {
-        Alert("본인에게 권한을 위임할 수 없습니다.", "", "", () => result());
-      } else if (error.response.data.code === 3006) {
-        Alert("권한이 없습니다.", "", "", () => result());
-      }
-      Alert("권한 위임 중 오류가 발생했습니다.");
+      Alert(error.response.data.message, "", "", () => result());
     }
   };
 
@@ -74,7 +69,7 @@ const MemberList = () => {
       if (error.response.data.code === 3006) {
         Alert("권한이 없습니다.", "", "", () => result());
       }
-      Alert("강퇴 중 오류가 발생했습니다.", "", "", () => result());
+      Alert(error.response.data.message, "", "", () => result());
     }
   };
 

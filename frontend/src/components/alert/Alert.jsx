@@ -7,9 +7,9 @@ const Alert = async (header, cancelButtonText, confirmButtonText, _select) => {
 	const _alertCreate = async (
 		header,
 		cancelButtonText,
-		confirmButtonText,
+		confirmButtonText
 	) => {
-		let button = `<button id="customBtnSelect"><p>확인</p></button>`;
+		let button = `<button id="customBtnSelect"><p>${confirmButtonText || "확인"}</p></button>`;
 
 		if (cancelButtonText && confirmButtonText) {
 			button = `
@@ -22,21 +22,27 @@ const Alert = async (header, cancelButtonText, confirmButtonText, _select) => {
 		_alert.className = "alertBg show-alert";
 		_alert.id = "alertBg";
 		_alert.innerHTML = `<div class="custom-alert">
-                              <div class="alert-text">
-                                  <p>${header}</p>
-                              </div>
-                              <div class="alert-footer">
-                                 ${button}
-                              </div>
-                          </div>`;
+                          <div class="alert-text">
+                            <p>${header}</p>
+                          </div>
+                          <div class="alert-footer">
+                            ${button}
+                          </div>
+                        </div>`;
 		ele.appendChild(_alert);
 
-		if (confirmButtonText && document.getElementById("customBtnClose"))
-			document.getElementById("customBtnClose").onclick = () =>
+		if (cancelButtonText && document.getElementById("customBtnClose")) {
+			document.getElementById("customBtnClose").onclick = () => {
 				selectAlert(false);
+				closeAlert();
+			};
+		}
 
-		document.getElementById("customBtnSelect").onclick = () =>
+		document.getElementById("customBtnSelect").onclick = () => {
 			selectAlert(true);
+			closeAlert();
+		};
+
 		document.getElementById("alertBg").onclick = (e) =>
 			currentTargetClick(e);
 	};
@@ -47,15 +53,21 @@ const Alert = async (header, cancelButtonText, confirmButtonText, _select) => {
 		if (alert) {
 			if (!alert.contains(target)) {
 				selectAlert(false);
+				closeAlert();
 			}
 		}
 	};
 
-	const selectAlert = (_res) => {
+	const closeAlert = () => {
 		const child = document.getElementById("alertBg");
-
-		if (select) select(_res);
 		if (child) child.parentNode.removeChild(child);
+	};
+
+	const selectAlert = (_res) => {
+		if (select) select(_res);
+		if (_res === false) {
+			closeAlert();
+		}
 	};
 
 	if (!document.getElementById("alertBg")) {

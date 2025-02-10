@@ -18,6 +18,7 @@ import z9.second.model.schedules.SchedulesRepository;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -80,4 +81,15 @@ public class CheckInServiceImpl implements CheckInService {
                 .map(CheckInResponseDto.ResponseData::from)
                 .collect(Collectors.toList());
     }
+    @Transactional
+    @Override
+    public Optional<CheckInResponseDto.ResponseData> getMyCheckIn(Long scheduleId, Long userId) {
+        Optional<CheckInEntity> checkIn = checkInEntityRepository.findBySchedulesIdAndUserId(scheduleId, userId);
+
+        if (checkIn.isEmpty()) {
+            throw new CustomException(ErrorCode.CHECK_IN_NOT_FOUND);
+        }
+        return checkIn.map(CheckInResponseDto.ResponseData::from);
+    }
+
 }
