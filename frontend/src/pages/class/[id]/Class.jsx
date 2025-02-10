@@ -17,6 +17,9 @@ const Class = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSchdulesModal, setIsSchedulesModal] = useState(false);
   const router = useNavigate();
+  const [schedules, setSchedules] = useState([]);
+  const [selectedSchedule, setSelectedSchedule] = useState(null);
+  const [isDetailModal, setIsDetailModal] = useState(false);
 
   const handleMeetingTimeChange = useCallback((formattedDateTime) => {
     setMeetingTime(formattedDateTime);
@@ -52,7 +55,20 @@ const Class = () => {
       }
     };
 
+    const fetchSchedules = async () => {
+      try {
+        // 일정 리스트 가져오기
+        const schedulesResponse = await ScheduleService.getSchedulesList(id);
+        const schedulesData = schedulesResponse.data?.data || [];
+        setSchedules(schedulesData);
+      } catch (error) {
+        console.error("일정 데이터 로딩 오류:", error);
+        Alert(error.response.data.message, "", "", () => result());
+      }
+    }
+
     fetchClassInfo();
+    fetchSchedules();
   }, [id]);
 
   // 모임 탈퇴
@@ -131,73 +147,129 @@ const Class = () => {
     }
   };
 
-  return (
-    <div>
-      <div className="buttons">
-        <button className="custom-button" onClick={schedulesModal}>
-          일정 생성
-        </button>
-        <button className="custom-button" onClick={handlerResignClass}>
-          모임 탈퇴
-        </button>
-        <button className="custom-button" onClick={openModal}>
-          모임 수정
-        </button>
-        <button className="custom-button" onClick={handlerDeleteClass}>
-          모임 삭제
-        </button>
-        <button
-          className="custom-button"
-          onClick={() => router(`/memberList/${id}`)}
-        >
-          회원 관리
-        </button>
-      </div>
+  //일정 상세 조회
+  const handlerScheduleDetail = async (scheduleId) => {
+    try {
+      const response = await ScheduleService.getScheduleDetail(scheduleId, id);
+      const detailData = response.data?.data;
+      setSelectedSchedule(detailData);
+      setIsDetailModal(true);
+    } catch (error) {
+      console.error("일정 상세 조회 오류:", error);
+      Alert(error.response?.data?.message || "일정 상세 조회에 실패했습니다.");
+    }
+  }
 
-      <div className="class-info-container">
-        <p>모임 이름 : {classInfo.name}</p>
-        <p>모임 관심사 : {classInfo.favorite}</p>
-        <p>모임 설명 : {classInfo.description}</p>
-      </div>
-      <div className="list-container">
-        <ul className="list">{/* memberList.jsx 참고 */}</ul>
-      </div>
-      <Modal isOpen={isModalOpen} title={"모임 정보 수정"} onClose={closeModal}>
-        <div className="modal-form">
-          <label>모임 이름:</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="모임 이름을 입력하세요"
-          />
-          <label>모임 설명:</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="모임 설명을 입력하세요"
-          />
-          <button className="custom-button" onClick={handlerModifyClass}>
-            수정하기
+  return (
+      <div>
+        <div className="buttons">
+          <button className="custom-button" onClick={schedulesModal}>
+            일정 생성
+          </button>
+          <button className="custom-button" onClick={handlerResignClass}>
+            모임 탈퇴
+          </button>
+          <button className="custom-button" onClick={openModal}>
+            모임 수정
+          </button>
+          <button className="custom-button" onClick={handlerDeleteClass}>
+            모임 삭제
+          </button>
+          <button
+              className="custom-button"
+              onClick={() => router(`/memberList/${id}`)}
+          >
+            회원 관리
           </button>
         </div>
-      </Modal>
-      <Modal isOpen={isSchdulesModal} title={"일정 생성"} onClose={closeSchedulesModal}>
-        <div className="modal-form">
-          <label>일정 제목:</label>
-          <input
-              type="text"
-              value={meetingTitle}
-              onChange={(e) => setMeetingTitle(e.target.value)}
-              placeholder="일정 제목을 입력하세요"
-          />
-          <DateTimeInput onMeetingTimeChange={handleMeetingTimeChange} />
-          <button className="custom-button" onClick={handlerCreateSchedule}>
-            생성하기
-          </button>
+
+        <div className="class-info-container">
+          <p>모임 이름 : {classInfo.name}</p>
+          <p>모임 관심사 : {classInfo.favorite}</p>
+          <p>모임 설명 : {classInfo.description}</p>
         </div>
-      </Modal>
-    </div>
+
+        {/*모임 일정 리스트*/}
+        <div className="schedules-container">
+          <h3>일정 목록</h3>
+          {schedules.length > 0 ? (
+              <div className="schedules-list">
+                {schedules.map((schedule) => (
+                    <div key={schedule.id} className="schedule-item">
+                      <h4>{schedule.meetingTitle}</h4>
+                      <p>일시: {schedule.meetingTime}</p>
+                      <div className="schedule-buttons">
+                        <button
+                            className="custom-button"
+                            onClick={() => handlerScheduleDetail(schedule.scheduleId)}
+                        >
+                          상세보기
+                        </button>
+                      </div>
+                    </div>
+                ))}
+              </div>
+          ) : (
+              <p>등록된 일정이 없습니다.</p>
+          )}
+        </div>
+
+        <div className="list-container">
+          <ul className="list">{/* memberList.jsx 참고 */}</ul>
+        </div>
+
+        <Modal isOpen={isModalOpen} title={"모임 정보 수정"} onClose={closeModal}>
+          <div className="modal-form">
+            <label>모임 이름:</label>
+            <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="모임 이름을 입력하세요"
+            />
+            <label>모임 설명:</label>
+            <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="모임 설명을 입력하세요"
+            />
+            <button className="custom-button" onClick={handlerModifyClass}>
+              수정하기
+            </button>
+          </div>
+        </Modal>
+
+        {/*일정 생성*/}
+        <Modal isOpen={isSchdulesModal} title={"일정 생성"} onClose={closeSchedulesModal}>
+          <div className="modal-form">
+            <label>일정 제목:</label>
+            <input
+                type="text"
+                value={meetingTitle}
+                onChange={(e) => setMeetingTitle(e.target.value)}
+                placeholder="일정 제목을 입력하세요"
+            />
+            <DateTimeInput onMeetingTimeChange={handleMeetingTimeChange} />
+            <button className="custom-button" onClick={handlerCreateSchedule}>
+              생성하기
+            </button>
+          </div>
+        </Modal>
+
+        <Modal
+            isOpen={isDetailModal}
+            title="일정 상세 정보"
+            onClose={() => setIsDetailModal(false)}
+        >
+          {selectedSchedule && (
+              <div className="schedule-detail">
+                <h4>일정 제목: {selectedSchedule.meetingTitle}</h4>
+                <p>일시: {selectedSchedule.meetingTime}</p>
+                {/* 추가적인 상세 정보가 있다면 여기에 표시 */}
+              </div>
+          )}
+        </Modal>
+      </div>
   );
 };
 
