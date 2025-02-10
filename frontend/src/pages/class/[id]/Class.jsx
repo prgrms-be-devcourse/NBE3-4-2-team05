@@ -4,6 +4,8 @@ import Alert from "src/components/alert/Alert";
 import { ClassService } from "src/services/ClassService";
 import { useNavigate } from "react-router-dom";
 import Modal from "src/components/modal/Modal";
+import DateTimeInput from "../../../components/dateTimeInput/DateTimeInput";
+import {ScheduleService} from "../../../services/SheduleService";
 
 const Class = () => {
   const { id } = useParams();
@@ -15,6 +17,13 @@ const Class = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSchdulesModal, setIsSchedulesModal] = useState(false);
   const router = useNavigate();
+  const [body, setBody] = useState({ meetingTime: "" });
+
+  console.log(body);
+
+  const handleMeetingTimeChange = (newMeetingTime) => {
+    setBody({ meetingTime: newMeetingTime });
+  };
 
   const result = () => {
     router("/");
@@ -101,11 +110,13 @@ const Class = () => {
   // 일정 생성
   const handlerCreateSchedule = async () => {
     const body = {
+      classId: id,
       meetingTime: meetingTime,
       meetingTitle: meetingTitle
     };
+    console.log(body);
     try {
-      const response = await ScheduleService.postSchedulesLists(body, id);
+      const response = await ScheduleService.postSchedulesLists(body);
       if (response.status === 200) {
         Alert("일정이 생성되었습니다.", "", "", () => {
           closeSchedulesModal();
@@ -174,20 +185,15 @@ const Class = () => {
       </Modal>
       <Modal isOpen={isSchdulesModal} title={"일정 생성"} onClose={closeSchedulesModal}>
         <div className="modal-form">
-          <label>일정 이름:</label>
+          <label>일정 제목:</label>
           <input
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="일정 이름을 입력하세요"
+              value={meetingTitle}
+              onChange={(e) => setMeetingTitle(e.target.value)}
+              placeholder="일정 제목을 입력하세요"
           />
-          <label>일정 설명:</label>
-          <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="일정 설명을 입력하세요"
-          />
-          <button className="custom-button" onClick={handlerModifyClass}>
+          <DateTimeInput onMeetingTimeChange={handleMeetingTimeChange} />
+          <button className="custom-button" onClick={handlerCreateSchedule}>
             생성하기
           </button>
         </div>

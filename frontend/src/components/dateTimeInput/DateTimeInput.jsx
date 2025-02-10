@@ -56,7 +56,7 @@ function DateTimeInput({ onMeetingTimeChange }) {
         <label>년:</label>
         <select value={year} onChange={(e) => setYear(e.target.value)}>
           <option value="">선택</option>
-          {generateOptions(2020, today.getFullYear(), "year")}{" "}
+          {generateOptions(2025, today.getFullYear(), "year")}{" "}
         </select>
       </div>
       <div className="input-group">
