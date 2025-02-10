@@ -21,6 +21,7 @@ const Login = () => {
 	};
 
 	const result = () => {
+		console.log("이동");
 		setIsLoading(false);
 		router("/");
 		setTimeout(() => {

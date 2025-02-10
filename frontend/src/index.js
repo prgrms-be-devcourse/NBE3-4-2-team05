@@ -7,6 +7,8 @@ import Login from "./pages/login/Login";
 import SignUp from "./pages/signUp/SignUp";
 import Class from "./pages/class/Class";
 import Schedule from "./pages/schedule/Schedule";
+import Mypage from "./pages/mypage/Mypage";
+import Modify from "./pages/mypage/Modify";
 
 import Layout from "./pages/layout/Layout";
 
@@ -17,7 +19,9 @@ const App = () => {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/modify" element={<Modify />} />
           <Route path="/join" element={<SignUp />} />
+          <Route path="/mypage" element={<Mypage />} />
           <Route path="/classess" element={<Class />} />
           <Route path="/schedules" element={<Schedule />} />
         </Route>

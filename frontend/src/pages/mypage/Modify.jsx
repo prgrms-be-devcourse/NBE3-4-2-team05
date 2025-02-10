@@ -8,19 +8,17 @@ import Alert from "src/components/alert/Alert";
 import { Element } from "src/constants/element";
 import { UserService } from "src/services/UserService";
 import { FavoriteService } from "src/services/FavoriteService";
-import Validate from "src/hooks/validate";
 
-const SignUp = () => {
+const Mypage = () => {
   const router = useNavigate();
-  const [body, setBody] = useState({ nickname: "", loginId: "", password: "", favorite: [] });
+  const [body, setBody] = useState({ nickname: "", favorite: [] });
   const [isLoading, setIsLoading] = useState(false);
   const [favoriteOptions, setFavoriteOptions] = useState([]);
-  
+
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
         const response = await FavoriteService.getFavoriteList();
-        console.log("Favorite list response:", response);
         if (response.data?.isSuccess) {
           setFavoriteOptions(response.data.data);
         }
@@ -41,34 +39,27 @@ const SignUp = () => {
     });
   };
 
-  const onChangeInput = (name = "", e) => {
-    setBody((prev) => ({ ...prev, [name]: e }));
+  const onChangeInput = (name, value) => {
+    setBody((prev) => ({ ...prev, [name]: value }));
   };
 
-  const result = () => {
-    console.log("회원가입 완료");
-    setIsLoading(false);
-    router("/login");
-  };
-
-  const onClickSignUp = async (e) => {
+  const handleModifyUserInfo = async (e) => {
     e.preventDefault();
+    if (!body.nickname.trim()) {
+      Alert("닉네임을 입력해 주세요.");
+      return;
+    }
 
-    if (!Validate(body)) return;
     try {
       setIsLoading(true);
-      const res = await UserService.SignUp(body);
-      if (!res) {
-        Alert("회원가입에 실패했습니다. \n 다시 시도해주세요.", () =>
-          setIsLoading(false)
-        );
+      const response = await UserService.ModifyUserInfo(body);
+      if (response.data?.isSuccess) {
+        Alert("회원 정보 수정 성공!");
       } else {
-        Alert("회원가입 성공!", () => result());
+        Alert("회원 정보 수정에 실패했습니다.");
       }
     } catch (error) {
-      Alert("회원가입 중 오류가 발생했습니다.", "", "", () =>
-        setIsLoading(false)
-      );
+      Alert("회원 정보 수정 중 오류가 발생했습니다.");
     } finally {
       setIsLoading(false);
     }
@@ -76,15 +67,31 @@ const SignUp = () => {
 
   return (
     <section>
-      <Title type="title" text="회원가입" />
+      <Title type="title" text="마이페이지 수정" />
+
+      {/* Form 컴포넌트는 입력 필드에만 집중 */}
       <Form
-        title="sign-up"
-        element={Element.SIGN_UP_FORM}
-        onSubmit={onClickSignUp}
+        title="modify-info"
+        element={Element.MODIFY_FORM}
+        onSubmit={handleModifyUserInfo}
         onChange={onChangeInput}
         disabled={isLoading}
-      />
+      >
+        <div>
+          <label>닉네임</label>
+          <input
+            type="text"
+            value={body.nickname}
+            onChange={(e) => onChangeInput("nickname", e.target.value)}
+            placeholder="닉네임을 입력해 주세요"
+          />
+        </div>
+        <button type="submit" disabled={isLoading}>
+          정보 수정
+        </button>
+      </Form>
 
+      {/* 관심사 선택 컴포넌트 분리 */}
       <div>
         <h2>관심사 선택</h2>
         <div className="favorite-checkboxes">
@@ -105,5 +112,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
-
+export default Mypage;

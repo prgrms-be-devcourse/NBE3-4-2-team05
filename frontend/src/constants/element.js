@@ -18,6 +18,31 @@ const LOGIN_FORM = [
 	},
 ];
 
+const SIGN_UP_FORM = [
+  {
+		id: "loginId",
+		label: "이메일",
+		name: "loginId",
+		type: "text",
+		placeholder: "example@example.com",
+	},
+  {
+		id: "password",
+		label: "비밀번호",
+		name: "password",
+		type: "password",
+		placeholder:
+			"특수문자 포함, 8자리 이상 20자리 미만",
+	},
+	{
+		id: "nickname",
+		label: "닉네임",
+		name: "nickname",
+		type: "text",
+		placeholder: "닉네임을 입력해주세요. 3자리 이상 10자리 미만",
+	},
+];
+
 const FOOTER_ICONS = [
   {
     id: 0,
@@ -88,9 +113,22 @@ const FOOTER_ICONS = [
   },
 ];
 
+const MODIFY_FORM = [
+  {
+    id: "nickname",
+    label: "닉네임",
+    name: "nickname",
+    type: "text",
+    placeholder: "닉네임을 입력해주세요. 3자리 이상 10자리 미만",
+  },
+];
+
+
 const Element = {
   LOGIN_FORM,
   FOOTER_ICONS,
+  SIGN_UP_FORM,
+  MODIFY_FORM,
 }
 
 export { Element };
