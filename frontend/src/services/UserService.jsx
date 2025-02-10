@@ -31,7 +31,7 @@ const Logout = async () => {
 	const response = await axiosInstance.post(`${Project.API_URL}/logout`);
 	if (response) {
 		console.log("로그아웃 성공");
-		Project.removeCookie("accessToken", Project.getJwt());
+		Project.removeCookie("authorization", Project.getJwt());
 		Project.removeCookie("RefreshToken", Project.REFRESH_TOKEN);
 		return response;
 	} else {
@@ -92,9 +92,29 @@ const ModifyUserInfo = async (body) => {
 }
 
 // 카카오 로그인
-const KakaoLogin = async (body) => {
-	window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=e51b8e3f5ed968045b77ab97528fbc49&redirect_uri=http://localhost:8080/api/v1/login/kakao&response_type=code`;
+const KakaoLogin = async (code) => {
+  try {
+    const response = await axiosInstance.get(
+      `${Project.API_URL}/login/kakao`,
+      {
+        params: { code },
+        withCredentials: true,
+      }
+    );
+    
+    const accessToken = response.headers["authorization"];
+    
+    if (accessToken) {
+      Project.setJwt(accessToken);
+      return response;
+    } else {
+      throw new Error("Access token not found");
+    }
+  } catch (error) {
+    throw new Error("Kakao login failed");
+  }
 };
+
 
 const UserService = {
 	SignUp,

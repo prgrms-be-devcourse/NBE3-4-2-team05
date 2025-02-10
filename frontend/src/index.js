@@ -9,6 +9,7 @@ import Class from "./pages/class/Class";
 import Schedule from "./pages/schedule/Schedule";
 import Mypage from "./pages/mypage/Mypage";
 import Modify from "./pages/mypage/Modify";
+import KakaoCallback from "./components/kakao/KakaoCallback";
 
 import Layout from "./pages/layout/Layout";
 
@@ -19,6 +20,7 @@ const App = () => {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/kakao/callback" element={<KakaoCallback />} />
           <Route path="/modify" element={<Modify />} />
           <Route path="/join" element={<SignUp />} />
           <Route path="/mypage" element={<Mypage />} />
