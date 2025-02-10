@@ -5,7 +5,7 @@ import { Element } from "src/constants/element";
 export default function Footer() {
   return (
     <footer id="footer" aria-label="Footer nav, and copyright information">
-      <h4 className="footer-info">More Details about Team 10's project !</h4>
+      <h4 className="footer-info">More Details about Team 5's project !</h4>
       <hr />
       <ul className="footer-icon-wrap">
         {Element.FOOTER_ICONS.map(({ href, label, IconComponent, id }) => (
