@@ -1,11 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import { ClassService } from 'src/services/ClassService';
 import Alert from "src/components/alert/Alert";
+import { FavoriteService } from 'src/services/FavoriteService';
+import Modal from "src/components/modal/Modal";
 
 const Home = () => {
   const navigate = useNavigate();
+  const [options, setOptions] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [favorite, setFavorite] = useState("");
+
+  const openModal = async () => {
+    await fetchFavorites();
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    resetForm();
+  };
+
+  const resetForm = () => {
+    setName("");
+    setDescription("");
+    setFavorite("");
+  }
 
   const result = (id) => {
     navigate(`/classess/${id}`);
@@ -47,7 +70,6 @@ const Home = () => {
       const checkData = response.data;
       const getData = checkData?.data || [];
       const isBlackList = getData.blackListed;
-      console.log(isBlackList);
 
       return isBlackList;
     } catch (error) {
@@ -70,14 +92,87 @@ const Home = () => {
     }
   }
 
+  // 모임 생성
+  const handlerCreateClass = async () => {
+    const body = {
+      name: name,
+      favorite: favorite,
+      description: description,
+    };
+    try {
+      const response = await ClassService.postClassLists(body);
+      if (response.status === 201) {
+        Alert("모임이 생성되었습니다.", "", "", () => closeModal());
+      } else {
+        Alert("모임 생성에 실패했습니다", "", "", () => closeModal());
+      }
+    } catch (error) {
+      console.error("모임 생성 오류:", error);
+      Alert(error.response.data.message, "", "", () => closeModal());
+    }
+  };
+
+  // 관심사 목록 조회
+  const fetchFavorites = async () => {
+    try {
+      const response = await FavoriteService.getFavoriteList();
+      if (!response) {
+        throw new Error("fetch 실패");
+      }
+      const jsonData = response.data;
+      const favoriteData = jsonData?.data || [];
+      setOptions(favoriteData);
+    } catch (error) {
+      console.error("Error fetching members:", error);
+    }
+  };
+
   return (
-    <section>
+    <section className="home">
+      <button className='custom-button' onClick={openModal}>모임 생성</button>
       <div className="class-container">
         <div className="class-info">
-          1번 모임방 Test
+          <div className='class-name'>
+            <p>1번 모임 이름</p>
+            <p>1번 모임 설명 10글자 이상</p>
+            <div className='class-flag'>
+              <span>관심사</span>
+            </div>
+          </div>
           <button onClick={() => handlerJoin("2")}>입장</button>
         </div>
       </div>
+
+      {/* 모임 생성 */}
+      <Modal isOpen={isModalOpen} title={"모임 생성"} onClose={closeModal}>
+        <div className="modal-form">
+          <label htmlFor="name">모임 이름:</label>
+          <input
+              id="name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="모임 이름을 입력하세요"
+          />
+          <label htmlFor="description">모임 설명:</label>
+          <textarea
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="모임 설명을 입력하세요"
+          />
+          <label htmlFor="favorite">모임 관심사:</label>
+          <select id="favorite" value={favorite} onChange={(e) => setFavorite(e.target.value)}>
+            <option value="" disabled hidden>관심사 선택</option>
+            {options.map((option) => (
+              <option key={option.id} value={option.favoriteName}>{option.favoriteName}</option>
+            ))}
+          </select>
+          <button className="custom-button" onClick={handlerCreateClass}>
+            생성
+          </button>
+        </div>
+      </Modal>
     </section>
   );
 };

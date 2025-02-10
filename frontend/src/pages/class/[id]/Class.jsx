@@ -7,7 +7,7 @@ import Modal from "src/components/modal/Modal";
 import DateTimeInput from "../../../components/dateTimeInput/DateTimeInput";
 import { ScheduleService } from "../../../services/SheduleService";
 import CustomList from "../../../components/customList/CustomList";
-import {Project} from "../../../constants/project";
+import "./Class.css";
 
 const Class = () => {
   const { id } = useParams();
@@ -156,6 +156,7 @@ const Class = () => {
       setSelectedSchedule(detailData);
       setIsDetailModal(true);
     } catch (error) {
+      console.error("일정 상세 조회 오류:", error);
       Alert(error.response?.data?.message || "일정 상세 조회에 실패했습니다.");
     }
   }
@@ -213,15 +214,17 @@ const Class = () => {
 
         <Modal isOpen={isModalOpen} title={"모임 정보 수정"} onClose={closeModal}>
           <div className="modal-form">
-            <label>모임 이름:</label>
+            <label htmlFor="name">모임 이름:</label>
             <input
+                id="name"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="모임 이름을 입력하세요"
             />
-            <label>모임 설명:</label>
+            <label htmlFor="description">모임 설명:</label>
             <textarea
+                id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="모임 설명을 입력하세요"

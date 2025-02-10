@@ -37,8 +37,19 @@ main > * {
 button.back {
   width: initial;
   margin-bottom: 20px;
-  padding: 8px 10px;
+  padding: 8px;
   background-color: transparent;
-  border: none;
+  border: 1px solid black;
+  border-radius: 5px;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button.back:hover {
+  background-color: var(--text-primary);
+  color: #fff;
+}
+
+button.back:has(+ .home) {
+  display: none;
 }
