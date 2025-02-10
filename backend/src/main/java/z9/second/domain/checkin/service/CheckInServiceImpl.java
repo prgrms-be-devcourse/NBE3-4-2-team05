@@ -83,13 +83,9 @@ public class CheckInServiceImpl implements CheckInService {
     }
     @Transactional
     @Override
-    public Optional<CheckInResponseDto.ResponseData> getMyCheckIn(Long scheduleId, Long userId) {
-        Optional<CheckInEntity> checkIn = checkInEntityRepository.findBySchedulesIdAndUserId(scheduleId, userId);
-
-        if (checkIn.isEmpty()) {
-            throw new CustomException(ErrorCode.CHECK_IN_NOT_FOUND);
-        }
-        return checkIn.map(CheckInResponseDto.ResponseData::from);
+    public CheckInResponseDto.ResponseData getMyCheckIn( Long userId, Long scheduleId) {
+        CheckInEntity checkIn = checkInEntityRepository.findBySchedulesIdAndUserId(userId,scheduleId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CHECK_IN_NOT_FOUND));
+        return CheckInResponseDto.ResponseData.from(checkIn);
     }
-
 }

@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface CheckInEntityRepository extends JpaRepository<CheckInEntity, Long> {
     boolean existsByUserIdAndSchedulesId(Long userId, Long scheduleId);
     List<CheckInEntity> findBySchedulesId(Long scheduleId);
-    Optional<CheckInEntity> findBySchedulesIdAndUserId(Long scheduleId, Long userId);
+    Optional<CheckInEntity> findBySchedulesIdAndUserId( Long userId,Long scheduleId);
 }

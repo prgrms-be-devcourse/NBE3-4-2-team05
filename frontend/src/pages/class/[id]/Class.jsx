@@ -7,6 +7,7 @@ import Modal from "src/components/modal/Modal";
 import DateTimeInput from "../../../components/dateTimeInput/DateTimeInput";
 import { ScheduleService } from "../../../services/SheduleService";
 import CustomList from "../../../components/customList/CustomList";
+import {Project} from "../../../constants/project";
 
 const Class = () => {
   const { id } = useParams();
@@ -155,7 +156,6 @@ const Class = () => {
       setSelectedSchedule(detailData);
       setIsDetailModal(true);
     } catch (error) {
-      console.error("일정 상세 조회 오류:", error);
       Alert(error.response?.data?.message || "일정 상세 조회에 실패했습니다.");
     }
   }
