@@ -30,12 +30,9 @@ const Login = async (body) => {
 const Logout = async () => {
 	const response = await axiosInstance.post(`${Project.API_URL}/logout`);
 	if (response) {
-		console.log("로그아웃 성공");
-		Project.removeCookie("authorization", Project.getJwt());
+		Project.removeCookie("accessToken", Project.getJwt());
 		Project.removeCookie("RefreshToken", Project.REFRESH_TOKEN);
 		return response;
-	} else {
-		return {};
 	}
 };
 

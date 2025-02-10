@@ -7,16 +7,13 @@ import { useNavigate } from 'react-router-dom';
 import { UserService } from "src/services/UserService";
 
 const Header = () => {
-	const isLogin= Project.getJwt();
+  const isLogin= Project.getJwt();
   const navigate = useNavigate();
 
   const handleLoginOrLogout = async () => {
-    if (!isLogin) {
-      navigate('/login');
-    } else {
-      try {
+    if (!isLogin) return navigate('/login');
+    try {
         const res = await UserService.Logout();
-        console.log(res);
         navigate('/');
         setTimeout(() => {
           window.location.reload();
@@ -24,15 +21,10 @@ const Header = () => {
       } catch (error) {
         console.error("로그아웃 실패", error);
       }
-    }
   }
 
   const handleSignupOrMypage = () => {
-    if (isLogin) {
-      navigate('/mypage');
-    } else {
-      navigate('/join');
-    }
+    navigate(isLogin?'/mypage':"/join");
   }
 
 	return (
