@@ -11,7 +11,7 @@ const Home = () => {
 
   return (
     <section>
-      <div>
+      <div className="class-container">
         <div className="class-info">
           1번 모임방 Test
           <button onClick={() => onClickExample("1")}>입장</button>

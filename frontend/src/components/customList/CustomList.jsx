@@ -30,7 +30,7 @@ const CustomList = ({
           {button1}
         </button>
         {check && (
-          <button className="custom-button" onClick={() => onClick2()}>
+          <button className="custom-button warning" onClick={() => onClick2()}>
             {button2}
           </button>
         )}
