@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import z9.second.domain.classes.entity.ClassEntity;
 
 public class ClassRequest {
 
@@ -23,13 +22,13 @@ public class ClassRequest {
         @Size(min = 10, message = "내용은 10글자 이상이어야 합니다.")
         private String description;
 
-        public static ClassEntity from(ClassRequestData requestData) {
-            return ClassEntity
-                           .builder()
-                           .name(requestData.getName())
-                           .favorite(requestData.getFavorite())
-                           .description(requestData.getDescription())
-                           .build();
+        public static ClassRequestData of(String name, String favorite, String description) {
+            return ClassRequestData
+                    .builder()
+                    .name(name)
+                    .favorite(favorite)
+                    .description(description)
+                    .build();
         }
     }
 
@@ -43,5 +42,13 @@ public class ClassRequest {
 
         @Size(min = 10, message = "내용은 10글자 이상이어야 합니다.")
         private String description;
+
+        public static ModifyRequestData of(String name, String description) {
+            return ModifyRequestData
+                    .builder()
+                    .name(name)
+                    .description(description)
+                    .build();
+        }
     }
 }
