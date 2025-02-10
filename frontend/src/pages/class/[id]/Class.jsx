@@ -51,6 +51,7 @@ const Class = () => {
         setClassInfo(classData);
       } catch (error) {
         console.error("Error fetching class info:", error);
+        Alert(error.response.data.message, "", "", () => result());
       }
     };
 
@@ -68,7 +69,7 @@ const Class = () => {
       }
     } catch (error) {
       console.error("모임 탈퇴 오류:", error);
-      Alert("모임 탈퇴 오류가 발생했습니다.");
+      Alert(error.response.data.message);
     }
   };
 
@@ -88,7 +89,7 @@ const Class = () => {
     } catch (error) {
       console.error("모임 수정 오류:", error);
       if (error.response.data.code === 9000)
-        Alert(`${error.response.data.message}`);
+        Alert(error.response.data.message);
     }
   };
 
@@ -103,7 +104,7 @@ const Class = () => {
       }
     } catch (error) {
       console.error("모임 삭제 오류:", error);
-      Alert("모임 삭제 오류가 발생했습니다.");
+      Alert(error.response.data.message);
     }
   };
 
