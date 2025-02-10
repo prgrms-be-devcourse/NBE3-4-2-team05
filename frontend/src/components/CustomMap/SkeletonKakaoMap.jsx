@@ -1,10 +1,10 @@
 import React from "react";
-import "./KakaoMap.css";
+import "./CustomMap.css";
 
 const SkeletonKakaoMap = () => {
   return (
-    <div className='map-wrap skeleton-container'>
-      <div className='skeleton'></div>
+    <div className="map-wrap skeleton-container">
+      <div className="skeleton"></div>
     </div>
   );
 };

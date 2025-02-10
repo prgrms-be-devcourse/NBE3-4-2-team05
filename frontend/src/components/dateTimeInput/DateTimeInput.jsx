@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./DateTimeInput.css";
 
 function DateTimeInput({ onMeetingTimeChange }) {
@@ -11,13 +11,14 @@ function DateTimeInput({ onMeetingTimeChange }) {
   const [minute, setMinute] = useState("");
   const [second, setSecond] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const dateTime = new Date(year, month - 1, day, hour, minute, second);
-    const formattedDateTime = `${dateTime.getFullYear()}-${String(dateTime.getMonth() + 1).padStart(2, "0")}-${String(dateTime.getDate()).padStart(2, "0")} ${String(dateTime.getHours()).padStart(2, "0")}:${String(dateTime.getMinutes()).padStart(2, "0")}:${String(dateTime.getSeconds()).padStart(2, "0")}`;
+  useEffect(() => {
+    if (year && month && day && hour && minute && second) {
+      const dateTime = new Date(year, month - 1, day, hour, minute, second);
+      const formattedDateTime = `${dateTime.getFullYear()}-${String(dateTime.getMonth() + 1).padStart(2, "0")}-${String(dateTime.getDate()).padStart(2, "0")} ${String(dateTime.getHours()).padStart(2, "0")}:${String(dateTime.getMinutes()).padStart(2, "0")}:${String(dateTime.getSeconds()).padStart(2, "0")}`;
 
-    onMeetingTimeChange(formattedDateTime);
-  };
+      onMeetingTimeChange(formattedDateTime);
+    }
+  }, [year, month, day, hour, minute, second, onMeetingTimeChange]);
 
   const generateOptions = (start, end, type) => {
     let options = [];
@@ -51,12 +52,12 @@ function DateTimeInput({ onMeetingTimeChange }) {
   };
 
   return (
-    <form className="datetime-form" onSubmit={handleSubmit}>
+    <form className="datetime-form">
       <div className="input-group">
         <label>년:</label>
         <select value={year} onChange={(e) => setYear(e.target.value)}>
           <option value="">선택</option>
-          {generateOptions(2025, today.getFullYear(), "year")}{" "}
+          {generateOptions(2025, today.getFullYear(), "year")}
         </select>
       </div>
       <div className="input-group">
@@ -102,9 +103,6 @@ function DateTimeInput({ onMeetingTimeChange }) {
           {generateOptions(0, 59, "second")}
         </select>
       </div>
-      <button className="submit-btn" type="submit">
-        제출
-      </button>
     </form>
   );
 }

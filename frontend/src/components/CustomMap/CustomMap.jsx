@@ -1,15 +1,12 @@
 import React, { useState } from "react";
 import { Map, MapMarker, MarkerClusterer } from "react-kakao-maps-sdk";
+import { useUserLocation } from "src/hooks/userLocation";
 
 import MarkerModal from "./MarkerModal";
 import SkeletonKakaoMap from "./SkeletonKakaoMap";
+import "./CustomMap.css";
 
-import "./KakaoMap.css";
-
-import { useUserLocation } from "src/hooks/userLocation";
-import { dummy } from "./dummy";
-
-function KakaoMap() {
+function CustomMap({ data }) {
   const { location, errorMessage } = useUserLocation();
   const [selectedMarker, setSelectedMarker] = useState(null);
 
@@ -28,7 +25,7 @@ function KakaoMap() {
       level={3}
     >
       <MarkerClusterer averageCenter={true} minLevel={7}>
-        {dummy.LOCATION.map((loc) => (
+        {data.LOCATION.map((loc) => (
           <MapMarker
             key={loc.id}
             position={{ lat: loc.lat, lng: loc.lng }}
@@ -42,4 +39,4 @@ function KakaoMap() {
   );
 }
 
-export default KakaoMap;
+export default CustomMap;

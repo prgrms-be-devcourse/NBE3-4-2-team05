@@ -6,7 +6,7 @@ import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import SignUp from "./pages/signUp/SignUp";
 import Class from "./pages/class/[id]/Class";
-import Schedule from "./pages/schedule/Schedule";
+import KakaoMap from "./pages/kakaoMap/KakaoMap";
 import Mypage from "./pages/mypage/Mypage";
 import Modify from "./pages/mypage/Modify";
 import KakaoCallback from "./components/kakao/KakaoCallback";
@@ -27,7 +27,7 @@ const App = () => {
           <Route path="/mypage" element={<Mypage />} />
           <Route path="/classess" element={<Class />} />
           <Route path="/classess/:id" element={<Class />} />
-          <Route path="/schedules" element={<Schedule />} />
+          <Route path="/kakaomap" element={<KakaoMap />} />
           <Route path="/memberList/:id" element={<MemberList />} />
         </Route>
       </Routes>

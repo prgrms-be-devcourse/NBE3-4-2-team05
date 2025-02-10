@@ -5,7 +5,7 @@ import { ClassService } from "src/services/ClassService";
 import { useNavigate } from "react-router-dom";
 import Modal from "src/components/modal/Modal";
 import DateTimeInput from "../../../components/dateTimeInput/DateTimeInput";
-import {ScheduleService} from "../../../services/SheduleService";
+import { ScheduleService } from "../../../services/SheduleService";
 
 const Class = () => {
   const { id } = useParams();
@@ -112,9 +112,8 @@ const Class = () => {
     const body = {
       classId: id,
       meetingTime: meetingTime,
-      meetingTitle: meetingTitle
+      meetingTitle: meetingTitle,
     };
-    console.log(body);
     try {
       const response = await ScheduleService.postSchedulesLists(body);
       if (response.status === 200) {
