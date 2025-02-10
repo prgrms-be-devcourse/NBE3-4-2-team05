@@ -2,65 +2,77 @@
 import "./Alert.css";
 
 const Alert = async (header, cancelButtonText, confirmButtonText, _select) => {
-	let select = _select;
+    let select = _select;
 
-	const _alertCreate = async (
-		header,
-		cancelButtonText,
-		confirmButtonText,
-	) => {
-		let button = `<button id="customBtnSelect"><p>확인</p></button>`;
+    const _alertCreate = async (
+       header,
+       cancelButtonText,
+       confirmButtonText
+    ) => {
+       let button = `<button id="customBtnSelect"><p>${confirmButtonText || "확인"}</p></button>`;
 
-		if (cancelButtonText && confirmButtonText) {
-			button = `
+       if (cancelButtonText && confirmButtonText) {
+          button = `
                 <button id="customBtnSelect"><p>${confirmButtonText}</p></button>
                 <button id="customBtnClose"><p>${cancelButtonText}</p></button>`;
-		}
+       }
 
-		let ele = document.querySelector("body");
-		var _alert = document.createElement("div");
-		_alert.className = "alertBg show-alert";
-		_alert.id = "alertBg";
-		_alert.innerHTML = `<div class="custom-alert">
-                              <div class="alert-text">
-                                  <p>${header}</p>
-                              </div>
-                              <div class="alert-footer">
-                                 ${button}
-                              </div>
-                          </div>`;
-		ele.appendChild(_alert);
+       let ele = document.querySelector("body");
+       var _alert = document.createElement("div");
+       _alert.className = "alertBg show-alert";
+       _alert.id = "alertBg";
+       _alert.innerHTML = `<div class="custom-alert">
+                          <div class="alert-text">
+                            <p>${header}</p>
+                          </div>
+                          <div class="alert-footer">
+                            ${button}
+                          </div>
+                        </div>`;
+       ele.appendChild(_alert);
 
-		if (confirmButtonText && document.getElementById("customBtnClose"))
-			document.getElementById("customBtnClose").onclick = () =>
-				selectAlert(false);
+       if (cancelButtonText && document.getElementById("customBtnClose")) {
+          document.getElementById("customBtnClose").onclick = () => {
+             selectAlert(false);
+             closeAlert();
+          };
+       }
 
-		document.getElementById("customBtnSelect").onclick = () =>
-			selectAlert(true);
-		document.getElementById("alertBg").onclick = (e) =>
-			currentTargetClick(e);
-	};
+       document.getElementById("customBtnSelect").onclick = () => {
+          selectAlert(true);
+          closeAlert();
+       };
 
-	const currentTargetClick = ({ target }) => {
-		const alert = document.querySelector(".custom-alert");
+       document.getElementById("alertBg").onclick = (e) =>
+          currentTargetClick(e);
+    };
 
-		if (alert) {
-			if (!alert.contains(target)) {
-				selectAlert(false);
-			}
-		}
-	};
+    const currentTargetClick = ({ target }) => {
+       const alert = document.querySelector(".custom-alert");
 
-	const selectAlert = (_res) => {
-		const child = document.getElementById("alertBg");
+       if (alert) {
+          if (!alert.contains(target)) {
+             selectAlert(false);
+             closeAlert();
+          }
+       }
+    };
 
-		if (select) select(_res);
-		if (child) child.parentNode.removeChild(child);
-	};
+    const closeAlert = () => {
+       const child = document.getElementById("alertBg");
+       if (child) child.parentNode.removeChild(child);
+    };
 
-	if (!document.getElementById("alertBg")) {
-		_alertCreate(header, cancelButtonText, confirmButtonText);
-	}
+    const selectAlert = (_res) => {
+       if (select) select(_res);
+       if (_res === false) {
+          closeAlert();
+       }
+    };
+
+    if (!document.getElementById("alertBg")) {
+       _alertCreate(header, cancelButtonText, confirmButtonText);
+    }
 };
 
 export default Alert;
