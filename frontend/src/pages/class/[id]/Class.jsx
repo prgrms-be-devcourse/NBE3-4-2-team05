@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import Modal from "src/components/modal/Modal";
 import DateTimeInput from "../../../components/dateTimeInput/DateTimeInput";
 import { ScheduleService } from "../../../services/SheduleService";
+import CustomList from "../../../components/customList/CustomList";
 
 const Class = () => {
   const { id } = useParams();
@@ -33,6 +34,7 @@ const Class = () => {
   const schedulesModal = () => setIsSchedulesModal(true);
   const closeModal = () => setIsModalOpen(false);
   const closeSchedulesModal = () => setIsSchedulesModal(false);
+  const closeSchedulesDetailModal = () => setIsDetailModal(false);
 
   const modifyResult = () => {
     closeModal();
@@ -192,25 +194,18 @@ const Class = () => {
         {/*모임 일정 리스트*/}
         <div className="schedules-container">
           <h3>일정 목록</h3>
-          {schedules.length > 0 ? (
-              <div className="schedules-list">
-                {schedules.map((schedule) => (
-                    <div key={schedule.id} className="schedule-item">
-                      <h4>{schedule.meetingTitle}</h4>
-                      <p>일시: {schedule.meetingTime}</p>
-                      <div className="schedule-buttons">
-                        <button
-                            className="custom-button"
-                            onClick={() => handlerScheduleDetail(schedule.scheduleId)}
-                        >
-                          상세보기
-                        </button>
-                      </div>
-                    </div>
-                ))}
-              </div>
-          ) : (
-              <p>등록된 일정이 없습니다.</p>
+          {schedules.length > 0 && schedules.map((schedule) => (
+              <CustomList
+                  data1={schedule?.scheduleId}
+                  data2={schedule?.meetingTitle}
+                  data3={schedule?.meetingTime}
+                  description="true"
+                  button1 ="참석"
+                  button2 = "불참석"
+                  button3="상세보기"
+                  check
+                  onClick3={()=>handlerScheduleDetail(schedule.scheduleId)}
+              />)
           )}
         </div>
 
@@ -256,11 +251,7 @@ const Class = () => {
           </div>
         </Modal>
 
-        <Modal
-            isOpen={isDetailModal}
-            title="일정 상세 정보"
-            onClose={() => setIsDetailModal(false)}
-        >
+        <Modal isOpen={isDetailModal} title="일정 상세 정보" onClose={closeSchedulesDetailModal}>
           {selectedSchedule && (
               <div className="schedule-detail">
                 <h4>일정 제목: {selectedSchedule.meetingTitle}</h4>

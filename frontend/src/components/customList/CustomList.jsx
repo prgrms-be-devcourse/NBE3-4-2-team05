@@ -35,7 +35,7 @@ const CustomList = ({
           </button>
         )}
         {onClick3 && (
-          <button className="custom-button" onClick={() => onClick2()}>
+          <button className="custom-button" onClick={onClick3}>
             {button3}
           </button>
         )}
