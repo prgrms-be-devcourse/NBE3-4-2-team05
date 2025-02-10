@@ -61,6 +61,7 @@ public enum ErrorCode {
     CHECK_IN_UPDATE_FAILED(HttpStatus.BAD_REQUEST, Boolean.FALSE, 5002, "참석 여부 변경에 실패했습니다."),
     CHECK_IN_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, Boolean.FALSE, 5003, "이미 참석 여부생성이 되었습니다."),
     INVALID_PASSED_CHECK_IN(HttpStatus.BAD_REQUEST, Boolean.FALSE, 5004, "마감된 일정입니다!"),
+    CHECK_IN_NOT_FOUND(HttpStatus.BAD_REQUEST, Boolean.FALSE, 5005, "참석 여부 정보가 없습니다."),
 
     //9000 ~ 9999
     //오류 종류 : 공통 에러

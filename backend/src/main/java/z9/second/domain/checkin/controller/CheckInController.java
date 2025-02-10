@@ -14,6 +14,7 @@ import z9.second.global.response.BaseResponse;
 import z9.second.global.response.SuccessCode;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,6 +49,7 @@ public class CheckInController {
 
     @GetMapping("/{scheduleId}")
     @Operation(summary = "모임 인원 투표 현황 보여주기")
+    @SecurityRequirement(name="bearerAuth")
     public BaseResponse<List<CheckInResponseDto.ResponseData>> getAllCheckInsForSchedule(@PathVariable Long scheduleId) {
         List<CheckInResponseDto.ResponseData> responseDataList = checkInService.getAllCheckIns(scheduleId);
         return BaseResponse.ok(SuccessCode.CHECK_IN_READ_SUCCESS, responseDataList);

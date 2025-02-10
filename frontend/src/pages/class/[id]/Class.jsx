@@ -112,10 +112,8 @@ const Class = () => {
       meetingTime: meetingTime,
       meetingTitle: meetingTitle,
     };
-    console.log(body);
     try {
       const response = await ScheduleService.postSchedulesLists(body);
-      console.log(response);
       if (response.status === 201) {
         Alert("일정이 생성되었습니다.", "", "", () => {
           closeSchedulesModal();
