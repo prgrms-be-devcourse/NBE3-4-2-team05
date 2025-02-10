@@ -3,16 +3,16 @@ import axiosInstance from "src/constants/axiosInstance";
 import { Project } from "src/constants/project";
 
 // 모임 일정 전체 리스트 가져오기
-const getSchedulesLists = async () => {
-	const response = await axiosInstance.get(`${Project.API_URL}/schedules/classes/{classId}`, {
+const getSchedulesList = async (classId) => {
+	const response = await axiosInstance.get(`${Project.API_URL}/schedules/classes/${classId}`, {
 		withCredentials: true,
 	});
 	return response;
 };
 
 // 모임 일정 가져오기
-const getScheduleDetail = async () => {
-	const response = await axiosInstance.get(`${Project.API_URL}/schedules/{scheduleId}/classes/{classId}`, {
+const getScheduleDetail = async (scheduleId, classId) => {
+	const response = await axiosInstance.get(`${Project.API_URL}/schedules/${scheduleId}/classes/${classId}`, {
 		withCredentials: true,
 	});
 	return response;
@@ -52,7 +52,8 @@ const deleteSchedulesLists = async (body) => {
 };
 
 const ScheduleService = {
-	getSchedulesLists,
+	getSchedulesList,
+	getScheduleDetail,
 	postSchedulesLists,
 	putSchedulesLists,
 	deleteSchedulesLists,
