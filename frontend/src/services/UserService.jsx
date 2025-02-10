@@ -31,7 +31,6 @@ const Logout = async () => {
 	const response = await axiosInstance.post(`${Project.API_URL}/logout`);
 	if (response) {
 		Project.removeCookie("accessToken", Project.getJwt());
-		Project.removeCookie("RefreshToken", Project.REFRESH_TOKEN);
 		return response;
 	}
 };
