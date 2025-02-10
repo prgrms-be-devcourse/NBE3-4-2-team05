@@ -56,11 +56,11 @@ const Mypage = () => {
   };
 
   const handleClassClick = (classId) => {
-    navigate(`/class/${classId}`);
+    navigate(`/classess/${classId}`);
   };
 
   const handleScheduleClick = (classId) => {
-    navigate(`/class/${classId}`);
+    navigate(`/classess/${classId}`);
   };
 
   if (!userInfo || !userClassInfo || !userScheduleInfo) return <p>회원 정보를 불러오는 중입니다...</p>;

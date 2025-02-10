@@ -71,10 +71,16 @@ const Home = () => {
   }
 
   return (
-    <section>
+    <section className="home">
       <div className="class-container">
         <div className="class-info">
-          1번 모임방 Test
+          <div className='class-name'>
+            <p>1번 모임 이름</p>
+            <p>1번 모임 설명 10글자 이상</p>
+            <div className='class-flag'>
+              <span>관심사</span>
+            </div>
+          </div>
           <button onClick={() => handlerJoin("2")}>입장</button>
         </div>
       </div>

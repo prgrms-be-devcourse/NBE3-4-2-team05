@@ -23,6 +23,7 @@
 }
 
 .show-alert .custom-alert {
+  padding: 20px;
   box-sizing: border-box;
   -webkit-animation: custom-Alert 0.4s;
   animation: custom-Alert 0.4s;
@@ -114,6 +115,7 @@
   height: 50px;
   display: flex;
   justify-content: center;
+  gap: 10px;
 }
 .alert-footer button {
   width: 35%;
@@ -122,14 +124,22 @@
   border-radius: 5px;
 
   background-color: var(--text-primary);
+
+  cursor: pointer;
+
+  transition: background-color 0.3s ease;
 }
 
 #customBtnClose {
+  background-color: var(--text-error);
   p {
     font-weight: 600;
-    border-right: 1px solid red;
-    color: red;
+    color: var(--background-primary);
   }
+}
+
+#customBtnClose:hover {
+  background-color: var(--color-brand-reder);
 }
 
 #customBtnSelect {
@@ -137,4 +147,8 @@
     font-weight: 700;
     color: var(--background-primary);
   }
+}
+
+#customBtnSelect:hover {
+  background-color: var(--text-success);
 }

@@ -7,6 +7,7 @@ import Modal from "src/components/modal/Modal";
 import DateTimeInput from "../../../components/dateTimeInput/DateTimeInput";
 import { ScheduleService } from "../../../services/SheduleService";
 import CustomList from "../../../components/customList/CustomList";
+import "./Class.css";
 
 const Class = () => {
   const { id } = useParams();
