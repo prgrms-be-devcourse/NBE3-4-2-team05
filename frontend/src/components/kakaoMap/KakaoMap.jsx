@@ -4,10 +4,10 @@ import { Map, MapMarker, MarkerClusterer } from "react-kakao-maps-sdk";
 import MarkerModal from "./MarkerModal";
 import SkeletonKakaoMap from "./SkeletonKakaoMap";
 
-import "./KakaoMap.css";
-
 import { useUserLocation } from "src/hooks/userLocation";
 import { dummy } from "./dummy";
+
+import "./KakaoMap.css";
 
 function KakaoMap() {
   const { location, errorMessage } = useUserLocation();
