@@ -1,12 +1,13 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import { ClassService } from 'src/services/ClassService';
 import Alert from "src/components/alert/Alert";
+import {SearchService} from "../../services/SearchService";
 
 const Home = () => {
   const navigate = useNavigate();
-
+  const [ClassListData, setClassListData] = useState([]);
   const result = (id) => {
     navigate(`/classess/${id}`);
   }
@@ -70,20 +71,45 @@ const Home = () => {
     }
   }
 
+  //
+  const fetchClassesList = async () => {
+    try {
+      const response = await SearchService.getSearchClasses();
+      if (response) {
+        setClassListData(response.data.data)
+      } else {
+        Alert("모임 조회에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error("에러:", error);
+    }
+  };
+  console.log(ClassListData);
+
+  useEffect(() => {
+    fetchClassesList();
+  }, []);
+
   return (
     <section className="home">
+      <div className="sort-btn">
+        정렬 부분
+      </div>
+      {ClassListData.map((element) => (
       <div className="class-container">
-        <div className="class-info">
+        <div className="class-info" key={element.id}>
           <div className='class-name'>
-            <p>1번 모임 이름</p>
-            <p>1번 모임 설명 10글자 이상</p>
+            <p>{element.name}</p>
+            <p>{element.description}</p>
             <div className='class-flag'>
-              <span>관심사</span>
+              <span>{element.favorite}</span>
             </div>
           </div>
-          <button onClick={() => handlerJoin("2")}>입장</button>
+          <button onClick={() => handlerJoin(element.id)}>입장</button>
         </div>
       </div>
+      ))}
+
     </section>
   );
 };

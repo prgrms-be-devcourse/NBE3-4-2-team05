@@ -63,3 +63,11 @@
   background-color: #fef3f3;
   font-size: 12px;
 }
+
+.sort-btn {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding :1rem 0;
+}
