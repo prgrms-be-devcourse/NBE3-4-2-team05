@@ -1,6 +1,6 @@
 import React from "react";
-import "./Home.css";
 import { useNavigate } from "react-router-dom";
+import "./Home.css";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -8,7 +8,6 @@ const Home = () => {
   const onClickExample = (id) => {
     navigate(`/classess/${id}`);
   };
-
   return (
     <section>
       <div className="class-container">
@@ -17,7 +16,6 @@ const Home = () => {
           <button onClick={() => onClickExample("1")}>입장</button>
         </div>
       </div>
-      <div>TOdo....</div>
     </section>
   );
 };
