@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import { useParams } from "react-router-dom";
 import Alert from "src/components/alert/Alert";
 import { ClassService } from "src/services/ClassService";
@@ -17,13 +17,10 @@ const Class = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSchdulesModal, setIsSchedulesModal] = useState(false);
   const router = useNavigate();
-  const [body, setBody] = useState({ meetingTime: "" });
 
-  console.log(body);
-
-  const handleMeetingTimeChange = (newMeetingTime) => {
-    setBody({ meetingTime: newMeetingTime });
-  };
+  const handleMeetingTimeChange = useCallback((formattedDateTime) => {
+    setMeetingTime(formattedDateTime);
+  }, []);
 
   const result = () => {
     router("/");
@@ -114,9 +111,11 @@ const Class = () => {
       meetingTime: meetingTime,
       meetingTitle: meetingTitle,
     };
+    console.log(body);
     try {
       const response = await ScheduleService.postSchedulesLists(body);
-      if (response.status === 200) {
+      console.log(response);
+      if (response.status === 201) {
         Alert("일정이 생성되었습니다.", "", "", () => {
           closeSchedulesModal();
           window.location.reload(); // 페이지 새로고침
