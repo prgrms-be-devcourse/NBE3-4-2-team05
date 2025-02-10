@@ -214,15 +214,17 @@ const Class = () => {
 
         <Modal isOpen={isModalOpen} title={"모임 정보 수정"} onClose={closeModal}>
           <div className="modal-form">
-            <label>모임 이름:</label>
+            <label htmlFor="name">모임 이름:</label>
             <input
+                id="name"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="모임 이름을 입력하세요"
             />
-            <label>모임 설명:</label>
+            <label htmlFor="description">모임 설명:</label>
             <textarea
+                id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="모임 설명을 입력하세요"
