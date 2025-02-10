@@ -33,6 +33,7 @@ public enum SuccessCode {
     CLASS_DELETE_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "모임이 삭제되었습니다."),
     CLASS_MASTER_TRANSFER_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "권한을 위임했습니다."),
     CLASS_ADD_BLACKLIST_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "블랙리스트에 추가되었습니다."),
+    CLASS_READ_SUCCESS(HttpStatus.OK, Boolean.TRUE, 200, "모임이 조회되었습니다"),
 
     //Schedules
     SCHEDULE_CREATE_SUCCESS(HttpStatus.CREATED, Boolean.TRUE, 201, "모임 일정 생성되었습니다!"),
