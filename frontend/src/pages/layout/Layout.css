@@ -24,12 +24,21 @@ footer {
 main {
   flex: 1 0 auto;
   background-color: var(--background-primary);
-  border-radius: 20px;
+  /* border-radius: 20px; */
   z-index: calc(var(--z-index) + 1);
-  margin-top: 6rem;
-  padding: 2rem;
+  /* margin-top: 6rem; */
+  padding: 8rem 2rem 2rem;
 }
 
 main > * {
   width: 100%;
+}
+
+button.back {
+  width: initial;
+  margin-bottom: 20px;
+  padding: 8px 10px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
 }

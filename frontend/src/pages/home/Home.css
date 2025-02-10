@@ -1,0 +1,31 @@
+.class-container {
+  display: flex;
+  flex-flow: column wrap;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.class-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 40px;
+  border-radius: 8px;
+  box-shadow: 5px 5px 20px 0 rgba(0, 0, 0, 0.18);
+}
+
+.class-info button {
+  flex: none;
+  padding: 10px 15px;
+  background-color: var(--text-primary);
+  border: none;
+  border-radius: 5px;
+  color: var(--color-brand-gray);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.class-info button:hover {
+  background-color: var(--text-success);
+}

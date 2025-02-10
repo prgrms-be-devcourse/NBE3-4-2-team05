@@ -40,7 +40,7 @@
 .name {
   font-size: 1.2rem;
   font-weight: bold;
-  color: var(  --color-brand-neutral-darker);
+  color: var(--color-brand-neutral-darker);
 }
 
 .description {
@@ -57,8 +57,10 @@
 /* 버튼 영역 스타일 */
 .buttons {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: center;
   align-items: center;
+  gap: 10px;
 }
 
 /* 참석/불참 버튼 스타일 */
@@ -75,23 +77,23 @@
 }
 
 /* 불참 버튼 색상 */
-.custom-button:nth-child(2) {
-  background-color: var(  --text-error);
+.custom-button.warning {
+  background-color: var(--text-error);
 }
 
 /* 버튼 호버 시 효과 */
 .custom-button:hover {
-  background-color:var(--text-success);
+  background-color: var(--text-success);
 }
 
 /* 불참 버튼 호버 시 */
-.custom-button:nth-child(2):hover {
-  background-color:var(--color-brand-reder);
+.custom-button.warning:hover {
+  background-color: var(--color-brand-reder);
 }
 
 /* 참석/불참 상태 텍스트 스타일 */
 .status {
   margin-top: 10px;
   font-weight: bold;
-  color: var(  --color-brand-neutral-darker);
+  color: var(--color-brand-neutral-darker);
 }

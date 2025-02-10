@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import z9.second.model.BaseEntity;
 import z9.second.model.schedules.SchedulesEntity;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClassEntity {
+public class ClassEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "class_id", nullable = false)
@@ -40,6 +41,10 @@ public class ClassEntity {
     @OneToMany(mappedBy = "classes", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @Builder.Default
     private List<ClassBlackListEntity> blackLists = new ArrayList<>();
+
+    @OneToMany(mappedBy = "classes", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @Builder.Default
+    private List<SchedulesEntity> schedules = new ArrayList<>();
 
     public ClassUserEntity addMember(Long userId) {
         ClassUserEntity user = ClassUserEntity.builder()
