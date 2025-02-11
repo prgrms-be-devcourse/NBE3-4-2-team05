@@ -3,6 +3,7 @@ package z9.second.domain.authentication.controller;
 
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
@@ -15,6 +16,7 @@ import static z9.second.global.security.constant.JWTConstant.REFRESH_TOKEN_HEADE
 
 import jakarta.servlet.http.Cookie;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -30,6 +32,11 @@ import z9.second.model.user.User;
 
 @Transactional
 class AuthenticationControllerTest extends SpringBootTestSupporter {
+
+    @BeforeEach
+    void setUp() {
+        em.createNativeQuery("ALTER TABLE users ALTER COLUMN user_id RESTART WITH 1").executeUpdate();
+    }
 
     @DisplayName("로그인을 진행 합니다. access 는 헤더에, refresh 는 쿠키에 담겨서 response 됩니다")
     @Test
@@ -67,10 +74,9 @@ class AuthenticationControllerTest extends SpringBootTestSupporter {
 
         String loginId = "test1@email.com";
         String password = "!test1234";
-        List<String> favorite = saveFavoriteNameList;
         String nickname = "test1";
         AuthenticationRequest.Signup request =
-                AuthenticationRequest.Signup.of(loginId, password, favorite, nickname);
+                AuthenticationRequest.Signup.of(loginId, password, saveFavoriteNameList, nickname);
 
         // when
         ResultActions result = mockMvc.perform(post("/api/v1/signup")
@@ -114,5 +120,24 @@ class AuthenticationControllerTest extends SpringBootTestSupporter {
                     assertTrue(setCookieHeaders.stream().anyMatch(cookie -> cookie.contains("RefreshToken=;")));
                     assertTrue(setCookieHeaders.stream().anyMatch(cookie -> cookie.contains("Max-Age=0")));
                 });
+    }
+
+    @WithCustomUser
+    @DisplayName("회원 탈퇴를 진행 합니다.")
+    @Test
+    void resign() throws Exception {
+        // given
+        userFactory.saveAndCreateUserData(1);
+
+        // when
+        ResultActions result = mockMvc.perform(patch("/api/v1/resign"));
+
+        // then
+        result.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(SuccessCode.RESIGN_SUCCESS.getIsSuccess()))
+                .andExpect(jsonPath("$.message").value(SuccessCode.RESIGN_SUCCESS.getMessage()))
+                .andExpect(jsonPath("$.code").value(SuccessCode.RESIGN_SUCCESS.getCode()))
+                .andExpect(jsonPath("$.data").doesNotExist());
     }
 }

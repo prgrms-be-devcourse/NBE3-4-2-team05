@@ -55,6 +55,37 @@ class AuthenticationServiceImplTest extends SpringBootTestSupporter {
                 .isEqualTo(ErrorCode.LOGIN_FAIL);
     }
 
+    @DisplayName("탈퇴한 아이디로 로그인 시, 오류 메세지가 반환 됩니다.")
+    @Test
+    void login3() {
+        // given
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
+        User resignUser = User.resign(saveUser);
+        userRepository.save(resignUser);
+
+        // when // then
+        assertThatThrownBy(() -> authenticationService.login(AuthenticationRequest.Login.of(
+                "test1@email.com", UserFactory.USER_LOGIN_PASSWORD)))
+                .isInstanceOf(CustomException.class)
+                .extracting("code")
+                .isEqualTo(ErrorCode.LOGIN_RESIGN_USER);
+    }
+
+    @DisplayName("틀린 비밀번호가 입력되면, 오류 메세지가 반환 됩니다.")
+    @Test
+    void login4() {
+        // given
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+
+        // when // then
+        assertThatThrownBy(() -> authenticationService.login(AuthenticationRequest.Login.of(
+                "test1@email.com", "NOT_PASSWORD")))
+                .isInstanceOf(CustomException.class)
+                .extracting("code")
+                .isEqualTo(ErrorCode.LOGIN_FAIL);
+    }
+
     @DisplayName("회원가입을 진행합니다.")
     @Test
     void signup1() {
@@ -152,5 +183,56 @@ class AuthenticationServiceImplTest extends SpringBootTestSupporter {
                 .isInstanceOf(CustomException.class)
                 .extracting("code")
                 .isEqualTo(ErrorCode.NOT_EXIST_FAVORITE);
+    }
+
+    @DisplayName("회원 탈퇴를 진행 합니다.")
+    @Test
+    void resign1() {
+        // given
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
+
+        // when
+        authenticationService.resign(String.valueOf(saveUser.getId()));
+
+        // then
+        User findUser = userRepository.findById(saveUser.getId()).get();
+        assertThat(findUser.getStatus())
+                .isEqualTo(UserStatus.DELETE);
+    }
+
+    @DisplayName("이미 탈퇴된 회원은 탈퇴 할 수 없고 오류를 발생합니다.")
+    @Test
+    void resign2() {
+        // given
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
+        User resignUser = User.resign(saveUser);
+        userRepository.save(resignUser);
+
+        // when // then
+        assertThatThrownBy(() -> authenticationService.resign(String.valueOf(saveUser.getId())))
+                .isInstanceOf(CustomException.class)
+                .extracting("code")
+                .isEqualTo(ErrorCode.ALREADY_DELETE_USER);
+    }
+
+    @DisplayName("모임장 권한이 있는 사용자는 회원 탈퇴를 진행할 수 없습니다.")
+    @Test
+    void resign3() {
+        // given
+        List<User> saveUserList = userFactory.saveAndCreateUserData(1);
+        User saveUser = saveUserList.getFirst();
+
+        List<FavoriteEntity> saveFavoriteList = favoriteFactory.saveAndCreateFavoriteData(1);
+        FavoriteEntity saveFavorite = saveFavoriteList.getFirst();
+
+        classFactory.saveAndCreateClassData(1, saveUser, saveFavorite);
+
+        // when // then
+        assertThatThrownBy(() -> authenticationService.resign(String.valueOf(saveUser.getId())))
+                .isInstanceOf(CustomException.class)
+                .extracting("code")
+                .isEqualTo(ErrorCode.CLASS_MASTER_TRANSFER_REQUIRED);
     }
 }
