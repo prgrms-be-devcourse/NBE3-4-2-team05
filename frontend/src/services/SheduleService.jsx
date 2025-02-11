@@ -20,7 +20,6 @@ const getScheduleDetail = async (scheduleId, classId) => {
 
 // 일정 생성
 const postSchedulesLists = async (body) => {
-	console.log(body);
 	const response = await axiosInstance.post(
 		`${Project.API_URL}/schedules/classes`,
 		body,

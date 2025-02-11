@@ -12,7 +12,7 @@ import z9.second.global.response.ErrorCode;
 import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.schedules.SchedulesRepository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -37,13 +37,13 @@ public class SchedulesService {
 
         try {
             // 날짜 형식 검증 및 미래 날짜 검증
-            LocalDateTime meetingDateTime = LocalDateTime.parse(
+            LocalDate meetingDateTime = LocalDate.parse(
                     requestData.getMeetingTime(),
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd")
             );
 
             // 현재 시간과 비교하여 과거인지 확인
-            if (meetingDateTime.isBefore(LocalDateTime.now())) {
+            if (meetingDateTime.isBefore(LocalDate.now())) {
                 throw new CustomException(ErrorCode.INVALID_MEETING_TIME);
             }
 
@@ -80,13 +80,13 @@ public class SchedulesService {
 
         try {
             // 날짜 형식 검증
-            LocalDateTime meetingDateTime = LocalDateTime.parse(
+            LocalDate meetingDateTime = LocalDate.parse(
                     requestData.getMeetingTime(),
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd")
             );
 
             // 현재 시간과 비교하여 과거인지 확인
-            if (meetingDateTime.isBefore(LocalDateTime.now())) {
+            if (meetingDateTime.isBefore(LocalDate.now())) {
                 throw new CustomException(ErrorCode.INVALID_MEETING_TIME);
             }
 

@@ -7,18 +7,18 @@ function DateTimeInput({ onMeetingTimeChange }) {
   const [year, setYear] = useState("");
   const [month, setMonth] = useState("");
   const [day, setDay] = useState("");
-  const [hour, setHour] = useState("");
-  const [minute, setMinute] = useState("");
-  const [second, setSecond] = useState("");
 
   useEffect(() => {
-    if (year && month && day && hour && minute && second) {
-      const dateTime = new Date(year, month - 1, day, hour, minute, second);
-      const formattedDateTime = `${dateTime.getFullYear()}-${String(dateTime.getMonth() + 1).padStart(2, "0")}-${String(dateTime.getDate()).padStart(2, "0")} ${String(dateTime.getHours()).padStart(2, "0")}:${String(dateTime.getMinutes()).padStart(2, "0")}:${String(dateTime.getSeconds()).padStart(2, "0")}`;
+    if (year && month && day) {
+      const dateTime = new Date(year, month - 1, day);
+      // 형식을 'YYYY-MM-DD HH:mm:ss'로 변경하고 시간은 00:00:00으로 설정
+      const formattedDateTime = `${dateTime.getFullYear()}-${String(dateTime.getMonth() + 1).padStart(2, "0")}-${String(dateTime.getDate()).padStart(2, "0")}`;
 
+      // 날짜 형식이 어떻게 전송되는지 확인
+      console.log('Formatted Date:', formattedDateTime);
       onMeetingTimeChange(formattedDateTime);
     }
-  }, [year, month, day, hour, minute, second, onMeetingTimeChange]);
+  }, [year, month, day, onMeetingTimeChange]);
 
   const generateOptions = (start, end, type) => {
     let options = [];
@@ -80,27 +80,6 @@ function DateTimeInput({ onMeetingTimeChange }) {
         >
           <option value="">선택</option>
           {generateOptions(1, 31, "day")}
-        </select>
-      </div>
-      <div className="input-group">
-        <label>시:</label>
-        <select value={hour} onChange={(e) => setHour(e.target.value)}>
-          <option value="">선택</option>
-          {generateOptions(0, 23, "hour")}
-        </select>
-      </div>
-      <div className="input-group">
-        <label>분:</label>
-        <select value={minute} onChange={(e) => setMinute(e.target.value)}>
-          <option value="">선택</option>
-          {generateOptions(0, 59, "minute")}
-        </select>
-      </div>
-      <div className="input-group">
-        <label>초:</label>
-        <select value={second} onChange={(e) => setSecond(e.target.value)}>
-          <option value="">선택</option>
-          {generateOptions(0, 59, "second")}
         </select>
       </div>
     </form>
