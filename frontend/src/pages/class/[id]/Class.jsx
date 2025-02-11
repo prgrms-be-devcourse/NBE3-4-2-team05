@@ -132,6 +132,16 @@ const Class = () => {
 
   // 일정 생성
   const handlerCreateSchedule = async () => {
+    if (!meetingTitle.trim()) {
+      Alert("일정 제목을 입력해주세요.");
+      return;
+    }
+
+    if (!meetingTime) {
+      Alert("날짜를 선택해주세요.");
+      return;
+    }
+
     const body = {
       classId: id,
       meetingTime: meetingTime,
@@ -144,13 +154,21 @@ const Class = () => {
           closeSchedulesModal();
           window.location.reload(); // 페이지 새로고침
         });
-      } else {
-        Alert("일정 생성에 실패했습니다");
       }
     } catch (error) {
       console.error("일정 생성 오류:", error);
-      if (error.response.data.code === 9000)
+      if (error.response?.data?.code === 4005) {
+        Alert("과거 날짜는 설정할 수 없습니다.");
+      } else if (error.response?.status === 403) {
+        Alert("모임장만 일정을 생성할 수 있습니다.", "", "", () => {
+          closeSchedulesModal();
+          router(`/classes/${id}`);
+        });
+      } else if (error.response.data.code === 9000) {
         Alert(`${error.response.data.message}`);
+      } else {
+        Alert("일정 생성에 실패했습니다.");
+      }
     }
   };
 

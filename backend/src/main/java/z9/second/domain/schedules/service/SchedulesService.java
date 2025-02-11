@@ -27,12 +27,8 @@ public class SchedulesService {
     //생성
     @Transactional
     public SchedulesResponseDto.ResponseData create(SchedulesRequestDto.CreateRequest requestData, Long userId) {
-        ClassEntity classes = classesRepository.findById(requestData.getClassId())
-                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
-
-        // 모임장 권한 체크
-        if (!classes.getMasterId().equals(userId)) {
-            throw new CustomException(ErrorCode.CLASS_ACCESS_DENIED);
+        if (requestData.getMeetingTime() == null || requestData.getMeetingTitle() == null) {
+            throw new CustomException(ErrorCode.SCHEDULE_CREATE_FAILED);
         }
 
         try {
@@ -45,6 +41,15 @@ public class SchedulesService {
             // 현재 시간과 비교하여 과거인지 확인
             if (meetingDateTime.isBefore(LocalDate.now())) {
                 throw new CustomException(ErrorCode.INVALID_MEETING_TIME);
+            }
+
+            // 모임 존재 여부 확인
+            ClassEntity classes = classesRepository.findById(requestData.getClassId())
+                    .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+
+            // 모임장 권한 체크
+            if (!classes.getMasterId().equals(userId)) {
+                throw new CustomException(ErrorCode.CLASS_ACCESS_DENIED);
             }
 
             // 새로운 일정 엔티티 생성
@@ -61,6 +66,8 @@ public class SchedulesService {
             return SchedulesResponseDto.ResponseData.from(savedSchedule);
         } catch (DateTimeParseException e) {
             throw new CustomException(ErrorCode.INVALID_MEETING_TIME_FORMAT);
+        } catch (CustomException e) {
+            throw e;  // 이미 처리된 CustomException은 그대로 던지기
         } catch (Exception e) {
             throw new CustomException(ErrorCode.SCHEDULE_CREATE_FAILED);
         }
@@ -69,13 +76,8 @@ public class SchedulesService {
     //수정
     @Transactional
     public SchedulesResponseDto.ResponseData modify(Long scheduleId, Long classId, SchedulesRequestDto.UpdateRequest requestData, Long userId) {
-        // 일정 조회 및 모임 Id 조회
-        SchedulesEntity schedule = schedulesRepository.findScheduleByIdAndClassesId(scheduleId, classId)
-                .orElseThrow(() -> new CustomException(ErrorCode.SCHEDULE_NOT_FOUND));
-
-        // 모임장 권한 체크
-        if (!schedule.getClasses().getMasterId().equals(userId)) {
-            throw new CustomException(ErrorCode.CLASS_ACCESS_DENIED);
+        if (requestData.getMeetingTime() == null || requestData.getMeetingTitle() == null) {
+            throw new CustomException(ErrorCode.SCHEDULE_UPDATE_FAILED);
         }
 
         try {
@@ -90,12 +92,17 @@ public class SchedulesService {
                 throw new CustomException(ErrorCode.INVALID_MEETING_TIME);
             }
 
-            // 일정 정보 업데이트
-            schedule.updateSchedule(
-                    requestData.getMeetingTime(),
-                    requestData.getMeetingTitle()
-            );
+            // 일정 조회 및 모임 Id 조회
+            SchedulesEntity schedule = schedulesRepository.findScheduleByIdAndClassesId(scheduleId, classId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.SCHEDULE_NOT_FOUND));
 
+            // 모임장 권한 체크
+            if (!schedule.getClasses().getMasterId().equals(userId)) {
+                throw new CustomException(ErrorCode.CLASS_ACCESS_DENIED);
+            }
+
+            // 일정 정보 업데이트
+            schedule.updateSchedule(requestData.getMeetingTime(), requestData.getMeetingTitle());
             // DB에 저장
             SchedulesEntity savedSchedule = schedulesRepository.save(schedule);
 
@@ -103,6 +110,8 @@ public class SchedulesService {
             return SchedulesResponseDto.ResponseData.from(savedSchedule);
         } catch (DateTimeParseException e) {
             throw new CustomException(ErrorCode.INVALID_MEETING_TIME_FORMAT);
+        } catch (CustomException e) {
+            throw e;  // 이미 처리된 CustomException은 그대로 던지기
         } catch (Exception e) {
             throw new CustomException(ErrorCode.SCHEDULE_UPDATE_FAILED);
         }

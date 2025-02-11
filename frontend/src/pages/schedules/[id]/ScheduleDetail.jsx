@@ -36,6 +36,26 @@ const ScheduleDetail = () => {
     };
 
     const handleEditSubmit = async () => {
+        // 수정 모드로 전환시 초기 값 설정
+        const initialTitle = schedule.meetingTitle;
+        const initialTime = schedule.meetingTime;
+
+        // 값이 변경되었는지 확인
+        if (meetingTitle === initialTitle && meetingTime === initialTime) {
+            Alert("변경된 내용이 없습니다.");
+            return;
+        }
+
+        if (!meetingTitle.trim()) {
+            Alert("일정 제목을 입력해주세요.");
+            return;
+        }
+
+        if (!meetingTime) {
+            Alert("날짜를 선택해주세요.");
+            return;
+        }
+
         const body = {
             meetingTitle,
             meetingTime,
@@ -49,12 +69,19 @@ const ScheduleDetail = () => {
                     setIsEditing(false);
                     fetchScheduleDetail(); // 수정된 데이터 다시 불러오기
                 });
-            } else {
-                Alert('일정 수정에 실패했습니다.');
             }
         } catch (error) {
             console.error('일정 수정 오류:', error);
-            Alert(error.response?.data?.message || '일정 수정에 실패했습니다.');
+            if (error.response?.data?.code === 4005) {
+                Alert("과거 날짜는 설정할 수 없습니다.");
+            } else if (error.response?.status === 403) {
+                Alert("모임장만 일정을 수정할 수 있습니다.", "", "", () => {
+                    setIsEditing(false);
+                    fetchScheduleDetail();
+                });
+            } else {
+                Alert(error.response?.data?.message || '일정 수정에 실패했습니다.');
+            }
         }
     };
 
@@ -63,12 +90,14 @@ const ScheduleDetail = () => {
             const response = await ScheduleService.deleteSchedulesLists(scheduleId, classId);
             if (response.status === 200) {
                 Alert('일정이 삭제되었습니다.', '', '', () => navigate(`/classes/${classId}`));
-            } else {
-                Alert('일정 삭제에 실패했습니다.');
             }
         } catch (error) {
             console.error('일정 삭제 오류:', error);
-            Alert(error.response?.data?.message || '일정 삭제에 실패했습니다.');
+            if (error.response?.status === 403) {
+                Alert("모임장만 일정을 삭제할 수 있습니다.");
+            } else {
+                Alert(error.response?.data?.message || '일정 삭제에 실패했습니다.');
+            }
         }
     };
 
