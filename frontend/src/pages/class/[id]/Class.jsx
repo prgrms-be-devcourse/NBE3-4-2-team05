@@ -158,18 +158,13 @@ const Class = () => {
       const response = await CheckInService.getMyCheckIn(scheduleId);
       if (!response) {
       const postResponse = await CheckInService.postCheckIn({scheduleId, checkIn});
-      if (postResponse.status === 200) {
-        Alert("투표가 되었습니다.");
-      } else {
-        Alert("투표에 실패했습니다.");
-      }
+      console.log(postResponse)
+        Alert(postResponse.data?.message,"","",()=>window.location.reload());
     } else {
-      const putResponse = await CheckInService.putCheckIn({scheduleId, checkIn});
-      if (putResponse.status === 200) {
-        Alert("투표가 변경되었습니다.");
-      } else {
-        Alert("투표 변경에 실패했습니다.");
-      }}
+        const putResponse = await CheckInService.putCheckIn({scheduleId, checkIn});
+        console.log(putResponse)
+        Alert(putResponse.data?.message,"","",()=>window.location.reload());
+      }
   };
 
 

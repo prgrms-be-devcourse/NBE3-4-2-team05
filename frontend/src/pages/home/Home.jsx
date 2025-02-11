@@ -184,8 +184,8 @@ const Home = () => {
           )}
         </div>
         {ClassListData.map((element) => (
-            <div className="class-container">
-              <div className="class-info" key={element.id}>
+            <div className="class-container" key={element.id}>
+              <div className="class-info" >
                 <div className='class-name'>
                   <p>{element.name}</p>
                   <p>{element.description}</p>
