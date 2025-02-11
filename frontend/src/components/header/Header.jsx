@@ -13,7 +13,7 @@ const Header = () => {
   const handleLoginOrLogout = async () => {
     if (!isLogin) return navigate('/login');
     try {
-        await UserService.Logout();
+        const res = await UserService.Logout();
         navigate('/');
         setTimeout(() => {
           window.location.reload();

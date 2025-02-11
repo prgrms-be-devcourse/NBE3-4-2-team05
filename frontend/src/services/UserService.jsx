@@ -1,4 +1,3 @@
-// @ts-nocheck
 import axiosInstance from "src/constants/axiosInstance";
 import { Project } from "src/constants/project";
 
