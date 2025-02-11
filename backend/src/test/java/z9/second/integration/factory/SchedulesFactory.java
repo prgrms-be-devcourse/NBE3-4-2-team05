@@ -1,15 +1,16 @@
 package z9.second.integration.factory;
 
 import jakarta.persistence.EntityManager;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import z9.second.domain.classes.entity.ClassEntity;
 import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.schedules.SchedulesRepository;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class SchedulesFactory {
 
         for(int index=1; index<=count; index++) {
             String meetingTitle = String.format("%s%d", SCHEDULES_MEETING_TITLE_PREFIX, index);
-            String formattedTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            String formattedTime = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             SchedulesEntity newSchedule = SchedulesEntity
                     .builder()
                     .classes(classEntity)

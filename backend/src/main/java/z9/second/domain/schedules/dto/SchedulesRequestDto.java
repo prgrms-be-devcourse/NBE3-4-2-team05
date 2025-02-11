@@ -19,8 +19,8 @@ public class SchedulesRequestDto {
 
         @NotNull(message = "meeting_time must not be null")
         @Pattern(
-                regexp = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$",
-                message = "날짜 형식은 yyyy-MM-dd HH:mm:ss이어야 합니다."
+                regexp = "^\\d{4}-\\d{2}-\\d{2}$",
+                message = "날짜 형식은 yyyy-MM-dd 이어야 합니다."
         )
         private String meetingTime;
 
@@ -41,8 +41,8 @@ public class SchedulesRequestDto {
         // classId 제거 - PathVariable로 받기 때문
         @NotNull(message = "meeting_time must not be null")
         @Pattern(
-                regexp = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$",
-                message = "날짜 형식은 yyyy-MM-dd HH:mm:ss이어야 합니다."
+                regexp = "^\\d{4}-\\d{2}-\\d{2}$",
+                message = "날짜 형식은 yyyy-MM-dd 이어야 합니다."
         )
         private String meetingTime;
 

@@ -1,12 +1,5 @@
 package z9.second.domain.user.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.List;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +18,14 @@ import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.user.User;
 import z9.second.model.user.UserRole;
 import z9.second.model.user.UserType;
+
+import java.util.List;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Transactional
 class UserControllerTest extends SpringBootTestSupporter {
@@ -142,7 +143,7 @@ class UserControllerTest extends SpringBootTestSupporter {
                 .andExpect(jsonPath("$.data.schedule").isArray())
                 .andExpect(jsonPath("$.data.schedule.length()").value(1))
                 .andExpect(jsonPath("$.data.schedule[0].classId").isNotEmpty())
-                .andExpect(jsonPath("$.data.schedule[0].meetingTime").value(Matchers.matchesPattern("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")))
+                .andExpect(jsonPath("$.data.schedule[0].meetingTime").value(Matchers.matchesPattern("\\d{4}-\\d{2}-\\d{2}")))
                 .andExpect(jsonPath("$.data.schedule[0].meetingTitle").value(saveSchedule.getMeetingTitle()));
     }
 

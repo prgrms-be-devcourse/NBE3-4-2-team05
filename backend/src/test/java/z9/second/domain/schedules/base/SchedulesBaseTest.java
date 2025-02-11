@@ -9,7 +9,7 @@ import z9.second.integration.SpringBootTestSupporter;
 import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.user.User;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
@@ -22,8 +22,8 @@ public abstract class SchedulesBaseTest extends SpringBootTestSupporter {
     // 고정된 시간 대신 현재 시간 기준 미래 시간 생성
     protected String getTestMeetingTime() {
         // 현재 시간으로부터 7일 후로 설정
-        LocalDateTime futureTime = LocalDateTime.now().plusDays(7);
-        return futureTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        LocalDate futureTime = LocalDate.now().plusDays(7);
+        return futureTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
     protected User createTestUser(String email, String nickname) {

@@ -1,7 +1,5 @@
 package z9.second.domain.user.dto;
 
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +7,9 @@ import lombok.Getter;
 import z9.second.domain.classes.entity.ClassEntity;
 import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.user.User;
+
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class UserResponse {
 
@@ -51,7 +52,7 @@ public class UserResponse {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class ScheduleInfo {
         private final Long classId;
-        private final String meetingTime; //yyyy-MM-dd HH:mm:ss
+        private final String meetingTime; //yyyy-MM-dd
         private final String meetingTitle;
 
         public static ScheduleInfo from(SchedulesEntity schedulesEntity) {

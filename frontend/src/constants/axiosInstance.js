@@ -34,36 +34,6 @@ axiosInstance.interceptors.response.use(
 	(response) => {
 		return response;
 	},
-	async (error) => {
-		const originalRequest = error.config;
-		if (error.response.status === 401 && !originalRequest._retry) {
-			originalRequest._retry = true;
-
-			const refreshToken = Project.REFRESH_TOKEN;
-			try {
-				const refreshResponse = await axios.post(`${Project.API_URL}/refresh-token`, { refreshToken });
-
-				const newAccessToken = refreshResponse.data.accessToken;
-				Project.setJwt(newAccessToken);
-
-				originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-				return axios(originalRequest);
-			} catch (refreshError) {
-				Project.removeCookie("accessToken", { path: "/" });
-				Project.removeCookie("RefreshToken", { path: "/" });
-				return Promise.reject(refreshError);
-			}
-		}
-
-		return Promise.reject(error);
-	}
-);
-
-
-axiosInstance.interceptors.response.use(
-	(response) => {
-		return response;
-	},
 	(error) => {
 		return Promise.reject(error);
 	},

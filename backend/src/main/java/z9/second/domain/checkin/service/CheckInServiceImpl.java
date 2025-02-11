@@ -8,17 +8,14 @@ import z9.second.domain.checkin.dto.CheckInResponseDto;
 import z9.second.domain.classes.repository.ClassUserRepository;
 import z9.second.global.exception.CustomException;
 import z9.second.global.response.ErrorCode;
-
 import z9.second.model.checkIn.CheckInEntity;
 import z9.second.model.checkIn.CheckInEntityRepository;
-
 import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.schedules.SchedulesRepository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,12 +49,12 @@ public class CheckInServiceImpl implements CheckInService {
         if (!classUserRepository.existsByClassesAndUserId(findSchedulesEntity.getClasses(), userId)) {
             throw new CustomException(ErrorCode.CLASS_NOT_EXISTS_MEMBER);
         }
-        LocalDateTime meetingDateTime = LocalDateTime.parse(
+        LocalDate meetingDateTime = LocalDate.parse(
                 findSchedulesEntity.getMeetingTime(),
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                DateTimeFormatter.ofPattern("yyyy-MM-dd")
         );
 
-        if (meetingDateTime.isBefore(LocalDateTime.now())) {
+        if (meetingDateTime.isBefore(LocalDate.now())) {
             throw new CustomException(ErrorCode.INVALID_PASSED_CHECK_IN);
         }
         CheckInEntity newCheckIn = CheckInEntity
