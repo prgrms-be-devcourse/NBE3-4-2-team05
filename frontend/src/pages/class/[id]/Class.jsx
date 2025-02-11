@@ -151,10 +151,6 @@ const Class = () => {
     }
   };
 
-  //일정 상세 조회
-  const handlerScheduleDetail = (scheduleId) => {
-    router(`/schedules/${scheduleId}/classes/${id}`);
-  };
 
   // 투표 함수
   const handleCheckIn = async (scheduleId,checkIn) => {
@@ -235,18 +231,12 @@ const Class = () => {
           <div className="modal-form">
             <label htmlFor="name">모임 이름:</label>
             <input
-                id="name"
-            <label>모임 이름:</label>
-            <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="모임 이름을 입력하세요"
             />
             <label htmlFor="description">모임 설명:</label>
-            <textarea
-                id="description"
-            <label>모임 설명:</label>
             <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
