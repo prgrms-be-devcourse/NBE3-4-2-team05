@@ -11,7 +11,7 @@ const REFRESH_TOKEN = process.env.REACT_APP_REFRESH_TOKEN;
 const USER_SESSION = `ID_${PROJECT_ID}_SES`;
 
 const getJwt = () => cookies.get(TOKEN);
-const getRefershJwt = () => cookies.get(REFRESH_TOKEN);
+const getRefreshJwt = () => cookies.get(REFRESH_TOKEN);
 
 const setJwt = (accessToken) => {
 	cookies.set(TOKEN, accessToken, {
@@ -60,7 +60,7 @@ const userLogout = () => {
 const Project = {
 	setJwt,
 	getJwt,
-	getRefershJwt,
+	getRefreshJwt,
 	getUserId,
 	setUserId,
 	loginCheck,

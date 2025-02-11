@@ -8,6 +8,7 @@ import DateTimeInput from "../../../components/dateTimeInput/DateTimeInput";
 import { ScheduleService } from "../../../services/SheduleService";
 import CustomList from "../../../components/customList/CustomList";
 import "./Class.css";
+import {CheckInService} from "../../../services/CheckInService";
 
 const Class = () => {
   const { id } = useParams();
@@ -69,7 +70,6 @@ const Class = () => {
         Alert(error.response.data.message, "", "", () => result());
       }
     }
-
     fetchClassInfo();
     fetchSchedules();
   }, [id]);
@@ -161,6 +161,26 @@ const Class = () => {
     }
   }
 
+  // 투표 함수
+  const handleCheckIn = async (scheduleId,checkIn) => {
+      const response = await CheckInService.getMyCheckIn(scheduleId);
+      if (!response) {
+      const postResponse = await CheckInService.postCheckIn({scheduleId, checkIn});
+      if (postResponse.status === 200) {
+        Alert("투표가 되었습니다.");
+      } else {
+        Alert("투표에 실패했습니다.");
+      }
+    } else {
+      const putResponse = await CheckInService.putCheckIn({scheduleId, checkIn});
+      if (putResponse.status === 200) {
+        Alert("투표가 변경되었습니다.");
+      } else {
+        Alert("투표 변경에 실패했습니다.");
+      }}
+  };
+
+
   return (
       <div>
         <div className="buttons">
@@ -200,7 +220,9 @@ const Class = () => {
                   data3={schedule?.meetingTime}
                   description="true"
                   button1 ="참석"
+                  onClick1={()=>handleCheckIn(schedule?.scheduleId,true)}
                   button2 = "불참석"
+                  onClick2={()=>handleCheckIn(schedule?.scheduleId,false)}
                   button3="상세보기"
                   check
                   onClick3={()=>handlerScheduleDetail(schedule.scheduleId)}

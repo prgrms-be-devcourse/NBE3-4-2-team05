@@ -30,7 +30,8 @@ const Login = async (body) => {
 const Logout = async () => {
 	const response = await axiosInstance.post(`${Project.API_URL}/logout`);
 	if (response) {
-		Project.removeCookie("accessToken", Project.getJwt());
+		Project.removeCookie( process.env.REACT_APP_ACCESS_TOKEN, Project.getJwt());
+		Project.removeCookie( process.env.REACT_APP_REFRESH_TOKEN, Project.getRefreshJwt());
 		return response;
 	}
 };
