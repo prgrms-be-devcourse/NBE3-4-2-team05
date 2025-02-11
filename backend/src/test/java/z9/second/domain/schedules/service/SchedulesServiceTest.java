@@ -11,6 +11,8 @@ import z9.second.global.response.ErrorCode;
 import z9.second.model.schedules.SchedulesEntity;
 import z9.second.model.user.User;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -65,9 +67,12 @@ class SchedulesServiceTest extends SchedulesBaseTest {
     @Order(2)
     void create_ClassNotFound() {
         // given
+        String futureDate = LocalDate.now().plusDays(7)
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
         SchedulesRequestDto.CreateRequest request = SchedulesRequestDto.CreateRequest.builder()
                 .classId(999L)
-                .meetingTime("2025-02-05 14:00:00")
+                .meetingTime(futureDate)  // 현재 날짜 + 7일
                 .meetingTitle("테스트 일정")
                 .build();
 
