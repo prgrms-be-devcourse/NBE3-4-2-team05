@@ -84,9 +84,16 @@ public class CheckInServiceImpl implements CheckInService {
         CheckInEntity checkIn = checkInEntityRepository.findBySchedulesIdAndUserId(scheduleId, userId)
                 .orElse(null);
         if (checkIn == null) {
-            return null;
+            return CheckInResponseDto.ResponseData.builder()
+                    .checkInId(null)
+                    .scheduleId(scheduleId)
+                    .userId(userId)
+                    .checkIn(false)
+                    .isCheckIn(false)
+                    .build();
+        }else{
+            return CheckInResponseDto.ResponseData.from(checkIn);
         }
-        return CheckInResponseDto.ResponseData.from(checkIn);
     }
 
 }
