@@ -162,33 +162,29 @@ const Class = () => {
   // 투표 함수
   const debouncedHandleCheckIn = useCallback(
       debounce(async (scheduleId, checkIn) => {
-        let response = cacheRef.current; // 최신 캐시 값을 참조
+        let response = cacheRef.current;
 
         if (!response) {
-          // 캐시가 비어 있으면 API 요청
           response = await CheckInService.getMyCheckIn(scheduleId);
-          cacheRef.current = response; // 캐시 업데이트
-          setResponseCache(response); // 상태에도 저장
+          cacheRef.current = response;
+          setResponseCache(response);
         }
-
-        // 응답이 없다면 새로운 값을 등록
-        if (!response) {
-          const postResponse = await CheckInService.postCheckIn({ scheduleId, checkIn });
-          console.log(postResponse);
-          Alert(postResponse.data?.message, "", "", () => window.location.reload());
-        } else {
-          // checkIn 값이 동일하다면, 알림만 띄우고 API 호출을 막음
+        if (response) {
           if (response.checkIn === checkIn) {
             Alert("동일한 의사입니다.", "", "", () => window.location.reload());
+            return;
           } else {
             const putResponse = await CheckInService.putCheckIn({ scheduleId, checkIn });
-            console.log(putResponse);
             Alert(putResponse.data?.message, "", "", () => window.location.reload());
           }
+        } else {
+          const postResponse = await CheckInService.postCheckIn({ scheduleId, checkIn });
+          Alert(postResponse.data?.message, "", "", () => window.location.reload());
         }
-      }, 1000), // 1초 이내에 여러 번 호출되어도 마지막 요청만 실행
+      }, 1000),
       []
   );
+
 
   return (
       <div>
