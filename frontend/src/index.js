@@ -13,6 +13,7 @@ import KakaoCallback from "./components/kakao/KakaoCallback";
 import MemberList from "./pages/class/[id]/MemberList";
 
 import Layout from "./pages/layout/Layout";
+import ScheduleDetail from "./pages/schedules/[id]/ScheduleDetail";
 
 const App = () => {
   return (
@@ -25,10 +26,10 @@ const App = () => {
           <Route path="/modify" element={<Modify />} />
           <Route path="/join" element={<SignUp />} />
           <Route path="/mypage" element={<Mypage />} />
-          <Route path="/classess" element={<Class />} />
-          <Route path="/classess/:id" element={<Class />} />
+          <Route path="/classes/:id" element={<Class />} />
           <Route path="/kakaomap" element={<KakaoMap />} />
           <Route path="/memberList/:id" element={<MemberList />} />
+          <Route path="/schedules/:scheduleId/classes/:classId" element={<ScheduleDetail />} />
         </Route>
       </Routes>
     </BrowserRouter>

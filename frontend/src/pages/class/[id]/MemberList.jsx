@@ -3,6 +3,7 @@ import CustomList from "src/components/customList/CustomList";
 import { ClassService } from "src/services/ClassService";
 import { useParams } from "react-router-dom";
 import Alert from "src/components/alert/Alert";
+import "./MemberList.css";
 
 const MemberList = () => {
   const { id } = useParams();
@@ -78,7 +79,7 @@ const MemberList = () => {
   }
 
   return (
-    <div>
+    <div className="member-container">
       <p>모임 이름 : {members.name}</p>
       <p>모임장 : {masterName}</p>
       <div className="list-container">

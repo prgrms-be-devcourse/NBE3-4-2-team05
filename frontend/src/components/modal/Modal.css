@@ -12,7 +12,9 @@
 }
 .modal {
   width: 100%;
-  height: 100%;
+  max-width: 660px;
+  min-height: 30%;
+  max-height: 100%;
   position: relative;
   background: white;
   padding: 2rem;
@@ -55,13 +57,59 @@
 
 .modal-container {
   width: 100%;
-  height: 100%;
+  max-height: calc(100% - 50px);
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  padding: 40px 40px 0;
 }
 .modal-container p {
   font-size: 1.2rem;
   text-align: left;
   line-height: 1.8;
+}
+
+.modal-container .schedule-detail h4{
+  font-size: 20px;
+}
+
+.modal-container .schedule-detail p {
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+/* modal form */
+.modal-form {
+  height: 100%;
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+}
+
+.modal-form:not(:has(.datetime-form)) {
+  align-items: baseline;
+}
+
+.modal-form > * {
+  margin-bottom: 1rem;
+  font-size: 16px;
+}
+
+.modal-form > input {
+  margin-bottom: 2rem;
+  padding: 10px;
+}
+.modal-form:not(:has(.datetime-form)) > input {
+  width: 100%;
+  height: 40px;
+}
+
+.modal-form > button {
+  margin: auto;
+}
+
+.modal-form > textarea {
+  width: 100%;
+  height: 200px;
+  padding: 10px;
 }

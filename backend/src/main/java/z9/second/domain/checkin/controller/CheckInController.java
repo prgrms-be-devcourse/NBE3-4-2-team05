@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import z9.second.domain.checkin.dto.CheckInRequestDto;
 import z9.second.domain.checkin.dto.CheckInResponseDto;
@@ -16,6 +17,7 @@ import z9.second.global.response.SuccessCode;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/checkin")
@@ -54,4 +56,17 @@ public class CheckInController {
         List<CheckInResponseDto.ResponseData> responseDataList = checkInService.getAllCheckIns(scheduleId);
         return BaseResponse.ok(SuccessCode.CHECK_IN_READ_SUCCESS, responseDataList);
     }
+
+    @GetMapping("/{scheduleId}/my")
+    @Operation(summary = "모임 내 투표 현황 보여주기")
+    @SecurityRequirement(name="bearerAuth")
+    public BaseResponse<CheckInResponseDto.ResponseData> getMyCheckIn(
+            @PathVariable Long scheduleId,
+            Principal principal
+    ){
+        Long userId = Long.parseLong(principal.getName());
+        CheckInResponseDto.ResponseData response = checkInService.getMyCheckIn(scheduleId, userId);
+        return BaseResponse.ok(SuccessCode.CHECK_IN_READ_SUCCESS, response);
+    }
 }
+

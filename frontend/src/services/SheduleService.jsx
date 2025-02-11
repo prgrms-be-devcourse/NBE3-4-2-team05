@@ -1,4 +1,3 @@
-// @ts-nocheck
 import axiosInstance from "src/constants/axiosInstance";
 import { Project } from "src/constants/project";
 
@@ -40,14 +39,10 @@ const putSchedulesLists = async (body) => {
 };
 
 // 일정 삭제
-const deleteSchedulesLists = async (body) => {
+
+const deleteSchedulesLists = async (scheduleId, classId) => {
 	const response = await axiosInstance.delete(
-		`${Project.API_URL}/schedules/{scheduleId}/classes/{classId}`,
-		body,
-		{
-			withCredentials: true,
-		},
-	);
+		`${Project.API_URL}/schedules/${scheduleId}/classes/${classId}`,{withCredentials: true});
 	return response;
 };
 
