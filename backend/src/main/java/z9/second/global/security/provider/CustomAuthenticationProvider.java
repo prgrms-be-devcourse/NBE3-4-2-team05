@@ -33,13 +33,13 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             throw new CustomException(ErrorCode.LOGIN_FAIL);
         }
 
-        if(!passwordEncoder.matches(password, userDetails.getPassword())) {
-            throw new CustomException(ErrorCode.LOGIN_FAIL);
-        }
-
         CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
         if (customUserDetails.getUser().getStatus().equals(UserStatus.DELETE)) {
             throw new CustomException(ErrorCode.LOGIN_RESIGN_USER);
+        }
+
+        if(!passwordEncoder.matches(password, userDetails.getPassword())) {
+            throw new CustomException(ErrorCode.LOGIN_FAIL);
         }
 
         return new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());

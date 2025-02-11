@@ -79,12 +79,33 @@ public class SecurityConfig {
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers(GET, "/api/v1/sample/only-user").authenticated()
                 .requestMatchers(GET, "/api/v1/sample/only-admin").hasRole("ADMIN")
+
+                //authentication Domain
                 .requestMatchers(POST, "/api/v1/logout").authenticated()
                 .requestMatchers(PATCH, "/api/v1/resign").authenticated()
+
                 //user Domain
                 .requestMatchers(GET, "/api/v1/users").authenticated()
                 .requestMatchers(PATCH, "/api/v1/users/profile").authenticated()
                 .requestMatchers(GET, "/api/v1/users/schedules").authenticated()
+                .requestMatchers(GET, "/api/v1/users/classes").authenticated()
+
+                //class Domain
+                // All classes in the Domain package require authentication
+                .requestMatchers("/api/v1/classes/**").authenticated()
+
+                //schedules Domain
+                // All schedules in the Domain package require authentication
+                .requestMatchers("/api/v1/schedules/**").authenticated()
+
+                //search Domain
+                .requestMatchers(GET, "/api/v1/search/favorite").authenticated()
+
+                //checkin Domain
+                // All checkIn in the Domain package require authentication
+                .requestMatchers("/api/v1/checkin/**").authenticated()
+
+                //나머지 다 permitAll
                 .anyRequest().permitAll());
 
         http.exceptionHandling((exception) -> exception

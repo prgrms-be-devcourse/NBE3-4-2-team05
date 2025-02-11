@@ -19,7 +19,7 @@ public enum ErrorCode {
     NEED_LOGIN(HttpStatus.UNAUTHORIZED, Boolean.FALSE, 1002, "로그인이 필요합니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, Boolean.FALSE, 1003, "접근 권한이 부족합니다."),
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, Boolean.FALSE, 1004, "토큰이 만료되었습니다. 재로그인 진행해 주세요."),
-    OAUTH_USER_LOGIN_FAIL(HttpStatus.BAD_REQUEST, Boolean.FALSE, 1005, "소셜 로그인 회원 입니다. 소셜 로그인으로 진행 해 주세요."),
+//    OAUTH_USER_LOGIN_FAIL(HttpStatus.BAD_REQUEST, Boolean.FALSE, 1005, "소셜 로그인 회원 입니다. 소셜 로그인으로 진행 해 주세요."), //NotUse
     INVALID_OAUTH_PROVIDER(HttpStatus.BAD_REQUEST, Boolean.FALSE, 1006, "지원하지 않는 로그인 방식 입니다."),
     NOT_EXIST_FAVORITE(HttpStatus.BAD_REQUEST, Boolean.FALSE, 1007, "등록되지 않은 관심사 입니다."),
     DUPLICATED_LOGIN_ID(HttpStatus.BAD_REQUEST, Boolean.FALSE, 1008, "중복된 로그인 아이디 입니다."),
@@ -52,6 +52,7 @@ public enum ErrorCode {
     SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, Boolean.FALSE, 4002, "해당 일정을 찾을 수 없습니다."),
     SCHEDULE_UPDATE_FAILED(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4003, "일정 수정에 실패했습니다."),
     SCHEDULE_DELETE_FAILED(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4004, "일정 삭제에 실패했습니다."),
+    SCHEDULE_READ_FAILED(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4005, "일정 조회에 실패했습니다"),
     INVALID_MEETING_TIME(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4005, "과거 날짜는 설정할 수 없습니다."),
     INVALID_MEETING_TIME_FORMAT(HttpStatus.BAD_REQUEST, Boolean.FALSE, 4006, "날짜 형식이 올바르지 않습니다."),
 

@@ -128,37 +128,45 @@ public class SchedulesService {
 
     @Transactional(readOnly = true)
     public List<SchedulesResponseDto.ResponseData> getSchedulesList(Long classId, Long userId) {
-        ClassEntity classes = classesRepository.findById(classId)
-                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+        try {
+            ClassEntity classes = classesRepository.findById(classId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
 
-        if (!classes.getMasterId().equals(userId) &&
-                classes.getUsers().stream()
-                        .noneMatch(user -> user.getUserId().equals(userId))) {
-            throw new CustomException(ErrorCode.CLASS_ACCESS_DENIED);
+            if (!classes.getMasterId().equals(userId) &&
+                    classes.getUsers().stream()
+                            .noneMatch(user -> user.getUserId().equals(userId))) {
+                throw new CustomException(ErrorCode.CLASS_ACCESS_DENIED);
+            }
+
+            // ResponseDto로 변환하여 반환
+            return schedulesRepository.findSchedulesByClassesId(classId).stream()
+                    .map(SchedulesResponseDto.ResponseData::from)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.SCHEDULE_READ_FAILED);
         }
-
-        // ResponseDto로 변환하여 반환
-        return schedulesRepository.findSchedulesByClassesId(classId).stream()
-                .map(SchedulesResponseDto.ResponseData::from)
-                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public SchedulesResponseDto.ResponseData getScheduleDetail(Long scheduleId, Long classId, Long userId) {
-        ClassEntity classes = classesRepository.findById(classId)
-                .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
+        try {
+            ClassEntity classes = classesRepository.findById(classId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.CLASS_NOT_FOUND));
 
-        if (!classes.getMasterId().equals(userId) &&
-                classes.getUsers().stream()
-                        .noneMatch(user -> user.getUserId().equals(userId))) {
-            throw new CustomException(ErrorCode.CLASS_ACCESS_DENIED);
+            if (!classes.getMasterId().equals(userId) &&
+                    classes.getUsers().stream()
+                            .noneMatch(user -> user.getUserId().equals(userId))) {
+                throw new CustomException(ErrorCode.CLASS_ACCESS_DENIED);
+            }
+
+            // 특정 일정 조회
+            SchedulesEntity schedule = schedulesRepository.findScheduleByIdAndClassesId(scheduleId, classId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.SCHEDULE_NOT_FOUND));
+
+            // ResponseDto로 변환하여 반환
+            return SchedulesResponseDto.ResponseData.from(schedule);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.SCHEDULE_READ_FAILED);
         }
-
-        // 특정 일정 조회
-        SchedulesEntity schedule = schedulesRepository.findScheduleByIdAndClassesId(scheduleId, classId)
-                .orElseThrow(() -> new CustomException(ErrorCode.SCHEDULE_NOT_FOUND));
-
-        // ResponseDto로 변환하여 반환
-        return SchedulesResponseDto.ResponseData.from(schedule);
     }
 }
