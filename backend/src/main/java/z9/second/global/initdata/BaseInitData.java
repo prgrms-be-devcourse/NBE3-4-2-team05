@@ -22,7 +22,7 @@ import z9.second.model.user.UserRepository;
 import z9.second.model.userfavorite.UserFavorite;
 import z9.second.model.userfavorite.UserFavoriteRepository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -174,8 +174,8 @@ public class BaseInitData {
             // 각 클래스마다 3개의 일정 생성
             for (int i = 1; i <= 3; i++) {
                 // 현재 시간으로부터 i주 후로 설정
-                LocalDateTime futureTime = LocalDateTime.now().plusWeeks(i);
-                String meetingTime = futureTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                LocalDate futureTime = LocalDate.now().plusWeeks(i);
+                String meetingTime = futureTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
                 SchedulesEntity schedule = SchedulesEntity.builder()
                         .classes(classEntity)

@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Home.css";
-import { ClassService } from 'src/services/ClassService';
-import Alert from "src/components/alert/Alert";
-import { FavoriteService } from 'src/services/FavoriteService';
-import Modal from "src/components/modal/Modal";
-import {SearchService} from "../../services/SearchService";
 import { Filter } from "lucide-react";
+
+import Alert from "src/components/alert/Alert";
+import Modal from "src/components/modal/Modal";
+
+import { ClassService } from 'src/services/ClassService';
+import { FavoriteService } from 'src/services/FavoriteService';
+import {SearchService} from "src/services/SearchService";
+
+import "./Home.css";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -23,7 +26,7 @@ const Home = () => {
     await fetchFavorites();
     setIsModalOpen(true);
   };
-
+  
   const closeModal = () => {
     setIsModalOpen(false);
     resetForm();
@@ -42,7 +45,6 @@ const Home = () => {
   const handlerJoin = async (id) => {
     const isMember = await checkMember(id);
     const isBlackList = await checkBlackList(id);
-
     if (isBlackList) {
       Alert("강퇴당한 회원은 재가입 하실 수 없습니다.")
     } else if (isMember) {
@@ -56,11 +58,9 @@ const Home = () => {
   const checkMember = async (id) => {
     try {
       const response = await ClassService.checkMember(id);
-
       const checkData = response.data;
       const getData = checkData?.data || [];
       const isMember = getData.member;
-
       return isMember;
     } catch (error) {
       console.error("checkMember:", error);
@@ -71,11 +71,9 @@ const Home = () => {
   const checkBlackList = async (id) => {
     try {
       const response = await ClassService.checkBlackList(id);
-
       const checkData = response.data;
       const getData = checkData?.data || [];
       const isBlackList = getData.blackListed;
-
       return isBlackList;
     } catch (error) {
       console.error("checkBlackList:", error);
@@ -96,7 +94,6 @@ const Home = () => {
       Alert(error.response.data.message);
     }
   }
-
   // 모임 생성
   const handlerCreateClass = async () => {
     const body = {

@@ -1,14 +1,17 @@
 import React, {useCallback, useEffect, useState} from "react";
-import { useParams } from "react-router-dom";
-import Alert from "src/components/alert/Alert";
-import { ClassService } from "src/services/ClassService";
-import { useNavigate } from "react-router-dom";
-import Modal from "src/components/modal/Modal";
-import DateTimeInput from "../../../components/dateTimeInput/DateTimeInput";
-import { ScheduleService } from "../../../services/SheduleService";
+import { useParams, useNavigate } from "react-router-dom";
+
+import Modal from "../../../components/modal/Modal";
+import Alert from "../../../components/alert/Alert";
 import CustomList from "../../../components/customList/CustomList";
-import "./Class.css";
+import DateTimeInput from "../../../components/dateTimeInput/DateTimeInput";
+
+import { ClassService } from "../../../services/ClassService";
+import { ScheduleService } from "../../../services/SheduleService";
 import {CheckInService} from "../../../services/CheckInService";
+
+import "./Class.css";
+
 
 const Class = () => {
   const { id } = useParams();
@@ -167,6 +170,17 @@ const Class = () => {
       }
   };
 
+  const handlerScheduleDetail = async (scheduleId) => {
+    try {
+      const response = await ScheduleService.getScheduleDetail(scheduleId, id);
+      const detailData = response.data?.data;
+      setSelectedSchedule(detailData);
+      setIsDetailModal(true);
+    } catch (error) {
+      console.error("일정 상세 조회 오류:", error);
+      Alert(error.response?.data?.message || "일정 상세 조회에 실패했습니다.");
+    }
+  }
 
   return (
       <div>
@@ -217,15 +231,13 @@ const Class = () => {
           )}
         </div>
 
-        <div className="list-container">
-          <ul className="list">{/* memberList.jsx 참고 */}</ul>
-        </div>
-
         <Modal isOpen={isModalOpen} title={"모임 정보 수정"} onClose={closeModal}>
           <div className="modal-form">
             <label htmlFor="name">모임 이름:</label>
             <input
                 id="name"
+            <label>모임 이름:</label>
+            <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -234,6 +246,8 @@ const Class = () => {
             <label htmlFor="description">모임 설명:</label>
             <textarea
                 id="description"
+            <label>모임 설명:</label>
+            <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="모임 설명을 입력하세요"
@@ -259,6 +273,16 @@ const Class = () => {
               생성하기
             </button>
           </div>
+        </Modal>
+
+        <Modal isOpen={isDetailModal} title="일정 상세 정보" onClose={closeSchedulesDetailModal}>
+          {selectedSchedule && (
+              <div className="schedule-detail">
+                <h4>일정 제목: {selectedSchedule.meetingTitle}</h4>
+                <p>일시: {selectedSchedule.meetingTime}</p>
+                {/* 추가적인 상세 정보가 있다면 여기에 표시 */}
+              </div>
+          )}
         </Modal>
       </div>
   );
