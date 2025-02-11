@@ -11,5 +11,5 @@ public interface CheckInService {
     void createCheckIn(Long userId, CheckInRequestDto.CheckInDto requestDto);
     void updateCheckIn(Long userId, CheckInRequestDto.CheckInDto requestDto);
     List<CheckInResponseDto.ResponseData> getAllCheckIns(Long scheduleId);
-    CheckInResponseDto.ResponseData getMyCheckIn( Long userId,Long checkInId);
+    CheckInResponseDto.ResponseData getMyCheckIn(Long scheduleId, Long userId);
 }

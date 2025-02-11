@@ -15,6 +15,7 @@ import z9.second.global.response.BaseResponse;
 import z9.second.global.response.SuccessCode;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -60,11 +61,11 @@ public class CheckInController {
     @Operation(summary = "모임 내 투표 현황 보여주기")
     @SecurityRequirement(name="bearerAuth")
     public BaseResponse<CheckInResponseDto.ResponseData> getMyCheckIn(
-            Principal principal,
-            @PathVariable Long scheduleId
+            @PathVariable Long scheduleId,
+            Principal principal
     ){
         Long userId = Long.parseLong(principal.getName());
-        CheckInResponseDto.ResponseData response = checkInService.getMyCheckIn(userId, scheduleId);
+        CheckInResponseDto.ResponseData response = checkInService.getMyCheckIn(scheduleId, userId);
         return BaseResponse.ok(SuccessCode.CHECK_IN_READ_SUCCESS, response);
     }
 }

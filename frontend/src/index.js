@@ -26,7 +26,6 @@ const App = () => {
           <Route path="/modify" element={<Modify />} />
           <Route path="/join" element={<SignUp />} />
           <Route path="/mypage" element={<Mypage />} />
-          <Route path="/classes" element={<Class />} />
           <Route path="/classes/:id" element={<Class />} />
           <Route path="/kakaomap" element={<KakaoMap />} />
           <Route path="/memberList/:id" element={<MemberList />} />
