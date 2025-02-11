@@ -31,8 +31,4 @@ public class CustomUserDetails implements UserDetails {
     public String getUsername() {
         return user.getId().toString();
     }
-
-    public Boolean isOAuthUser() {
-        return user.getType().equals(UserType.OAUTH);
-    }
 }

@@ -70,9 +70,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Authentication authentication = authenticateUser(dto);
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        if (userDetails.isOAuthUser()) {
-            throw new CustomException(ErrorCode.OAUTH_USER_LOGIN_FAIL);
-        }
 
         return generateUserTokens(
                 authentication.getAuthorities().iterator().next().getAuthority(),
