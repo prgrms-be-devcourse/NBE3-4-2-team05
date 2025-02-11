@@ -41,7 +41,7 @@ public class SchedulesController {
     @PutMapping("/{scheduleId}/classes/{classId}")
     @Operation(
             summary = "모임 일정 수정",
-            description = "{classId}모임의 {scheduleId}번 일정을 수정합니다."
+            description = "모임의 일정을 수정합니다."
     )
     public BaseResponse<SchedulesResponseDto.ResponseData> modify(
             @Parameter(description = "일정 ID", required = true)
@@ -59,7 +59,7 @@ public class SchedulesController {
     @DeleteMapping("/{scheduleId}/classes/{classId}")
     @Operation(
             summary = "모임 일정 삭제",
-            description = "{classId}모임의 {scheduleId}번 일정을 삭제합니다."
+            description = "모임의 일정을 삭제합니다."
     )
     public BaseResponse<Void> delete(
             @Parameter(description = "일정 ID", required = true)

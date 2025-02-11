@@ -149,17 +149,9 @@ const Class = () => {
   };
 
   //일정 상세 조회
-  const handlerScheduleDetail = async (scheduleId) => {
-    try {
-      const response = await ScheduleService.getScheduleDetail(scheduleId, id);
-      const detailData = response.data?.data;
-      setSelectedSchedule(detailData);
-      setIsDetailModal(true);
-    } catch (error) {
-      console.error("일정 상세 조회 오류:", error);
-      Alert(error.response?.data?.message || "일정 상세 조회에 실패했습니다.");
-    }
-  }
+  const handlerScheduleDetail = (scheduleId) => {
+    router(`/schedules/${scheduleId}/classes/${id}`);
+  };
 
   // 투표 함수
   const handleCheckIn = async (scheduleId,checkIn) => {
@@ -272,16 +264,6 @@ const Class = () => {
               생성하기
             </button>
           </div>
-        </Modal>
-
-        <Modal isOpen={isDetailModal} title="일정 상세 정보" onClose={closeSchedulesDetailModal}>
-          {selectedSchedule && (
-              <div className="schedule-detail">
-                <h4>일정 제목: {selectedSchedule.meetingTitle}</h4>
-                <p>일시: {selectedSchedule.meetingTime}</p>
-                {/* 추가적인 상세 정보가 있다면 여기에 표시 */}
-              </div>
-          )}
         </Modal>
       </div>
   );
