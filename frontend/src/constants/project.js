@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Cookies } from "react-cookie";
 
 const cookies = new Cookies();
@@ -14,6 +13,10 @@ const getJwt = () => cookies.get(TOKEN);
 const getRefreshJwt = () => cookies.get(REFRESH_TOKEN);
 
 const setJwt = (accessToken) => {
+	if (!accessToken) {
+		console.error('Invalid access token');
+		return;
+	}
 	cookies.set(TOKEN, accessToken, {
 		path: "/",
 		secure: true,
@@ -22,35 +25,48 @@ const setJwt = (accessToken) => {
 };
 
 const setUserId = (user = "") => {
+	if (!user) {
+		console.error('Invalid user ID');
+		return;
+	}
 	cookies.set(USER_SESSION, user, {
 		path: "/",
 		domain: DOMAIN,
 		secure: true,
-		sameSite: "strict",
+		sameSite: "Strict",
 	});
 };
 
 const getUserId = () => cookies.get(USER_SESSION) || "";
 
-const loginCheck = () => !!(getJwt() && getUserId());
+const loginCheck = () => {
+	const jwt = getJwt();
+	const userId = getUserId();
+	return !!(jwt && userId);
+};
 
-const removeCookie = (name = "", options = {}) => cookies.remove(name, options);
+const removeCookie = (name, options = {}) => {
+	if (!name) {
+		console.error('Cookie name is required');
+		return;
+	}
+	cookies.remove(name, options);
+};
 
 const cookieRemove = () => {
-	return new Promise((resolve) => {
-		removeCookie(TOKEN, { path: "/", domain: DOMAIN });
-		removeCookie(USER_SESSION, { path: "/", domain: DOMAIN });
-		resolve(true);
-	});
+	removeCookie(TOKEN, { path: "/", domain: DOMAIN });
+	removeCookie(USER_SESSION, { path: "/", domain: DOMAIN });
 };
 
-// 로컬 스토리지 제거
 const removeStorage = () => {
-	localStorage.clear();
-	sessionStorage.clear();
+	try {
+		localStorage.clear();
+		sessionStorage.clear();
+	} catch (error) {
+		console.error('Error clearing localStorage/sessionStorage:', error);
+	}
 };
 
-// 로그아웃 처리
 const userLogout = () => {
 	removeStorage();
 	cookieRemove();

@@ -1,5 +1,6 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState,useRef} from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { debounce } from 'lodash';
 
 import Modal from "../../../components/modal/Modal";
 import Alert from "../../../components/alert/Alert";
@@ -14,8 +15,9 @@ import "./Class.css";
 
 
 const Class = () => {
-  const { id } = useParams();
+  const {id} = useParams();
   const [classInfo, setClassInfo] = useState([]);
+  const [responseCache, setResponseCache] = useState(null);
   const [name, setName] = useState("");
   const [meetingTime, setMeetingTime] = useState("");
   const [meetingTitle, setMeetingTitle] = useState("");
@@ -26,6 +28,7 @@ const Class = () => {
   const [schedules, setSchedules] = useState([]);
   const [selectedSchedule, setSelectedSchedule] = useState(null);
   const [isDetailModal, setIsDetailModal] = useState(false);
+  const cacheRef = useRef(responseCache);
 
   const handleMeetingTimeChange = useCallback((formattedDateTime) => {
     setMeetingTime(formattedDateTime);
@@ -157,18 +160,31 @@ const Class = () => {
   };
 
   // 투표 함수
-  const handleCheckIn = async (scheduleId,checkIn) => {
-      const response = await CheckInService.getMyCheckIn(scheduleId);
-      if (!response) {
-      const postResponse = await CheckInService.postCheckIn({scheduleId, checkIn});
-      console.log(postResponse)
-        Alert(postResponse.data?.message,"","",()=>window.location.reload());
-    } else {
-        const putResponse = await CheckInService.putCheckIn({scheduleId, checkIn});
-        console.log(putResponse)
-        Alert(putResponse.data?.message,"","",()=>window.location.reload());
-      }
-  };
+  const debouncedHandleCheckIn = useCallback(
+      debounce(async (scheduleId, checkIn) => {
+        let response = cacheRef.current;
+
+        if (!response) {
+          response = await CheckInService.getMyCheckIn(scheduleId);
+          cacheRef.current = response;
+          setResponseCache(response);
+        }
+        if (response) {
+          if (response.checkIn === checkIn) {
+            Alert("동일한 의사입니다.", "", "", () => window.location.reload());
+            return;
+          } else {
+            const putResponse = await CheckInService.putCheckIn({ scheduleId, checkIn });
+            Alert(putResponse.data?.message, "", "", () => window.location.reload());
+          }
+        } else {
+          const postResponse = await CheckInService.postCheckIn({ scheduleId, checkIn });
+          Alert(postResponse.data?.message, "", "", () => window.location.reload());
+        }
+      }, 1000),
+      []
+  );
+
 
   return (
       <div>
@@ -209,12 +225,13 @@ const Class = () => {
                   data3={schedule?.meetingTime}
                   description="true"
                   button1 ="참석"
-                  onClick1={()=>handleCheckIn(schedule?.scheduleId,true)}
+                  onClick1={()=>debouncedHandleCheckIn(schedule?.scheduleId,true)}
                   button2 = "불참석"
-                  onClick2={()=>handleCheckIn(schedule?.scheduleId,false)}
+                  onClick2={()=>debouncedHandleCheckIn(schedule?.scheduleId,false)}
                   button3="상세보기"
                   check
                   onClick3={()=>handlerScheduleDetail(schedule.scheduleId)}
+                  ref={cacheRef}
               />)
           )}
         </div>
