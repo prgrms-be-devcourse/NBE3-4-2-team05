@@ -170,18 +170,6 @@ const Class = () => {
       }
   };
 
-  const handlerScheduleDetail = async (scheduleId) => {
-    try {
-      const response = await ScheduleService.getScheduleDetail(scheduleId, id);
-      const detailData = response.data?.data;
-      setSelectedSchedule(detailData);
-      setIsDetailModal(true);
-    } catch (error) {
-      console.error("일정 상세 조회 오류:", error);
-      Alert(error.response?.data?.message || "일정 상세 조회에 실패했습니다.");
-    }
-  }
-
   return (
       <div>
         <div className="buttons">
@@ -235,9 +223,7 @@ const Class = () => {
           <div className="modal-form">
             <label htmlFor="name">모임 이름:</label>
             <input
-                id="name"
-            <label>모임 이름:</label>
-            <input
+                id = "name"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -245,9 +231,7 @@ const Class = () => {
             />
             <label htmlFor="description">모임 설명:</label>
             <textarea
-                id="description"
-            <label>모임 설명:</label>
-            <textarea
+                id = "description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="모임 설명을 입력하세요"
