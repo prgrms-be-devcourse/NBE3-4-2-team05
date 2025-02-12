@@ -10,6 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import z9.second.domain.authentication.service.AuthenticationService;
+import z9.second.domain.checkin.service.CheckInService;
 import z9.second.domain.classes.repository.ClassBlackListRepository;
 import z9.second.domain.classes.repository.ClassRepository;
 import z9.second.domain.classes.repository.ClassUserRepository;
@@ -77,6 +78,8 @@ public abstract class SpringBootTestSupporter {
     protected UserService userService;
     @Autowired
     protected ClassService classService;
+    @Autowired
+    protected CheckInService checkInService;
 
     /**
      * Common
