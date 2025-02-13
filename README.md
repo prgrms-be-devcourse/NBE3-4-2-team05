@@ -24,7 +24,7 @@
 ![image](https://github.com/user-attachments/assets/e69a2daa-5eb2-40f6-9eb3-95036049d81c)
 ![image](https://github.com/user-attachments/assets/5866bf9f-0ce0-4d1e-8a08-ed48fa3f7de9)
 
-[시연 영상]](https://drive.google.com/file/d/16r8BoMdOKeC1BNa6ogztOPANb8_D7xYN/view?pli=1)
+[시연 영상](https://drive.google.com/file/d/16r8BoMdOKeC1BNa6ogztOPANb8_D7xYN/view?pli=1)
 
 ![image](https://github.com/user-attachments/assets/da14e33a-cd63-454f-a844-7e84b00e94c5)
 
